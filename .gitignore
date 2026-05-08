@@ -1,0 +1,55 @@
+# --- Unity generated ---
+[Bb]uild/
+[Bb]uilds/
+[Ll]ibrary/
+[Ll]ocal[Cc]ache/
+[Tt]emp/
+[Oo]bj/
+
+# --- Unity asset & package ---
+*.pidb
+*.unitypackage
+*.app
+
+# --- IDE / Editor ---
+.idea/
+.vs/
+.vscode/
+*.sln
+*.csproj
+*.user
+*.userosscache
+*.suo
+*.userprefs
+
+# --- OS generated ---
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# --- Build ---
+*.apk
+*.aab
+*.ipa
+*.exe
+*.pdb
+
+# --- Logs ---
+[Ll]ogs/
+upm.log
+
+# --- Unity editor user settings ---
+UserSettings/
+
+# --- Crashlytics ---
+CrashlyticsBuildLog.csv
+crashlytics-build.properties
+
+# --- Rider ---
+.idea/
+*.sln.DotSettings.user
