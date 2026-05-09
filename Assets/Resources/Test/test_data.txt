@@ -1,0 +1,2 @@
+Hello from AssetManager test resource!
+This file is used to verify synchronous and asynchronous asset loading.
