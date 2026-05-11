@@ -1,0 +1,11 @@
+{
+  "items": [
+    {
+      "id": "default",
+      "masterVolume": 0.9,
+      "bgmVolume": 0.8,
+      "sfxVolume": 1.0,
+      "mute": false
+    }
+  ]
+}

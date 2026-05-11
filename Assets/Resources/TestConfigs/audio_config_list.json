@@ -1,0 +1,18 @@
+{
+  "items": [
+    {
+      "id": "bgm_main",
+      "clipPath": "Audio/BGM/main_theme",
+      "channel": "BGM",
+      "volume": 0.8,
+      "loop": true
+    },
+    {
+      "id": "sfx_click",
+      "clipPath": "Audio/SFX/ui_click",
+      "channel": "SFX",
+      "volume": 0.65,
+      "loop": false
+    }
+  ]
+}

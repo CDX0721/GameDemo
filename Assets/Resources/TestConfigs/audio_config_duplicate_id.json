@@ -1,0 +1,18 @@
+{
+  "items": [
+    {
+      "id": "dup",
+      "clipPath": "Audio/BGM/A",
+      "channel": "BGM",
+      "volume": 1.0,
+      "loop": true
+    },
+    {
+      "id": "dup",
+      "clipPath": "Audio/BGM/B",
+      "channel": "BGM",
+      "volume": 1.0,
+      "loop": false
+    }
+  ]
+}
