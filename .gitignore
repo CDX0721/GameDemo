@@ -42,6 +42,9 @@ Desktop.ini
 # --- Logs ---
 [Ll]ogs/
 upm.log
+Temp/ConfigExportValidation/
+TestLogs/ConfigExport/*.json
+Tools/ConfigExport/__pycache__/
 
 # --- Unity editor user settings ---
 UserSettings/

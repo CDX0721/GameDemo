@@ -1,0 +1,16 @@
+[INFO] Export start: 2026-05-13T11:01:19
+[INFO] Source: E:\QQ Files\游戏\GameDemo\Assets\ConfigSource\策划案.xlsx
+[INFO] Output: E:\QQ Files\游戏\GameDemo\Temp\ConfigExportValidation\Output
+[INFO] 游戏核心框架 -> core_framework_modules.json, rows=0
+[INFO] 角色数据 -> characters.json, rows=1
+[INFO] 技能数据 -> skills.json, rows=13
+[INFO] anemy -> enemies.json, rows=3
+[INFO] 战斗奖励 -> battle_rewards.json, rows=2
+[INFO] State数据 -> states.json, rows=5
+[INFO] 一些混淆的点 -> design_rule_notes.json, rows=2
+[INFO] 战斗属性结算 -> battle_formulas.json, rows=0
+[INFO] 物品装备 -> items_equipment.json, rows=0
+[WARNING] sheet.no_data sheet=游戏核心框架 row=None col=None msg=No data rows exported.
+[WARNING] sheet.no_data sheet=战斗属性结算 row=None col=None msg=No data rows exported.
+[WARNING] sheet.no_data sheet=物品装备 row=None col=None msg=No data rows exported.
+[INFO] Export done. errors=0, warnings=3, success=True

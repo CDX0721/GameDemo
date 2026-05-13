@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using GameDemo.DataConfig.Planning;
 
 namespace GameDemo.DataConfig
 {
@@ -15,6 +16,7 @@ namespace GameDemo.DataConfig
 
         public bool IsInitialized { get; private set; }
         public ConfigService Service { get; private set; }
+        public PlanningConfigLoader Planning { get; private set; }
 
         ConfigModule() { }
 
@@ -27,6 +29,7 @@ namespace GameDemo.DataConfig
                 textProvider ?? new AssetManagerTextProvider(),
                 serializer ?? new UnityJsonConfigSerializer(),
                 repository ?? new ConfigRepository());
+            Planning = new PlanningConfigLoader(Service);
             IsInitialized = true;
         }
 
@@ -51,6 +54,12 @@ namespace GameDemo.DataConfig
             }
 
             Service.Clear();
+        }
+
+        public PlanningConfigBatchReport LoadPlanningConfigs()
+        {
+            EnsureInitialized();
+            return Planning.LoadAll();
         }
 
         void EnsureInitialized()

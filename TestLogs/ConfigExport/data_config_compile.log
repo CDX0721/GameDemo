@@ -1,0 +1,14 @@
+  Determining projects to restore...
+  Restored C:\copilot-temp\datamodule-compile-check\CompileCheck.csproj (in 82 ms).
+E:\QQ Files\娓告垙\GameDemo\Assets\Scripts\Managers\DataModule\UnityJsonConfigSerializer.cs(16,28): warning CS0649: Field 'UnityJsonConfigSerializer.ConfigListWrapper<T>.Items' is never assigned to, and will always have its default value null [C:\copilot-temp\datamodule-compile-check\CompileCheck.csproj]
+E:\QQ Files\娓告垙\GameDemo\Assets\Scripts\Managers\DataModule\UnityJsonConfigSerializer.cs(15,28): warning CS0649: Field 'UnityJsonConfigSerializer.ConfigListWrapper<T>.items' is never assigned to, and will always have its default value null [C:\copilot-temp\datamodule-compile-check\CompileCheck.csproj]
+  CompileCheck -> C:\copilot-temp\datamodule-compile-check\bin\Debug\net472\CompileCheck.dll
+
+Build succeeded.
+
+E:\QQ Files\娓告垙\GameDemo\Assets\Scripts\Managers\DataModule\UnityJsonConfigSerializer.cs(16,28): warning CS0649: Field 'UnityJsonConfigSerializer.ConfigListWrapper<T>.Items' is never assigned to, and will always have its default value null [C:\copilot-temp\datamodule-compile-check\CompileCheck.csproj]
+E:\QQ Files\娓告垙\GameDemo\Assets\Scripts\Managers\DataModule\UnityJsonConfigSerializer.cs(15,28): warning CS0649: Field 'UnityJsonConfigSerializer.ConfigListWrapper<T>.items' is never assigned to, and will always have its default value null [C:\copilot-temp\datamodule-compile-check\CompileCheck.csproj]
+    2 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.60
