@@ -1,0 +1,8 @@
+[INFO] Validate start: 2026-05-13T11:01:20
+[INFO] Output: E:\QQ Files\游戏\GameDemo\Temp\ConfigExportValidation\Output
+[INFO] count.characters: 1
+[INFO] count.skills: 13
+[INFO] count.enemies: 3
+[INFO] count.rewards: 2
+[INFO] count.states: 5
+[INFO] summary: errors=0, warnings=0, success=True
