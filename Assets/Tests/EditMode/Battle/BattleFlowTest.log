@@ -1,0 +1,654 @@
+========== 初始化战斗 ==========
+  我方: 战士(HP:500 ATK:80) 法师(HP:300 ATK:120) 牧师(HP:350 ATK:50)
+  敌方: 哥布林(HP:200 ATK:60) 哥布林射手(HP:180 ATK:70) 巨魔(HP:600 ATK:100)
+========== 战斗开始 ==========
+
+[Frame 1] >>> BattleStart
+[Frame 2] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 哥布林射手 (e_archer)  行动值=1.25  剩余代价=100.0  速度=80
+  [1] 哥布林 (e_goblin)  行动值=1.43  剩余代价=100.0  速度=70
+  [2] 战士 (p_warrior)  行动值=1.67  剩余代价=100.0  速度=60
+  [3] 牧师 (p_priest)  行动值=2.20  剩余代价=110.0  速度=50
+  [4] 法师 (p_mage)  行动值=3.00  剩余代价=120.0  速度=40
+  [5] 巨魔 (e_troll)  行动值=4.33  剩余代价=130.0  速度=30
+  选中: 哥布林射手 (e_archer)  HP=180  ATK=70
+  [时间推进] t=1.25，所有单位 RemainingCost -= t * Speed
+[Frame 3] >>> WaitingAction
+  哥布林射手 对 法师 使用 [攻击]  (目标 HP: 300)
+  → 伤害 55，法师 HP: 245
+[Frame 4] >>> PostAction
+[Frame 5] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 哥布林 (e_goblin)  行动值=0.18  剩余代价=12.5  速度=70
+  [1] 战士 (p_warrior)  行动值=0.42  剩余代价=25.0  速度=60
+  [2] 牧师 (p_priest)  行动值=0.95  剩余代价=47.5  速度=50
+  [3] 哥布林射手 (e_archer)  行动值=1.25  剩余代价=100.0  速度=80
+  [4] 法师 (p_mage)  行动值=1.75  剩余代价=70.0  速度=40
+  [5] 巨魔 (e_troll)  行动值=3.08  剩余代价=92.5  速度=30
+  选中: 哥布林 (e_goblin)  HP=200  ATK=60
+  [时间推进] t=0.18，所有单位 RemainingCost -= t * Speed
+[Frame 6] >>> WaitingAction
+  哥布林 对 法师 使用 [攻击]  (目标 HP: 245)
+  → 伤害 45，法师 HP: 200
+[Frame 7] >>> PostAction
+[Frame 8] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 战士 (p_warrior)  行动值=0.24  剩余代价=14.3  速度=60
+  [1] 牧师 (p_priest)  行动值=0.77  剩余代价=38.6  速度=50
+  [2] 哥布林射手 (e_archer)  行动值=1.07  剩余代价=85.7  速度=80
+  [3] 哥布林 (e_goblin)  行动值=1.43  剩余代价=100.0  速度=70
+  [4] 法师 (p_mage)  行动值=1.57  剩余代价=62.9  速度=40
+  [5] 巨魔 (e_troll)  行动值=2.90  剩余代价=87.1  速度=30
+  选中: 战士 (p_warrior)  HP=500  ATK=80
+  [时间推进] t=0.24，所有单位 RemainingCost -= t * Speed
+[Frame 9] >>> WaitingAction
+  战士 对 哥布林射手 使用 [攻击]  (目标 HP: 180)
+  → 伤害 72，哥布林射手 HP: 108
+[Frame 10] >>> PostAction
+[Frame 11] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 牧师 (p_priest)  行动值=0.53  剩余代价=26.7  速度=50
+  [1] 哥布林射手 (e_archer)  行动值=0.83  剩余代价=66.7  速度=80
+  [2] 哥布林 (e_goblin)  行动值=1.19  剩余代价=83.3  速度=70
+  [3] 法师 (p_mage)  行动值=1.33  剩余代价=53.3  速度=40
+  [4] 战士 (p_warrior)  行动值=1.67  剩余代价=100.0  速度=60
+  [5] 巨魔 (e_troll)  行动值=2.67  剩余代价=80.0  速度=30
+  选中: 牧师 (p_priest)  HP=350  ATK=50
+  [时间推进] t=0.53，所有单位 RemainingCost -= t * Speed
+[Frame 12] >>> WaitingAction
+  牧师 对 哥布林射手 使用 [眩晕]  (目标 HP: 108)
+  [附加效果] 哥布林射手 被施加 [眩晕]
+  → 伤害 0，哥布林射手 HP: 108
+[Frame 13] >>> PostAction
+[Frame 14] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 哥布林射手 (e_archer)  行动值=0.30  剩余代价=24.0  速度=80
+  [1] 哥布林 (e_goblin)  行动值=0.66  剩余代价=46.0  速度=70
+  [2] 法师 (p_mage)  行动值=0.80  剩余代价=32.0  速度=40
+  [3] 战士 (p_warrior)  行动值=1.13  剩余代价=68.0  速度=60
+  [4] 巨魔 (e_troll)  行动值=2.13  剩余代价=64.0  速度=30
+  [5] 牧师 (p_priest)  行动值=2.20  剩余代价=110.0  速度=50
+  选中: 哥布林射手 (e_archer)  HP=108  ATK=70
+  [时间推进] t=0.30，所有单位 RemainingCost -= t * Speed
+  [效果生效] [眩晕] 作用于 哥布林射手  (剩余 1 回合  x1)
+  哥布林射手 不可行动（被控制），跳过行动 → 进入 PostAction
+[Frame 15] >>> PostAction
+  [效果回合] [眩晕] 剩余 0 回合
+  [效果移除] [眩晕] 从 哥布林射手 移除
+[Frame 16] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 哥布林 (e_goblin)  行动值=0.36  剩余代价=25.0  速度=70
+  [1] 法师 (p_mage)  行动值=0.50  剩余代价=20.0  速度=40
+  [2] 战士 (p_warrior)  行动值=0.83  剩余代价=50.0  速度=60
+  [3] 哥布林射手 (e_archer)  行动值=1.25  剩余代价=100.0  速度=80
+  [4] 巨魔 (e_troll)  行动值=1.83  剩余代价=55.0  速度=30
+  [5] 牧师 (p_priest)  行动值=1.90  剩余代价=95.0  速度=50
+  选中: 哥布林 (e_goblin)  HP=200  ATK=60
+  [时间推进] t=0.36，所有单位 RemainingCost -= t * Speed
+[Frame 17] >>> WaitingAction
+  哥布林 对 法师 使用 [攻击]  (目标 HP: 200)
+  → 伤害 45，法师 HP: 155
+[Frame 18] >>> PostAction
+[Frame 19] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 法师 (p_mage)  行动值=0.14  剩余代价=5.7  速度=40
+  [1] 战士 (p_warrior)  行动值=0.48  剩余代价=28.6  速度=60
+  [2] 哥布林射手 (e_archer)  行动值=0.89  剩余代价=71.4  速度=80
+  [3] 哥布林 (e_goblin)  行动值=1.43  剩余代价=100.0  速度=70
+  [4] 巨魔 (e_troll)  行动值=1.48  剩余代价=44.3  速度=30
+  [5] 牧师 (p_priest)  行动值=1.54  剩余代价=77.1  速度=50
+  选中: 法师 (p_mage)  HP=155  ATK=120
+  [时间推进] t=0.14，所有单位 RemainingCost -= t * Speed
+[Frame 20] >>> WaitingAction
+  法师 对 哥布林射手 使用 [毒刃]  (目标 HP: 108)
+  [附加效果] 哥布林射手 被施加 [中毒]
+  → 伤害 0，哥布林射手 HP: 108
+[Frame 21] >>> PostAction
+[Frame 22] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 战士 (p_warrior)  行动值=0.33  剩余代价=20.0  速度=60
+  [1] 哥布林射手 (e_archer)  行动值=0.75  剩余代价=60.0  速度=80
+  [2] 哥布林 (e_goblin)  行动值=1.29  剩余代价=90.0  速度=70
+  [3] 巨魔 (e_troll)  行动值=1.33  剩余代价=40.0  速度=30
+  [4] 牧师 (p_priest)  行动值=1.40  剩余代价=70.0  速度=50
+  [5] 法师 (p_mage)  行动值=3.00  剩余代价=120.0  速度=40
+  选中: 战士 (p_warrior)  HP=500  ATK=80
+  [时间推进] t=0.33，所有单位 RemainingCost -= t * Speed
+[Frame 23] >>> WaitingAction
+  战士 对 哥布林射手 使用 [攻击]  (目标 HP: 108)
+  → 伤害 72，哥布林射手 HP: 36
+[Frame 24] >>> PostAction
+[Frame 25] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 哥布林射手 (e_archer)  行动值=0.42  剩余代价=33.3  速度=80
+  [1] 哥布林 (e_goblin)  行动值=0.95  剩余代价=66.7  速度=70
+  [2] 巨魔 (e_troll)  行动值=1.00  剩余代价=30.0  速度=30
+  [3] 牧师 (p_priest)  行动值=1.07  剩余代价=53.3  速度=50
+  [4] 战士 (p_warrior)  行动值=1.67  剩余代价=100.0  速度=60
+  [5] 法师 (p_mage)  行动值=2.67  剩余代价=106.7  速度=40
+  选中: 哥布林射手 (e_archer)  HP=36  ATK=70
+  [时间推进] t=0.42，所有单位 RemainingCost -= t * Speed
+  [效果生效] [中毒] 作用于 哥布林射手  (剩余 2 回合  x1)
+    → 造成 20 点伤害，HP: 36 → 16
+[Frame 26] >>> WaitingAction
+  哥布林射手 对 法师 使用 [攻击]  (目标 HP: 155)
+  → 伤害 55，法师 HP: 100
+[Frame 27] >>> PostAction
+  [效果回合] [中毒] 剩余 1 回合
+  [效果重算结果] 哥布林射手 CanAct=True  HP=16
+[Frame 28] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 哥布林 (e_goblin)  行动值=0.54  剩余代价=37.5  速度=70
+  [1] 巨魔 (e_troll)  行动值=0.58  剩余代价=17.5  速度=30
+  [2] 牧师 (p_priest)  行动值=0.65  剩余代价=32.5  速度=50
+  [3] 哥布林射手 (e_archer)  行动值=1.25  剩余代价=100.0  速度=80
+  [4] 战士 (p_warrior)  行动值=1.25  剩余代价=75.0  速度=60
+  [5] 法师 (p_mage)  行动值=2.25  剩余代价=90.0  速度=40
+  选中: 哥布林 (e_goblin)  HP=200  ATK=60
+  [时间推进] t=0.54，所有单位 RemainingCost -= t * Speed
+[Frame 29] >>> WaitingAction
+  哥布林 对 法师 使用 [攻击]  (目标 HP: 100)
+  → 伤害 45，法师 HP: 55
+[Frame 30] >>> PostAction
+[Frame 31] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 巨魔 (e_troll)  行动值=0.05  剩余代价=1.4  速度=30
+  [1] 牧师 (p_priest)  行动值=0.11  剩余代价=5.7  速度=50
+  [2] 哥布林射手 (e_archer)  行动值=0.71  剩余代价=57.1  速度=80
+  [3] 战士 (p_warrior)  行动值=0.71  剩余代价=42.9  速度=60
+  [4] 哥布林 (e_goblin)  行动值=1.43  剩余代价=100.0  速度=70
+  [5] 法师 (p_mage)  行动值=1.71  剩余代价=68.6  速度=40
+  选中: 巨魔 (e_troll)  HP=600  ATK=100
+  [时间推进] t=0.05，所有单位 RemainingCost -= t * Speed
+[Frame 32] >>> WaitingAction
+  巨魔 对 法师 使用 [攻击]  (目标 HP: 55)
+  → 伤害 55，法师 HP: 0
+  [死亡移除] 法师 阵亡，移出场地
+[Frame 33] >>> PostAction
+[Frame 34] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 牧师 (p_priest)  行动值=0.07  剩余代价=3.3  速度=50
+  [1] 哥布林射手 (e_archer)  行动值=0.67  剩余代价=53.3  速度=80
+  [2] 战士 (p_warrior)  行动值=0.67  剩余代价=40.0  速度=60
+  [3] 哥布林 (e_goblin)  行动值=1.38  剩余代价=96.7  速度=70
+  [4] 巨魔 (e_troll)  行动值=4.33  剩余代价=130.0  速度=30
+  选中: 牧师 (p_priest)  HP=350  ATK=50
+  [时间推进] t=0.07，所有单位 RemainingCost -= t * Speed
+[Frame 35] >>> WaitingAction
+  牧师 对 哥布林射手 使用 [眩晕]  (目标 HP: 16)
+  [附加效果] 哥布林射手 被施加 [眩晕]
+  → 伤害 0，哥布林射手 HP: 16
+[Frame 36] >>> PostAction
+[Frame 37] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 哥布林射手 (e_archer)  行动值=0.60  剩余代价=48.0  速度=80
+  [1] 战士 (p_warrior)  行动值=0.60  剩余代价=36.0  速度=60
+  [2] 哥布林 (e_goblin)  行动值=1.31  剩余代价=92.0  速度=70
+  [3] 牧师 (p_priest)  行动值=2.20  剩余代价=110.0  速度=50
+  [4] 巨魔 (e_troll)  行动值=4.27  剩余代价=128.0  速度=30
+  选中: 哥布林射手 (e_archer)  HP=16  ATK=70
+  [时间推进] t=0.60，所有单位 RemainingCost -= t * Speed
+  [效果生效] [中毒] 作用于 哥布林射手  (剩余 1 回合  x1)
+    → 造成 20 点伤害，HP: 16 → -4
+  [死亡移除] 哥布林射手 阵亡，移出场地
+  哥布林射手 已阵亡，跳过行动 → 进入 PostAction
+[Frame 38] >>> PostAction
+[Frame 39] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 战士 (p_warrior)  行动值=0.00  剩余代价=0.0  速度=60
+  [1] 哥布林 (e_goblin)  行动值=0.71  剩余代价=50.0  速度=70
+  [2] 牧师 (p_priest)  行动值=1.60  剩余代价=80.0  速度=50
+  [3] 巨魔 (e_troll)  行动值=3.67  剩余代价=110.0  速度=30
+  选中: 战士 (p_warrior)  HP=500  ATK=80
+  [时间推进] t=0.00，所有单位 RemainingCost -= t * Speed
+[Frame 40] >>> WaitingAction
+  战士 对 哥布林 使用 [攻击]  (目标 HP: 200)
+  → 伤害 70，哥布林 HP: 130
+[Frame 41] >>> PostAction
+[Frame 42] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 哥布林 (e_goblin)  行动值=0.71  剩余代价=50.0  速度=70
+  [1] 牧师 (p_priest)  行动值=1.60  剩余代价=80.0  速度=50
+  [2] 战士 (p_warrior)  行动值=1.67  剩余代价=100.0  速度=60
+  [3] 巨魔 (e_troll)  行动值=3.67  剩余代价=110.0  速度=30
+  选中: 哥布林 (e_goblin)  HP=130  ATK=60
+  [时间推进] t=0.71，所有单位 RemainingCost -= t * Speed
+[Frame 43] >>> WaitingAction
+  哥布林 对 战士 使用 [攻击]  (目标 HP: 500)
+  → 伤害 30，战士 HP: 470
+[Frame 44] >>> PostAction
+[Frame 45] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 牧师 (p_priest)  行动值=0.89  剩余代价=44.3  速度=50
+  [1] 战士 (p_warrior)  行动值=0.95  剩余代价=57.1  速度=60
+  [2] 哥布林 (e_goblin)  行动值=1.43  剩余代价=100.0  速度=70
+  [3] 巨魔 (e_troll)  行动值=2.95  剩余代价=88.6  速度=30
+  选中: 牧师 (p_priest)  HP=350  ATK=50
+  [时间推进] t=0.89，所有单位 RemainingCost -= t * Speed
+[Frame 46] >>> WaitingAction
+  牧师 对 哥布林 使用 [眩晕]  (目标 HP: 130)
+  [附加效果] 哥布林 被施加 [眩晕]
+  → 伤害 0，哥布林 HP: 130
+[Frame 47] >>> PostAction
+[Frame 48] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 战士 (p_warrior)  行动值=0.07  剩余代价=4.0  速度=60
+  [1] 哥布林 (e_goblin)  行动值=0.54  剩余代价=38.0  速度=70
+  [2] 巨魔 (e_troll)  行动值=2.07  剩余代价=62.0  速度=30
+  [3] 牧师 (p_priest)  行动值=2.20  剩余代价=110.0  速度=50
+  选中: 战士 (p_warrior)  HP=470  ATK=80
+  [时间推进] t=0.07，所有单位 RemainingCost -= t * Speed
+[Frame 49] >>> WaitingAction
+  战士 对 哥布林 使用 [攻击]  (目标 HP: 130)
+  → 伤害 70，哥布林 HP: 60
+[Frame 50] >>> PostAction
+[Frame 51] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 哥布林 (e_goblin)  行动值=0.48  剩余代价=33.3  速度=70
+  [1] 战士 (p_warrior)  行动值=1.67  剩余代价=100.0  速度=60
+  [2] 巨魔 (e_troll)  行动值=2.00  剩余代价=60.0  速度=30
+  [3] 牧师 (p_priest)  行动值=2.13  剩余代价=106.7  速度=50
+  选中: 哥布林 (e_goblin)  HP=60  ATK=60
+  [时间推进] t=0.48，所有单位 RemainingCost -= t * Speed
+  [效果生效] [眩晕] 作用于 哥布林  (剩余 1 回合  x1)
+  哥布林 不可行动（被控制），跳过行动 → 进入 PostAction
+[Frame 52] >>> PostAction
+  [效果回合] [眩晕] 剩余 0 回合
+  [效果移除] [眩晕] 从 哥布林 移除
+[Frame 53] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 战士 (p_warrior)  行动值=1.19  剩余代价=71.4  速度=60
+  [1] 哥布林 (e_goblin)  行动值=1.43  剩余代价=100.0  速度=70
+  [2] 巨魔 (e_troll)  行动值=1.52  剩余代价=45.7  速度=30
+  [3] 牧师 (p_priest)  行动值=1.66  剩余代价=82.9  速度=50
+  选中: 战士 (p_warrior)  HP=470  ATK=80
+  [时间推进] t=1.19，所有单位 RemainingCost -= t * Speed
+[Frame 54] >>> WaitingAction
+  战士 对 哥布林 使用 [攻击]  (目标 HP: 60)
+  → 伤害 60，哥布林 HP: 0
+  [死亡移除] 哥布林 阵亡，移出场地
+[Frame 55] >>> PostAction
+[Frame 56] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 巨魔 (e_troll)  行动值=0.33  剩余代价=10.0  速度=30
+  [1] 牧师 (p_priest)  行动值=0.47  剩余代价=23.3  速度=50
+  [2] 战士 (p_warrior)  行动值=1.67  剩余代价=100.0  速度=60
+  选中: 巨魔 (e_troll)  HP=600  ATK=100
+  [时间推进] t=0.33，所有单位 RemainingCost -= t * Speed
+[Frame 57] >>> WaitingAction
+  巨魔 对 战士 使用 [攻击]  (目标 HP: 470)
+  → 伤害 70，战士 HP: 400
+[Frame 58] >>> PostAction
+[Frame 59] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 牧师 (p_priest)  行动值=0.13  剩余代价=6.7  速度=50
+  [1] 战士 (p_warrior)  行动值=1.33  剩余代价=80.0  速度=60
+  [2] 巨魔 (e_troll)  行动值=4.33  剩余代价=130.0  速度=30
+  选中: 牧师 (p_priest)  HP=350  ATK=50
+  [时间推进] t=0.13，所有单位 RemainingCost -= t * Speed
+[Frame 60] >>> WaitingAction
+  牧师 对 巨魔 使用 [眩晕]  (目标 HP: 600)
+  [附加效果] 巨魔 被施加 [眩晕]
+  → 伤害 0，巨魔 HP: 600
+[Frame 61] >>> PostAction
+[Frame 62] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 战士 (p_warrior)  行动值=1.20  剩余代价=72.0  速度=60
+  [1] 牧师 (p_priest)  行动值=2.20  剩余代价=110.0  速度=50
+  [2] 巨魔 (e_troll)  行动值=4.20  剩余代价=126.0  速度=30
+  选中: 战士 (p_warrior)  HP=400  ATK=80
+  [时间推进] t=1.20，所有单位 RemainingCost -= t * Speed
+[Frame 63] >>> WaitingAction
+  战士 对 巨魔 使用 [攻击]  (目标 HP: 600)
+  → 伤害 40，巨魔 HP: 560
+[Frame 64] >>> PostAction
+[Frame 65] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 牧师 (p_priest)  行动值=1.00  剩余代价=50.0  速度=50
+  [1] 战士 (p_warrior)  行动值=1.67  剩余代价=100.0  速度=60
+  [2] 巨魔 (e_troll)  行动值=3.00  剩余代价=90.0  速度=30
+  选中: 牧师 (p_priest)  HP=350  ATK=50
+  [时间推进] t=1.00，所有单位 RemainingCost -= t * Speed
+[Frame 66] >>> WaitingAction
+  牧师 对 巨魔 使用 [眩晕]  (目标 HP: 560)
+  [附加效果] 巨魔 被施加 [眩晕]
+  → 伤害 0，巨魔 HP: 560
+[Frame 67] >>> PostAction
+[Frame 68] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 战士 (p_warrior)  行动值=0.67  剩余代价=40.0  速度=60
+  [1] 巨魔 (e_troll)  行动值=2.00  剩余代价=60.0  速度=30
+  [2] 牧师 (p_priest)  行动值=2.20  剩余代价=110.0  速度=50
+  选中: 战士 (p_warrior)  HP=400  ATK=80
+  [时间推进] t=0.67，所有单位 RemainingCost -= t * Speed
+[Frame 69] >>> WaitingAction
+  战士 对 巨魔 使用 [攻击]  (目标 HP: 560)
+  → 伤害 40，巨魔 HP: 520
+[Frame 70] >>> PostAction
+[Frame 71] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 巨魔 (e_troll)  行动值=1.33  剩余代价=40.0  速度=30
+  [1] 牧师 (p_priest)  行动值=1.53  剩余代价=76.7  速度=50
+  [2] 战士 (p_warrior)  行动值=1.67  剩余代价=100.0  速度=60
+  选中: 巨魔 (e_troll)  HP=520  ATK=100
+  [时间推进] t=1.33，所有单位 RemainingCost -= t * Speed
+  [效果生效] [眩晕] 作用于 巨魔  (剩余 1 回合  x1)
+  巨魔 不可行动（被控制），跳过行动 → 进入 PostAction
+[Frame 72] >>> PostAction
+  [效果回合] [眩晕] 剩余 0 回合
+  [效果移除] [眩晕] 从 巨魔 移除
+[Frame 73] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 牧师 (p_priest)  行动值=0.20  剩余代价=10.0  速度=50
+  [1] 战士 (p_warrior)  行动值=0.33  剩余代价=20.0  速度=60
+  [2] 巨魔 (e_troll)  行动值=4.33  剩余代价=130.0  速度=30
+  选中: 牧师 (p_priest)  HP=350  ATK=50
+  [时间推进] t=0.20，所有单位 RemainingCost -= t * Speed
+[Frame 74] >>> WaitingAction
+  牧师 对 巨魔 使用 [眩晕]  (目标 HP: 520)
+  [附加效果] 巨魔 被施加 [眩晕]
+  → 伤害 0，巨魔 HP: 520
+[Frame 75] >>> PostAction
+[Frame 76] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 战士 (p_warrior)  行动值=0.13  剩余代价=8.0  速度=60
+  [1] 牧师 (p_priest)  行动值=2.20  剩余代价=110.0  速度=50
+  [2] 巨魔 (e_troll)  行动值=4.13  剩余代价=124.0  速度=30
+  选中: 战士 (p_warrior)  HP=400  ATK=80
+  [时间推进] t=0.13，所有单位 RemainingCost -= t * Speed
+[Frame 77] >>> WaitingAction
+  战士 对 巨魔 使用 [攻击]  (目标 HP: 520)
+  → 伤害 40，巨魔 HP: 480
+[Frame 78] >>> PostAction
+[Frame 79] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 战士 (p_warrior)  行动值=1.67  剩余代价=100.0  速度=60
+  [1] 牧师 (p_priest)  行动值=2.07  剩余代价=103.3  速度=50
+  [2] 巨魔 (e_troll)  行动值=4.00  剩余代价=120.0  速度=30
+  选中: 战士 (p_warrior)  HP=400  ATK=80
+  [时间推进] t=1.67，所有单位 RemainingCost -= t * Speed
+[Frame 80] >>> WaitingAction
+  战士 对 巨魔 使用 [攻击]  (目标 HP: 480)
+  → 伤害 40，巨魔 HP: 440
+[Frame 81] >>> PostAction
+[Frame 82] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 牧师 (p_priest)  行动值=0.40  剩余代价=20.0  速度=50
+  [1] 战士 (p_warrior)  行动值=1.67  剩余代价=100.0  速度=60
+  [2] 巨魔 (e_troll)  行动值=2.33  剩余代价=70.0  速度=30
+  选中: 牧师 (p_priest)  HP=350  ATK=50
+  [时间推进] t=0.40，所有单位 RemainingCost -= t * Speed
+[Frame 83] >>> WaitingAction
+  牧师 对 巨魔 使用 [眩晕]  (目标 HP: 440)
+  [附加效果] 巨魔 被施加 [眩晕]
+  → 伤害 0，巨魔 HP: 440
+[Frame 84] >>> PostAction
+[Frame 85] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 战士 (p_warrior)  行动值=1.27  剩余代价=76.0  速度=60
+  [1] 巨魔 (e_troll)  行动值=1.93  剩余代价=58.0  速度=30
+  [2] 牧师 (p_priest)  行动值=2.20  剩余代价=110.0  速度=50
+  选中: 战士 (p_warrior)  HP=400  ATK=80
+  [时间推进] t=1.27，所有单位 RemainingCost -= t * Speed
+[Frame 86] >>> WaitingAction
+  战士 对 巨魔 使用 [攻击]  (目标 HP: 440)
+  → 伤害 40，巨魔 HP: 400
+[Frame 87] >>> PostAction
+[Frame 88] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 巨魔 (e_troll)  行动值=0.67  剩余代价=20.0  速度=30
+  [1] 牧师 (p_priest)  行动值=0.93  剩余代价=46.7  速度=50
+  [2] 战士 (p_warrior)  行动值=1.67  剩余代价=100.0  速度=60
+  选中: 巨魔 (e_troll)  HP=400  ATK=100
+  [时间推进] t=0.67，所有单位 RemainingCost -= t * Speed
+  [效果生效] [眩晕] 作用于 巨魔  (剩余 1 回合  x1)
+  巨魔 不可行动（被控制），跳过行动 → 进入 PostAction
+[Frame 89] >>> PostAction
+  [效果回合] [眩晕] 剩余 0 回合
+  [效果移除] [眩晕] 从 巨魔 移除
+[Frame 90] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 牧师 (p_priest)  行动值=0.27  剩余代价=13.3  速度=50
+  [1] 战士 (p_warrior)  行动值=1.00  剩余代价=60.0  速度=60
+  [2] 巨魔 (e_troll)  行动值=4.33  剩余代价=130.0  速度=30
+  选中: 牧师 (p_priest)  HP=350  ATK=50
+  [时间推进] t=0.27，所有单位 RemainingCost -= t * Speed
+[Frame 91] >>> WaitingAction
+  牧师 对 巨魔 使用 [眩晕]  (目标 HP: 400)
+  [附加效果] 巨魔 被施加 [眩晕]
+  → 伤害 0，巨魔 HP: 400
+[Frame 92] >>> PostAction
+[Frame 93] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 战士 (p_warrior)  行动值=0.73  剩余代价=44.0  速度=60
+  [1] 牧师 (p_priest)  行动值=2.20  剩余代价=110.0  速度=50
+  [2] 巨魔 (e_troll)  行动值=4.07  剩余代价=122.0  速度=30
+  选中: 战士 (p_warrior)  HP=400  ATK=80
+  [时间推进] t=0.73，所有单位 RemainingCost -= t * Speed
+[Frame 94] >>> WaitingAction
+  战士 对 巨魔 使用 [攻击]  (目标 HP: 400)
+  → 伤害 40，巨魔 HP: 360
+[Frame 95] >>> PostAction
+[Frame 96] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 牧师 (p_priest)  行动值=1.47  剩余代价=73.3  速度=50
+  [1] 战士 (p_warrior)  行动值=1.67  剩余代价=100.0  速度=60
+  [2] 巨魔 (e_troll)  行动值=3.33  剩余代价=100.0  速度=30
+  选中: 牧师 (p_priest)  HP=350  ATK=50
+  [时间推进] t=1.47，所有单位 RemainingCost -= t * Speed
+[Frame 97] >>> WaitingAction
+  牧师 对 巨魔 使用 [眩晕]  (目标 HP: 360)
+  [附加效果] 巨魔 被施加 [眩晕]
+  → 伤害 0，巨魔 HP: 360
+[Frame 98] >>> PostAction
+[Frame 99] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 战士 (p_warrior)  行动值=0.20  剩余代价=12.0  速度=60
+  [1] 巨魔 (e_troll)  行动值=1.87  剩余代价=56.0  速度=30
+  [2] 牧师 (p_priest)  行动值=2.20  剩余代价=110.0  速度=50
+  选中: 战士 (p_warrior)  HP=400  ATK=80
+  [时间推进] t=0.20，所有单位 RemainingCost -= t * Speed
+[Frame 100] >>> WaitingAction
+  战士 对 巨魔 使用 [攻击]  (目标 HP: 360)
+  → 伤害 40，巨魔 HP: 320
+[Frame 101] >>> PostAction
+[Frame 102] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 巨魔 (e_troll)  行动值=1.67  剩余代价=50.0  速度=30
+  [1] 战士 (p_warrior)  行动值=1.67  剩余代价=100.0  速度=60
+  [2] 牧师 (p_priest)  行动值=2.00  剩余代价=100.0  速度=50
+  选中: 巨魔 (e_troll)  HP=320  ATK=100
+  [时间推进] t=1.67，所有单位 RemainingCost -= t * Speed
+  [效果生效] [眩晕] 作用于 巨魔  (剩余 1 回合  x1)
+  巨魔 不可行动（被控制），跳过行动 → 进入 PostAction
+[Frame 103] >>> PostAction
+  [效果回合] [眩晕] 剩余 0 回合
+  [效果移除] [眩晕] 从 巨魔 移除
+[Frame 104] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 战士 (p_warrior)  行动值=0.00  剩余代价=0.0  速度=60
+  [1] 牧师 (p_priest)  行动值=0.33  剩余代价=16.7  速度=50
+  [2] 巨魔 (e_troll)  行动值=4.33  剩余代价=130.0  速度=30
+  选中: 战士 (p_warrior)  HP=400  ATK=80
+  [时间推进] t=0.00，所有单位 RemainingCost -= t * Speed
+[Frame 105] >>> WaitingAction
+  战士 对 巨魔 使用 [攻击]  (目标 HP: 320)
+  → 伤害 40，巨魔 HP: 280
+[Frame 106] >>> PostAction
+[Frame 107] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 牧师 (p_priest)  行动值=0.33  剩余代价=16.7  速度=50
+  [1] 战士 (p_warrior)  行动值=1.67  剩余代价=100.0  速度=60
+  [2] 巨魔 (e_troll)  行动值=4.33  剩余代价=130.0  速度=30
+  选中: 牧师 (p_priest)  HP=350  ATK=50
+  [时间推进] t=0.33，所有单位 RemainingCost -= t * Speed
+[Frame 108] >>> WaitingAction
+  牧师 对 巨魔 使用 [眩晕]  (目标 HP: 280)
+  [附加效果] 巨魔 被施加 [眩晕]
+  → 伤害 0，巨魔 HP: 280
+[Frame 109] >>> PostAction
+[Frame 110] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 战士 (p_warrior)  行动值=1.33  剩余代价=80.0  速度=60
+  [1] 牧师 (p_priest)  行动值=2.20  剩余代价=110.0  速度=50
+  [2] 巨魔 (e_troll)  行动值=4.00  剩余代价=120.0  速度=30
+  选中: 战士 (p_warrior)  HP=400  ATK=80
+  [时间推进] t=1.33，所有单位 RemainingCost -= t * Speed
+[Frame 111] >>> WaitingAction
+  战士 对 巨魔 使用 [攻击]  (目标 HP: 280)
+  → 伤害 40，巨魔 HP: 240
+[Frame 112] >>> PostAction
+[Frame 113] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 牧师 (p_priest)  行动值=0.87  剩余代价=43.3  速度=50
+  [1] 战士 (p_warrior)  行动值=1.67  剩余代价=100.0  速度=60
+  [2] 巨魔 (e_troll)  行动值=2.67  剩余代价=80.0  速度=30
+  选中: 牧师 (p_priest)  HP=350  ATK=50
+  [时间推进] t=0.87，所有单位 RemainingCost -= t * Speed
+[Frame 114] >>> WaitingAction
+  牧师 对 巨魔 使用 [眩晕]  (目标 HP: 240)
+  [附加效果] 巨魔 被施加 [眩晕]
+  → 伤害 0，巨魔 HP: 240
+[Frame 115] >>> PostAction
+[Frame 116] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 战士 (p_warrior)  行动值=0.80  剩余代价=48.0  速度=60
+  [1] 巨魔 (e_troll)  行动值=1.80  剩余代价=54.0  速度=30
+  [2] 牧师 (p_priest)  行动值=2.20  剩余代价=110.0  速度=50
+  选中: 战士 (p_warrior)  HP=400  ATK=80
+  [时间推进] t=0.80，所有单位 RemainingCost -= t * Speed
+[Frame 117] >>> WaitingAction
+  战士 对 巨魔 使用 [攻击]  (目标 HP: 240)
+  → 伤害 40，巨魔 HP: 200
+[Frame 118] >>> PostAction
+[Frame 119] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 巨魔 (e_troll)  行动值=1.00  剩余代价=30.0  速度=30
+  [1] 牧师 (p_priest)  行动值=1.40  剩余代价=70.0  速度=50
+  [2] 战士 (p_warrior)  行动值=1.67  剩余代价=100.0  速度=60
+  选中: 巨魔 (e_troll)  HP=200  ATK=100
+  [时间推进] t=1.00，所有单位 RemainingCost -= t * Speed
+  [效果生效] [眩晕] 作用于 巨魔  (剩余 1 回合  x1)
+  巨魔 不可行动（被控制），跳过行动 → 进入 PostAction
+[Frame 120] >>> PostAction
+  [效果回合] [眩晕] 剩余 0 回合
+  [效果移除] [眩晕] 从 巨魔 移除
+[Frame 121] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 牧师 (p_priest)  行动值=0.40  剩余代价=20.0  速度=50
+  [1] 战士 (p_warrior)  行动值=0.67  剩余代价=40.0  速度=60
+  [2] 巨魔 (e_troll)  行动值=4.33  剩余代价=130.0  速度=30
+  选中: 牧师 (p_priest)  HP=350  ATK=50
+  [时间推进] t=0.40，所有单位 RemainingCost -= t * Speed
+[Frame 122] >>> WaitingAction
+  牧师 对 巨魔 使用 [眩晕]  (目标 HP: 200)
+  [附加效果] 巨魔 被施加 [眩晕]
+  → 伤害 0，巨魔 HP: 200
+[Frame 123] >>> PostAction
+[Frame 124] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 战士 (p_warrior)  行动值=0.27  剩余代价=16.0  速度=60
+  [1] 牧师 (p_priest)  行动值=2.20  剩余代价=110.0  速度=50
+  [2] 巨魔 (e_troll)  行动值=3.93  剩余代价=118.0  速度=30
+  选中: 战士 (p_warrior)  HP=400  ATK=80
+  [时间推进] t=0.27，所有单位 RemainingCost -= t * Speed
+[Frame 125] >>> WaitingAction
+  战士 对 巨魔 使用 [攻击]  (目标 HP: 200)
+  → 伤害 40，巨魔 HP: 160
+[Frame 126] >>> PostAction
+[Frame 127] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 战士 (p_warrior)  行动值=1.67  剩余代价=100.0  速度=60
+  [1] 牧师 (p_priest)  行动值=1.93  剩余代价=96.7  速度=50
+  [2] 巨魔 (e_troll)  行动值=3.67  剩余代价=110.0  速度=30
+  选中: 战士 (p_warrior)  HP=400  ATK=80
+  [时间推进] t=1.67，所有单位 RemainingCost -= t * Speed
+[Frame 128] >>> WaitingAction
+  战士 对 巨魔 使用 [攻击]  (目标 HP: 160)
+  → 伤害 40，巨魔 HP: 120
+[Frame 129] >>> PostAction
+[Frame 130] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 牧师 (p_priest)  行动值=0.27  剩余代价=13.3  速度=50
+  [1] 战士 (p_warrior)  行动值=1.67  剩余代价=100.0  速度=60
+  [2] 巨魔 (e_troll)  行动值=2.00  剩余代价=60.0  速度=30
+  选中: 牧师 (p_priest)  HP=350  ATK=50
+  [时间推进] t=0.27，所有单位 RemainingCost -= t * Speed
+[Frame 131] >>> WaitingAction
+  牧师 对 巨魔 使用 [眩晕]  (目标 HP: 120)
+  [附加效果] 巨魔 被施加 [眩晕]
+  → 伤害 0，巨魔 HP: 120
+[Frame 132] >>> PostAction
+[Frame 133] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 战士 (p_warrior)  行动值=1.40  剩余代价=84.0  速度=60
+  [1] 巨魔 (e_troll)  行动值=1.73  剩余代价=52.0  速度=30
+  [2] 牧师 (p_priest)  行动值=2.20  剩余代价=110.0  速度=50
+  选中: 战士 (p_warrior)  HP=400  ATK=80
+  [时间推进] t=1.40，所有单位 RemainingCost -= t * Speed
+[Frame 134] >>> WaitingAction
+  战士 对 巨魔 使用 [攻击]  (目标 HP: 120)
+  → 伤害 40，巨魔 HP: 80
+[Frame 135] >>> PostAction
+[Frame 136] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 巨魔 (e_troll)  行动值=0.33  剩余代价=10.0  速度=30
+  [1] 牧师 (p_priest)  行动值=0.80  剩余代价=40.0  速度=50
+  [2] 战士 (p_warrior)  行动值=1.67  剩余代价=100.0  速度=60
+  选中: 巨魔 (e_troll)  HP=80  ATK=100
+  [时间推进] t=0.33，所有单位 RemainingCost -= t * Speed
+  [效果生效] [眩晕] 作用于 巨魔  (剩余 1 回合  x1)
+  巨魔 不可行动（被控制），跳过行动 → 进入 PostAction
+[Frame 137] >>> PostAction
+  [效果回合] [眩晕] 剩余 0 回合
+  [效果移除] [眩晕] 从 巨魔 移除
+[Frame 138] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 牧师 (p_priest)  行动值=0.47  剩余代价=23.3  速度=50
+  [1] 战士 (p_warrior)  行动值=1.33  剩余代价=80.0  速度=60
+  [2] 巨魔 (e_troll)  行动值=4.33  剩余代价=130.0  速度=30
+  选中: 牧师 (p_priest)  HP=350  ATK=50
+  [时间推进] t=0.47，所有单位 RemainingCost -= t * Speed
+[Frame 139] >>> WaitingAction
+  牧师 对 巨魔 使用 [眩晕]  (目标 HP: 80)
+  [附加效果] 巨魔 被施加 [眩晕]
+  → 伤害 0，巨魔 HP: 80
+[Frame 140] >>> PostAction
+[Frame 141] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 战士 (p_warrior)  行动值=0.87  剩余代价=52.0  速度=60
+  [1] 牧师 (p_priest)  行动值=2.20  剩余代价=110.0  速度=50
+  [2] 巨魔 (e_troll)  行动值=3.87  剩余代价=116.0  速度=30
+  选中: 战士 (p_warrior)  HP=400  ATK=80
+  [时间推进] t=0.87，所有单位 RemainingCost -= t * Speed
+[Frame 142] >>> WaitingAction
+  战士 对 巨魔 使用 [攻击]  (目标 HP: 80)
+  → 伤害 40，巨魔 HP: 40
+[Frame 143] >>> PostAction
+[Frame 144] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 牧师 (p_priest)  行动值=1.33  剩余代价=66.7  速度=50
+  [1] 战士 (p_warrior)  行动值=1.67  剩余代价=100.0  速度=60
+  [2] 巨魔 (e_troll)  行动值=3.00  剩余代价=90.0  速度=30
+  选中: 牧师 (p_priest)  HP=350  ATK=50
+  [时间推进] t=1.33，所有单位 RemainingCost -= t * Speed
+[Frame 145] >>> WaitingAction
+  牧师 对 巨魔 使用 [眩晕]  (目标 HP: 40)
+  [附加效果] 巨魔 被施加 [眩晕]
+  → 伤害 0，巨魔 HP: 40
+[Frame 146] >>> PostAction
+[Frame 147] >>> PreAction
+  --- 当前行动队列 ---
+  [0] 战士 (p_warrior)  行动值=0.33  剩余代价=20.0  速度=60
+  [1] 巨魔 (e_troll)  行动值=1.67  剩余代价=50.0  速度=30
+  [2] 牧师 (p_priest)  行动值=2.20  剩余代价=110.0  速度=50
+  选中: 战士 (p_warrior)  HP=400  ATK=80
+  [时间推进] t=0.33，所有单位 RemainingCost -= t * Speed
+[Frame 148] >>> WaitingAction
+  战士 对 巨魔 使用 [攻击]  (目标 HP: 40)
+  → 伤害 40，巨魔 HP: 0
+  [死亡移除] 巨魔 阵亡，移出场地
+[Frame 149] >>> PostAction
+[Frame 150] ========== 战斗结束 ==========
+  我方存活: 2  敌方存活: 0
