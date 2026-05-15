@@ -166,7 +166,6 @@ namespace GameDemo.Battle
             BonusDefense = 0f;
             BonusSpeed = 0f;
 
-            Shield = 0f;
             DamageBonus = 0f;
             DamageReduction = 0f;
             CanAct = true;
@@ -189,12 +188,29 @@ namespace GameDemo.Battle
 
         // ==================== 伤害 ====================
 
+        private const float DefenseK = 1000f;
+
+        /// <summary>
+        /// 防御减伤比例。DEF&gt;=0 时为 1-e^(-DEF/K)，DEF&lt;0 时为 max(-4, -0.5*(DEF/K)^2+DEF/K)。
+        /// 返回值可能为负数，表示受伤增加。
+        /// </summary>
+        private static float DefenseRate(float defense)
+        {
+            if (defense >= 0f)
+                return 1f - MathF.Exp(-defense / DefenseK);
+
+            float x = defense / DefenseK;
+            return MathF.Max(-4f, -0.5f * x * x + x);
+        }
+
         public float TakeDamage(float rawDamage)
         {
             if (!IsAlive) return 0f;
 
-            float reduced = rawDamage * (1f - DamageReduction);
+            float reduced = rawDamage * (1f - DamageReduction) * (1f - DefenseRate(CurrentDefense));
+            if (reduced < 0f) reduced = 0f;
 
+            float actualDamage = reduced;
             if (Shield > 0f)
             {
                 if (Shield >= reduced)
@@ -202,11 +218,10 @@ namespace GameDemo.Battle
                     Shield -= reduced;
                     return reduced;
                 }
-                reduced -= Shield;
+                actualDamage = reduced - Shield;
                 Shield = 0f;
             }
 
-            float actualDamage = reduced - CurrentDefense;
             if (actualDamage < 0f) actualDamage = 0f;
             CurrentHP -= actualDamage;
             if (CurrentHP < 0f) CurrentHP = 0f;

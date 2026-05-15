@@ -3,9 +3,6 @@ using System.Collections.Generic;
 
 namespace GameDemo.Battle
 {
-    /// <summary>
-    /// 战斗管理器，持有双方阵形、行动队列和状态机，驱动对局流程。
-    /// </summary>
     public class BattleManager
     {
         public Formation PlayerFormation { get; }
@@ -14,62 +11,41 @@ namespace GameDemo.Battle
         public ActionQueue ActionQueue { get; }
         public BattleStateMachine StateMachine { get; }
 
-        /// <summary>当前被选中的行动单位。</summary>
         public BattleUnitInstance? SelectedUnit { get; private set; }
-
-        /// <summary>当前被选中的技能。</summary>
         public Skill? SelectedSkill { get; private set; }
 
-        /// <summary>玩家输入回调：传入可操控单位，返回选中的技能和目标。</summary>
-        public Func<PlayableUnitInstance, (Skill? skill, BattleUnitInstance? target)> PlayerInputCallback { get; set; }
+        private List<(Skill skill, List<BattleUnitInstance> targets)>? _pendingActions;
 
-        /// <summary>自动行动回调：传入自动单位，返回选中的技能和目标。</summary>
-        public Func<AutoUnitInstance, (Skill? skill, BattleUnitInstance? target)> AutoActionCallback { get; set; }
+        /// <summary>玩家输入回调：传入可操控单位，返回(技能, 目标列表)列表，按顺序尝试释放。</summary>
+        public Func<PlayableUnitInstance, List<(Skill skill, List<BattleUnitInstance> targets)>> PlayerInputCallback { get; set; }
+
+        /// <summary>自动行动回调：传入自动单位，返回(技能, 目标列表)列表，按顺序尝试释放。</summary>
+        public Func<AutoUnitInstance, List<(Skill skill, List<BattleUnitInstance> targets)>> AutoActionCallback { get; set; }
 
         // ==================== 外部事件（UI / 输入系统订阅）====================
 
-        /// <summary>单位受到伤害 (unit, damage, source)。</summary>
         public event Action<BattleUnitInstance, float, BattleUnitInstance?>? OnUnitDamaged;
-
-        /// <summary>单位阵亡，即将移出场地。</summary>
         public event Action<BattleUnitInstance>? OnUnitDied;
-
-        /// <summary>单位被施加附加效果。</summary>
         public event Action<BattleUnitInstance, BattleEffectInstance>? OnEffectApplied;
-
-        /// <summary>附加效果到期移除。</summary>
         public event Action<BattleUnitInstance, BattleEffectInstance>? OnEffectExpired;
-
-        /// <summary>技能释放 (caster, skill, target)。</summary>
-        public event Action<BattleUnitInstance, Skill, BattleUnitInstance>? OnSkillUsed;
-
-        /// <summary>行动队列发生变化。</summary>
+        public event Action<BattleUnitInstance, Skill, List<BattleUnitInstance>>? OnSkillUsed;
         public event Action? OnActionQueueChanged;
-
-        /// <summary>战斗结束 (我方胜利)。</summary>
         public event Action<bool>? OnBattleEnded;
 
         // ==================== 外部查询 ====================
 
-        /// <summary>当前是否等待玩家输入。</summary>
         public bool IsWaitingForPlayerInput =>
             StateMachine.IsWaitingAction && SelectedUnit is PlayableUnitInstance;
 
-        /// <summary>当前是否等待 AI 决策。</summary>
         public bool IsWaitingForAutoAction =>
             StateMachine.IsWaitingAction && SelectedUnit is AutoUnitInstance;
 
-        /// <summary>我方存活单位数。</summary>
         public int AliveCountPlayer => CountAlive(PlayerFormation);
-
-        /// <summary>敌方存活单位数。</summary>
         public int AliveCountEnemy => CountAlive(EnemyFormation);
 
-        /// <summary>判断单位所属阵形是否为我方。</summary>
         public bool IsPlayerUnit(BattleUnitInstance unit) =>
             PlayerFormation.FindUnit(unit).IsValid;
 
-        /// <summary>获取指定单位当前可释放的技能及其所有合法目标列表。</summary>
         public List<(Skill skill, List<BattleUnitInstance> targets)> GetCastableSkills(BattleUnitInstance unit)
         {
             var result = new List<(Skill, List<BattleUnitInstance>)>();
@@ -79,7 +55,7 @@ namespace GameDemo.Battle
             {
                 var validTargets = new List<BattleUnitInstance>();
                 foreach (BattleUnitInstance candidate in enemyFormation.Units)
-                    if (candidate.IsAlive && (skill.CanCast == null || skill.CanCast(unit, candidate)))
+                    if (candidate.IsAlive && skill.CanCast(new List<BattleUnitInstance> { candidate }))
                         validTargets.Add(candidate);
 
                 if (validTargets.Count > 0)
@@ -127,9 +103,6 @@ namespace GameDemo.Battle
             }
         }
 
-        /// <summary>
-        /// 单位行动前状态：重置修正 → 应用效果 → 重算属性 → 检查结束 → 检查可行动 → 进入等待。
-        /// </summary>
         public void EnterPreAction()
         {
             while (true)
@@ -145,13 +118,14 @@ namespace GameDemo.Battle
                 ActionQueue.AdvanceTime();
                 OnActionQueueChanged?.Invoke();
 
-                // Step 0.5: 重置修正值
-                SelectedUnit.ResetModifiers();
+                // Step 1: 刷新非持续伤害效果
+                RefreshPersistentEffects(SelectedUnit);
 
-                // Step 1: 应用附加效果，若期间死亡则停止后续效果
+                // Step 2: 单独应用持续伤害类效果
                 foreach (BattleEffectInstance effect in SelectedUnit.Effects)
                 {
                     if (!SelectedUnit.IsAlive) break;
+                    if (effect.Template.StatusType != BattleEffectStatusType.Damage) continue;
                     float hpBefore = SelectedUnit.CurrentHP;
                     effect.ApplyTo(SelectedUnit);
                     float damage = hpBefore - SelectedUnit.CurrentHP;
@@ -159,7 +133,7 @@ namespace GameDemo.Battle
                         OnUnitDamaged?.Invoke(SelectedUnit, damage, effect.Source);
                 }
 
-                // Step 2: 重算运行时属性，清理死亡单位
+                // Step 3: 重算运行时属性，清理死亡单位
                 SelectedUnit.RecalculateStats();
                 CleanupDeadUnits();
 
@@ -197,31 +171,36 @@ namespace GameDemo.Battle
         {
             if (SelectedUnit == null) return;
 
-            Skill? skill = null;
-            BattleUnitInstance? target = null;
-
             if (SelectedUnit is PlayableUnitInstance playable)
-            {
-                (skill, target) = PlayerInputCallback(playable);
-            }
+                _pendingActions = PlayerInputCallback(playable);
             else if (SelectedUnit is AutoUnitInstance auto)
+                _pendingActions = AutoActionCallback(auto);
+            else
+                return;
+
+            StateMachine.SetState(BattleState.Acting);
+            EnterActing();
+        }
+
+        public void EnterActing()
+        {
+            if (SelectedUnit == null) return;
+            if (_pendingActions == null) return;
+
+            foreach (var (skill, targets) in _pendingActions)
             {
-                (skill, target) = AutoActionCallback(auto);
+                if (!SelectedUnit.IsAlive) break;
+                if (targets.Count == 0) continue;
+                if (!skill.CanCast(targets)) continue;
+
+                SelectedSkill = skill;
+                skill.Apply(targets);
+                OnSkillUsed?.Invoke(SelectedUnit, skill, targets);
+                RefreshAllUnits();
+                CleanupDeadUnits();
             }
 
-            if (skill == null || target == null) return;
-
-            SelectedSkill = skill;
-
-            float hpBefore = target.CurrentHP;
-            skill.Apply?.Invoke(SelectedUnit, target);
-            float damage = hpBefore - target.CurrentHP;
-
-            OnSkillUsed?.Invoke(SelectedUnit, skill, target);
-            if (damage > 0f)
-                OnUnitDamaged?.Invoke(target, damage, SelectedUnit);
-
-            CleanupDeadUnits();
+            _pendingActions = null;
             StateMachine.SetState(BattleState.PostAction);
             EnterPostAction();
         }
@@ -231,14 +210,13 @@ namespace GameDemo.Battle
             if (SelectedUnit != null && SelectedUnit.IsAlive)
             {
                 TickEffects(SelectedUnit);
+                RefreshPersistentEffects(SelectedUnit);
             }
 
             CleanupDeadUnits();
 
             if (SelectedUnit != null)
-            {
                 SelectedUnit.ResetCost();
-            }
 
             ActionQueue.Rebuild(PlayerFormation, EnemyFormation);
             OnActionQueueChanged?.Invoke();
@@ -254,8 +232,11 @@ namespace GameDemo.Battle
             EnterPreAction();
         }
 
-        // ==================== 效果回合 ====================
+        // ==================== 效果管理 ====================
 
+        /// <summary>
+        /// 效果倒计时，仅减少剩余回合、移除过期效果。
+        /// </summary>
         private void TickEffects(BattleUnitInstance unit)
         {
             for (int i = unit.Effects.Count - 1; i >= 0; i--)
@@ -268,56 +249,81 @@ namespace GameDemo.Battle
                     OnEffectExpired?.Invoke(unit, effect);
                 }
             }
-            if (unit.Effects.Count > 0)
-            {
-                unit.ResetModifiers();
-                foreach (BattleEffectInstance effect in unit.Effects)
-                    if (effect.Template.StatusType != BattleEffectStatusType.Damage)
-                        effect.ApplyTo(unit);
-                unit.RecalculateStats();
-            }
+        }
+
+        /// <summary>
+        /// 重置修正 → 应用所有非持续伤害效果 → 重算属性。
+        /// </summary>
+        private void RefreshPersistentEffects(BattleUnitInstance unit)
+        {
+            if (!unit.IsAlive) return;
+            unit.ResetModifiers();
+            foreach (BattleEffectInstance effect in unit.Effects)
+                if (effect.Template.StatusType != BattleEffectStatusType.Damage)
+                    effect.ApplyTo(unit);
+            unit.RecalculateStats();
+        }
+
+        /// <summary>
+        /// 刷新双方所有存活单位的非持续伤害效果。
+        /// </summary>
+        private void RefreshAllUnits()
+        {
+            foreach (BattleUnitInstance unit in PlayerFormation.Units)
+                RefreshPersistentEffects(unit);
+            foreach (BattleUnitInstance unit in EnemyFormation.Units)
+                RefreshPersistentEffects(unit);
         }
 
         // ==================== 默认回调 ====================
 
-        private (Skill? skill, BattleUnitInstance? target) DefaultPlayerInput(PlayableUnitInstance unit)
+        private List<(Skill skill, List<BattleUnitInstance> targets)> DefaultPlayerInput(PlayableUnitInstance unit)
         {
-            return FindFirstCastable(unit);
+            return FindAllCastable(unit);
         }
 
-        private (Skill? skill, BattleUnitInstance? target) DefaultAutoAction(AutoUnitInstance unit)
+        private List<(Skill skill, List<BattleUnitInstance> targets)> DefaultAutoAction(AutoUnitInstance unit)
         {
-            return FindFirstCastable(unit);
+            return FindAllCastable(unit);
         }
 
-        private (Skill? skill, BattleUnitInstance? target) FindFirstCastable(BattleUnitInstance unit)
+        private List<(Skill skill, List<BattleUnitInstance> targets)> FindAllCastable(BattleUnitInstance unit)
         {
+            var result = new List<(Skill skill, List<BattleUnitInstance> targets)>();
             foreach (Skill skill in unit.Skills)
             {
-                BattleUnitInstance? target = FindTargetForSkill(unit, skill);
-                if (target != null && (skill.CanCast == null || skill.CanCast(unit, target)))
-                    return (skill, target);
+                var targets = FindTargetsForSkill(unit, skill);
+                if (targets.Count > 0 && skill.CanCast(targets))
+                    result.Add((skill, targets));
             }
-            return (null, null);
+            return result;
         }
 
-        private BattleUnitInstance? FindTargetForSkill(BattleUnitInstance caster, Skill skill)
+        private List<BattleUnitInstance> FindTargetsForSkill(BattleUnitInstance caster, Skill skill)
         {
             Formation enemyOfCaster = GetEnemyFormationOf(caster);
+            Formation allyOfCaster = IsPlayerUnit(caster) ? PlayerFormation : EnemyFormation;
 
             switch (skill.TargetType)
             {
                 case TargetType.SingleEnemy:
+                    var first = FindFirstAlive(enemyOfCaster);
+                    return first != null ? new List<BattleUnitInstance> { first } : new List<BattleUnitInstance>();
                 case TargetType.AllEnemies:
-                    return FindFirstAlive(enemyOfCaster);
+                    return FindAllAlive(enemyOfCaster);
                 case TargetType.SingleAlly:
+                    return new List<BattleUnitInstance> { caster };
                 case TargetType.AllAllies:
-                    return caster;
+                    return FindAllAlive(allyOfCaster);
                 case TargetType.SingleBoth:
+                    first = FindFirstAlive(enemyOfCaster);
+                    return first != null ? new List<BattleUnitInstance> { first } : new List<BattleUnitInstance>();
                 case TargetType.AllBoth:
-                    return FindFirstAlive(enemyOfCaster);
+                    var all = FindAllAlive(enemyOfCaster);
+                    all.AddRange(FindAllAlive(allyOfCaster));
+                    return all;
                 default:
-                    return null;
+                    return new List<BattleUnitInstance>();
             }
         }
 
@@ -332,6 +338,15 @@ namespace GameDemo.Battle
                 if (unit.IsAlive)
                     return unit;
             return null;
+        }
+
+        private List<BattleUnitInstance> FindAllAlive(Formation formation)
+        {
+            var result = new List<BattleUnitInstance>();
+            foreach (BattleUnitInstance unit in formation.Units)
+                if (unit.IsAlive)
+                    result.Add(unit);
+            return result;
         }
 
         // ==================== 死亡清理 ====================

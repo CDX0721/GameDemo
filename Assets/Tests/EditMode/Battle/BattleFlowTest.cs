@@ -1,5 +1,6 @@
 #if UNITY_INCLUDE_TESTS
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using GameDemo.Battle;
@@ -49,6 +50,9 @@ namespace GameDemo.Tests.EditMode
                     case BattleState.WaitingAction:
                         DoWaitingAction();
                         break;
+                    case BattleState.Acting:
+                        DoActing();
+                        break;
                     case BattleState.PostAction:
                         DoPostAction();
                         break;
@@ -94,13 +98,16 @@ namespace GameDemo.Tests.EditMode
             _actionQueue.AdvanceTime();
             Log($"  [时间推进] t={t:F2}，所有单位 RemainingCost -= t * Speed");
 
-            _selectedUnit.ResetModifiers();
+            // 刷新非持续伤害效果
+            RefreshPersistentEffects(_selectedUnit);
 
+            // 单独应用持续伤害类效果
             foreach (BattleEffectInstance effect in _selectedUnit.Effects)
             {
                 if (!_selectedUnit.IsAlive) break;
+                if (effect.Template.StatusType != BattleEffectStatusType.Damage) continue;
                 float hpBefore = _selectedUnit.CurrentHP;
-                Log($"  [效果生效] [{effect.Template.DisplayName}] 作用于 {_selectedUnit.DisplayName}  (剩余 {effect.RemainingTurns} 回合  x{effect.CurrentStackCount})");
+                Log($"  [DoT生效] [{effect.Template.DisplayName}] 作用于 {_selectedUnit.DisplayName}  (剩余 {effect.RemainingTurns} 回合  x{effect.CurrentStackCount})");
                 effect.ApplyTo(_selectedUnit);
                 float delta = hpBefore - _selectedUnit.CurrentHP;
                 if (delta > 0f)
@@ -133,31 +140,55 @@ namespace GameDemo.Tests.EditMode
             _stateMachine.SetState(BattleState.WaitingAction);
         }
 
+        private List<(Skill skill, List<BattleUnitInstance> targets)> _pendingActions = null!;
+
         private void DoWaitingAction()
         {
             Log($"[Frame {_frame}] >>> WaitingAction");
 
             if (_selectedUnit == null) return;
 
-            var (skill, target) = FindFirstCastable(_selectedUnit, GetEnemyFormationOf(_selectedUnit));
+            _pendingActions = FindAllCastable(_selectedUnit, GetEnemyFormationOf(_selectedUnit));
 
-            if (skill == null || target == null)
+            if (_pendingActions.Count == 0)
             {
                 Log($"  {_selectedUnit.DisplayName} 无可用技能，跳过");
                 _stateMachine.SetState(BattleState.PostAction);
                 return;
             }
 
-            float hpBefore = target.CurrentHP;
-            Log($"  {_selectedUnit.DisplayName} 对 {target.DisplayName} 使用 [{skill.DisplayName}]  (目标 HP: {hpBefore:F0})");
+            _stateMachine.SetState(BattleState.Acting);
+        }
 
-            skill.Apply?.Invoke(_selectedUnit, target);
+        private void DoActing()
+        {
+            Log($"[Frame {_frame}] >>> Acting");
 
-            float hpAfter = target.CurrentHP;
-            Log($"  → 伤害 {hpBefore - hpAfter:F0}，{target.DisplayName} HP: {hpAfter:F0}");
+            if (_selectedUnit == null) return;
 
-            CleanupDeadUnits();
+            foreach (var (skill, targets) in _pendingActions)
+            {
+                if (!_selectedUnit.IsAlive) break;
+                if (targets.Count == 0) continue;
+                if (!skill.CanCast(targets))
+                {
+                    Log($"  {_selectedUnit.DisplayName} 技能 [{skill.DisplayName}] 不满足释放条件，跳过");
+                    continue;
+                }
 
+                var targetNames = string.Join(", ", targets.ConvertAll(t => $"{t.DisplayName}(HP:{t.CurrentHP:F0})"));
+                Log($"  {_selectedUnit.DisplayName} 对 [{targetNames}] 使用 [{skill.DisplayName}]");
+
+                skill.Apply(targets);
+
+                foreach (var t in targets)
+                    Log($"    → {t.DisplayName} HP: {t.CurrentHP:F0}");
+
+                RefreshAllUnits();
+                CleanupDeadUnits();
+            }
+
+            _pendingActions = null!;
             _stateMachine.SetState(BattleState.PostAction);
         }
 
@@ -166,7 +197,11 @@ namespace GameDemo.Tests.EditMode
             Log($"[Frame {_frame}] >>> PostAction");
 
             if (_selectedUnit != null && _selectedUnit.IsAlive)
+            {
                 TickEffects(_selectedUnit);
+                RefreshPersistentEffects(_selectedUnit);
+                Log($"  [效果刷新] {_selectedUnit.DisplayName} CanAct={_selectedUnit.CanAct}  HP={_selectedUnit.CurrentHP:F0}");
+            }
 
             CleanupDeadUnits();
 
@@ -182,6 +217,7 @@ namespace GameDemo.Tests.EditMode
             _stateMachine.SetState(BattleState.PreAction);
         }
 
+        /// <summary>效果倒计时，仅减少剩余回合、移除过期效果。</summary>
         private void TickEffects(BattleUnitInstance unit)
         {
             for (int i = unit.Effects.Count - 1; i >= 0; i--)
@@ -195,18 +231,29 @@ namespace GameDemo.Tests.EditMode
                     Log($"  [效果移除] [{effect.Template.DisplayName}] 从 {unit.DisplayName} 移除");
                 }
             }
-            if (unit.Effects.Count > 0)
+        }
+
+        /// <summary>重置修正 → 应用所有非持续伤害效果 → 重算属性。</summary>
+        private void RefreshPersistentEffects(BattleUnitInstance unit)
+        {
+            if (!unit.IsAlive) return;
+            unit.ResetModifiers();
+            foreach (BattleEffectInstance effect in unit.Effects)
             {
-                unit.ResetModifiers();
-                foreach (BattleEffectInstance effect in unit.Effects)
-                {
-                    if (effect.Template.StatusType == BattleEffectStatusType.Damage) continue;
-                    Log($"  [效果重算] [{effect.Template.DisplayName}] 重新作用于 {unit.DisplayName}");
-                    effect.ApplyTo(unit);
-                }
-                unit.RecalculateStats();
-                Log($"  [效果重算结果] {unit.DisplayName} CanAct={unit.CanAct}  HP={unit.CurrentHP:F0}");
+                if (effect.Template.StatusType == BattleEffectStatusType.Damage) continue;
+                Log($"  [效果刷新] [{effect.Template.DisplayName}] 重新作用于 {unit.DisplayName}");
+                effect.ApplyTo(unit);
             }
+            unit.RecalculateStats();
+        }
+
+        /// <summary>刷新双方所有存活单位的非持续伤害效果。</summary>
+        private void RefreshAllUnits()
+        {
+            foreach (BattleUnitInstance unit in _playerFormation.Units)
+                RefreshPersistentEffects(unit);
+            foreach (BattleUnitInstance unit in _enemyFormation.Units)
+                RefreshPersistentEffects(unit);
         }
 
         private void LogActionQueue()
@@ -220,16 +267,20 @@ namespace GameDemo.Tests.EditMode
             }
         }
 
-        private (Skill? skill, BattleUnitInstance? target) FindFirstCastable(
+        private List<(Skill skill, List<BattleUnitInstance> targets)> FindAllCastable(
             BattleUnitInstance caster, Formation enemyFormation)
         {
+            var result = new List<(Skill skill, List<BattleUnitInstance> targets)>();
             foreach (Skill skill in caster.Skills)
             {
-                BattleUnitInstance? target = FindTarget(skill.TargetType, enemyFormation);
-                if (target != null && (skill.CanCast == null || skill.CanCast(caster, target)))
-                    return (skill, target);
+                var target = FindTarget(skill.TargetType, enemyFormation);
+                var targets = target != null
+                    ? new List<BattleUnitInstance> { target }
+                    : new List<BattleUnitInstance>();
+                if (targets.Count > 0 && skill.CanCast(targets))
+                    result.Add((skill, targets));
             }
-            return (null, null);
+            return result;
         }
 
         private BattleUnitInstance? FindTarget(TargetType targetType, Formation enemyFormation)
@@ -307,24 +358,26 @@ namespace GameDemo.Tests.EditMode
             var pt3 = new BattleUnit("p_priest",  "牧师",   attack: 50f,  defense: 20f, hp: 350f, speed: 50f,  mana: 150f);
 
             var p1 = CreateUnitWithSkill(pt1, 100f, "attack", "攻击",
-                (caster, target) => target.TakeDamage(caster.CurrentAttack));
+                unit => targets => targets[0].TakeDamage(unit.CurrentAttack));
 
             var p2 = CreateUnitWithSkill(pt2, 120f, "poison", "毒刃",
-                (caster, target) =>
+                unit => targets =>
                 {
                     var dot = new BattleEffect("dot", "中毒", BattleEffectType.Negative, BattleEffectStatusType.Damage,
-                        (unit, stacks) => { unit.CurrentHP -= 20f * stacks; }, initialTurns: 2, maxStackCount: 3);
-                    target.AddEffect(dot, caster);
-                    Log($"  [附加效果] {target.DisplayName} 被施加 [{dot.DisplayName}]");
+                        initialTurns: 2, maxStackCount: 3);
+                    dot.ApplyActions.Add(units => { units[0].CurrentHP -= 20f; });
+                    targets[0].AddEffect(dot, unit);
+                    Log($"  [附加效果] {targets[0].DisplayName} 被施加 [{dot.DisplayName}]");
                 });
 
             var p3 = CreateUnitWithSkill(pt3, 110f, "stun", "眩晕",
-                (caster, target) =>
+                unit => targets =>
                 {
                     var stun = new BattleEffect("stun", "眩晕", BattleEffectType.Negative, BattleEffectStatusType.Control,
-                        (unit, stacks) => { unit.CanAct = false; }, initialTurns: 1, maxStackCount: 1);
-                    target.AddEffect(stun, caster);
-                    Log($"  [附加效果] {target.DisplayName} 被施加 [{stun.DisplayName}]");
+                        initialTurns: 1, maxStackCount: 1);
+                    stun.ApplyActions.Add(units => { units[0].CanAct = false; });
+                    targets[0].AddEffect(stun, unit);
+                    Log($"  [附加效果] {targets[0].DisplayName} 被施加 [{stun.DisplayName}]");
                 });
 
             _playerFormation.PlaceUnit(p1, new BattleSlot(1, 0));
@@ -340,11 +393,11 @@ namespace GameDemo.Tests.EditMode
             var et3 = new BattleUnit("e_troll",  "巨魔",       attack: 100f, defense: 40f, hp: 600f, speed: 30f,  mana: 80f);
 
             var e1 = CreateUnitWithSkill(et1, 100f, "attack", "攻击",
-                (caster, target) => target.TakeDamage(caster.CurrentAttack));
+                unit => targets => targets[0].TakeDamage(unit.CurrentAttack));
             var e2 = CreateUnitWithSkill(et2, 100f, "attack", "攻击",
-                (caster, target) => target.TakeDamage(caster.CurrentAttack));
+                unit => targets => targets[0].TakeDamage(unit.CurrentAttack));
             var e3 = CreateUnitWithSkill(et3, 130f, "attack", "攻击",
-                (caster, target) => target.TakeDamage(caster.CurrentAttack));
+                unit => targets => targets[0].TakeDamage(unit.CurrentAttack));
 
             _enemyFormation.PlaceUnit(e1, new BattleSlot(1, 1));
             _enemyFormation.PlaceUnit(e2, new BattleSlot(0, 2));
@@ -358,14 +411,13 @@ namespace GameDemo.Tests.EditMode
         }
 
         private AutoUnitInstance CreateUnitWithSkill(BattleUnit template, float initialCost,
-            string skillId, string skillName, Action<BattleUnitInstance, BattleUnitInstance> apply)
+            string skillId, string skillName,
+            Func<AutoUnitInstance, Action<List<BattleUnitInstance>>> makeApply)
         {
             var unit = new AutoUnitInstance(template, initialCost);
-            unit.Skills.Add(new Skill(skillId, skillName, SkillType.SingleAttack, TargetType.SingleEnemy)
-            {
-                CanCast = null,
-                Apply = apply
-            });
+            var skill = new Skill(skillId, skillName, SkillType.SingleAttack, TargetType.SingleEnemy);
+            skill.ApplyActions.Add(makeApply(unit));
+            unit.Skills.Add(skill);
             return unit;
         }
     }

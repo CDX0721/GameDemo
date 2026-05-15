@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace GameDemo.Battle
 {
@@ -19,20 +20,26 @@ namespace GameDemo.Battle
         public int MaxStackCount { get; set; }
 
         /// <summary>
-        /// 影响函数，(单位, 当前层数) => void。
+        /// 影响函数列表。层数等信息通过闭包捕获 BattleEffectInstance，仅承受方列表作为参数。
         /// </summary>
-        public Action<BattleUnitInstance, int> Apply { get; }
+        public List<Action<List<BattleUnitInstance>>> ApplyActions { get; }
 
         public BattleEffect(string id, string displayName, BattleEffectType effectType, BattleEffectStatusType statusType,
-            Action<BattleUnitInstance, int> apply, int initialTurns = 1, int maxStackCount = 1)
+            int initialTurns = 1, int maxStackCount = 1)
         {
             Id = id;
             DisplayName = displayName;
             EffectType = effectType;
             StatusType = statusType;
-            Apply = apply;
             InitialTurns = initialTurns;
             MaxStackCount = maxStackCount;
+            ApplyActions = new List<Action<List<BattleUnitInstance>>>();
+        }
+
+        public void Apply(List<BattleUnitInstance> units)
+        {
+            foreach (var action in ApplyActions)
+                action(units);
         }
     }
 }

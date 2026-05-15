@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace GameDemo.Battle
 {
     /// <summary>
@@ -23,7 +25,7 @@ namespace GameDemo.Battle
 
         public void ApplyTo(BattleUnitInstance unit)
         {
-            Template.Apply(unit, CurrentStackCount);
+            Template.Apply(new List<BattleUnitInstance> { unit });
         }
     }
 }
