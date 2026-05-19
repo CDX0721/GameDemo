@@ -10,11 +10,11 @@ from typing import Dict, List
 
 
 REQUIRED_FILES = [
-    "characters.json",
+    "design_guidelines.json",
+    "battle_units.json",
     "skills.json",
-    "enemies.json",
+    "battle_effects.json",
     "battle_rewards.json",
-    "states.json",
 ]
 
 
@@ -60,24 +60,33 @@ def main() -> int:
         log.write_text("\n".join(logs) + "\n", encoding="utf-8")
         return 2
 
-    characters = load_items(output / "characters.json")
+    guidelines = load_items(output / "design_guidelines.json")
+    battle_units = load_items(output / "battle_units.json")
     skills = load_items(output / "skills.json")
-    enemies = load_items(output / "enemies.json")
+    effects = load_items(output / "battle_effects.json")
     rewards = load_items(output / "battle_rewards.json")
-    states = load_items(output / "states.json")
 
-    append(logs, "INFO", "count.characters", str(len(characters)))
+    append(logs, "INFO", "count.design_guidelines", str(len(guidelines)))
+    append(logs, "INFO", "count.battle_units", str(len(battle_units)))
     append(logs, "INFO", "count.skills", str(len(skills)))
-    append(logs, "INFO", "count.enemies", str(len(enemies)))
-    append(logs, "INFO", "count.rewards", str(len(rewards)))
-    append(logs, "INFO", "count.states", str(len(states)))
+    append(logs, "INFO", "count.battle_effects", str(len(effects)))
+    append(logs, "INFO", "count.battle_rewards", str(len(rewards)))
 
-    if len(characters) == 0:
+    if len(battle_units) == 0:
         errors += 1
-        append(logs, "ERROR", "characters.empty", "characters.json has no rows")
+        append(logs, "ERROR", "battle_units.empty", "battle_units.json has no rows")
     if len(skills) == 0:
         errors += 1
         append(logs, "ERROR", "skills.empty", "skills.json has no rows")
+    if len(effects) == 0:
+        errors += 1
+        append(logs, "ERROR", "battle_effects.empty", "battle_effects.json has no rows")
+    if len(rewards) == 0:
+        errors += 1
+        append(logs, "ERROR", "battle_rewards.empty", "battle_rewards.json has no rows")
+    if len(guidelines) == 0:
+        warnings += 1
+        append(logs, "WARNING", "design_guidelines.empty", "design_guidelines.json has no rows")
 
     def check_duplicate_ids(name: str, rows: List[dict]):
         nonlocal errors
@@ -93,45 +102,73 @@ def main() -> int:
                 append(logs, "ERROR", "row.id.duplicate", f"{name}[{idx}] duplicate id={rid}")
             seen.add(rid)
 
-    check_duplicate_ids("characters", characters)
+    check_duplicate_ids("design_guidelines", guidelines)
+    check_duplicate_ids("battle_units", battle_units)
     check_duplicate_ids("skills", skills)
-    check_duplicate_ids("enemies", enemies)
+    check_duplicate_ids("battle_effects", effects)
     check_duplicate_ids("battle_rewards", rewards)
-    check_duplicate_ids("states", states)
 
-    char_ids = {str(x.get("id", "")).strip() for x in characters if str(x.get("id", "")).strip()}
-    reward_ids = {str(x.get("id", "")).strip() for x in rewards if str(x.get("id", "")).strip()}
+    unit_ids = {str(x.get("id", "")).strip() for x in battle_units if str(x.get("id", "")).strip()}
+    skill_ids = {str(x.get("id", "")).strip() for x in skills if str(x.get("id", "")).strip()}
 
     for idx, row in enumerate(skills, start=1):
-        owner = str(row.get("ownerRoleId", "")).strip()
-        if owner and owner != "通用" and owner not in char_ids:
+        owner = str(row.get("ownerUnitId", "")).strip()
+        if owner and owner not in unit_ids:
             errors += 1
-            append(logs, "ERROR", "skills.owner.invalid", f"skills[{idx}] ownerRoleId={owner} not found in characters")
-        cost = row.get("costValue", 0)
+            append(logs, "ERROR", "skills.owner.invalid", f"skills[{idx}] ownerUnitId={owner} not found in battle_units")
+        cost = row.get("manaCost", 0)
         try:
             iv = int(cost)
         except Exception:
             errors += 1
-            append(logs, "ERROR", "skills.cost.invalid", f"skills[{idx}] costValue={cost}")
+            append(logs, "ERROR", "skills.cost.invalid", f"skills[{idx}] manaCost={cost}")
             continue
         if iv < 0:
             errors += 1
-            append(logs, "ERROR", "skills.cost.negative", f"skills[{idx}] costValue={iv}")
+            append(logs, "ERROR", "skills.cost.negative", f"skills[{idx}] manaCost={iv}")
 
-    for idx, row in enumerate(enemies, start=1):
-        reward_id = str(row.get("rewardId", "")).strip()
-        if reward_id and reward_id not in reward_ids:
+    def normalize_id_list(value):
+        if value is None:
+            return []
+        if isinstance(value, list):
+            return [str(x).strip() for x in value if str(x).strip()]
+        if isinstance(value, str):
+            parts = [p.strip() for p in value.replace("；", ";").replace("，", ",").split(";")]
+            ids = []
+            for part in parts:
+                if not part:
+                    continue
+                for sub in part.split(","):
+                    sub = sub.strip()
+                    if sub:
+                        ids.append(sub)
+            return ids
+        return [str(value).strip()] if str(value).strip() else []
+
+    for idx, row in enumerate(battle_units, start=1):
+        innates = normalize_id_list(row.get("innateSkillIds"))
+        for skill_id in innates:
+            if skill_id not in skill_ids:
+                errors += 1
+                append(logs, "ERROR", "battle_units.innate.invalid",
+                       f"battle_units[{idx}] innateSkillIds={skill_id} not found in skills")
+
+    for idx, row in enumerate(effects, start=1):
+        max_stack = row.get("maxStackCount", 0)
+        try:
+            max_stack = int(max_stack)
+        except Exception:
             errors += 1
-            append(logs, "ERROR", "enemies.reward.invalid", f"enemies[{idx}] rewardId={reward_id} not found")
+            append(logs, "ERROR", "battle_effects.max_stack.invalid", f"battle_effects[{idx}] maxStackCount={max_stack}")
+            continue
+        if max_stack < 0:
+            errors += 1
+            append(logs, "ERROR", "battle_effects.max_stack.negative", f"battle_effects[{idx}] maxStackCount={max_stack}")
 
-    if len(states) > 0:
-        missing_state_name = 0
-        for row in states:
-            if not str(row.get("stateName", "")).strip():
-                missing_state_name += 1
-        if missing_state_name > 0:
+    for idx, row in enumerate(rewards, start=1):
+        if not str(row.get("applyActions", "")).strip():
             warnings += 1
-            append(logs, "WARNING", "states.name.missing", f"{missing_state_name} state rows missing stateName")
+            append(logs, "WARNING", "battle_rewards.apply_actions.empty", f"battle_rewards[{idx}] applyActions empty")
 
     success = errors == 0
     append(logs, "INFO", "summary", f"errors={errors}, warnings={warnings}, success={success}")

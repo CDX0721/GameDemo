@@ -1,0 +1,39 @@
+{
+  "items": [
+    {
+      "id": "总体目标",
+      "topic": "总体目标",
+      "content": "保留原策划案的卡牌/能量/格挡手感，但按 DesignerGuide 拆成 BattleUnit、Skill、BattleEffect 三类数据。"
+    },
+    {
+      "id": "数值映射",
+      "topic": "数值映射",
+      "content": "原 HP、伤害、格挡大致乘以 10；原 1 点能量映射为 30 Mana；角色满 3 能量映射为 90 Mana。"
+    },
+    {
+      "id": "Defense 使用方式",
+      "topic": "Defense 使用方式",
+      "content": "Defense 只作为稳定的比例减伤预设，不作为主要平衡旋钮；平衡主要通过 HP、Attack、技能倍率、ManaCost 调整。"
+    },
+    {
+      "id": "Shield/Block 处理",
+      "topic": "Shield/Block 处理",
+      "content": "原“格挡”保留为 Shield 类临时护盾，由 Defense 技能或奖励添加；最终伤害仍可按同学公式扣 Shield。"
+    },
+    {
+      "id": "整数与 float",
+      "topic": "整数与 float",
+      "content": "表内数值写成整数便于读，但字段按 float 使用；代码侧可直接用 float 读取。"
+    },
+    {
+      "id": "技能表现",
+      "topic": "技能表现",
+      "content": "AnimationCue / SfxCue 是给美术、音效的协作提示，不限制代码实现。"
+    },
+    {
+      "id": "自定义类型",
+      "topic": "自定义类型",
+      "content": "新增了 Mark 类效果如 baka_mode、next_non_attack_free、thorns，符合“不要被枚举值限制，后续代码跟上”的要求。"
+    }
+  ]
+}

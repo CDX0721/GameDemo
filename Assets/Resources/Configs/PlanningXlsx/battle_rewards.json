@@ -1,0 +1,67 @@
+{
+  "items": [
+    {
+      "id": "reward_heal_20",
+      "displayName": "回血20%",
+      "rewardRarity": "Normal",
+      "applyActions": "HealPercent(Self,20)",
+      "designNotes": "普通奖励。"
+    },
+    {
+      "id": "reward_first_turn_shield_3",
+      "displayName": "下三场战斗第一回合获得100 Shield",
+      "rewardRarity": "Normal",
+      "applyActions": "GrantBattleStartModifier(NextBattles=3, AddShield=100, FirstTurnOnly=true)",
+      "designNotes": "原 10 防御/格挡映射为 100 Shield。"
+    },
+    {
+      "id": "reward_enemy_vulnerable_2",
+      "displayName": "下两场战斗开始给予敌人1层易伤",
+      "rewardRarity": "Normal",
+      "applyActions": "GrantBattleStartModifier(NextBattles=2, ApplyEffect(Enemy,vulnerable,1))",
+      "designNotes": "普通奖励。"
+    },
+    {
+      "id": "reward_enemy_weak_2",
+      "displayName": "下两场战斗开始给予敌人1层虚弱",
+      "rewardRarity": "Normal",
+      "applyActions": "GrantBattleStartModifier(NextBattles=2, ApplyEffect(Enemy,weak,1))",
+      "designNotes": "普通奖励。"
+    },
+    {
+      "id": "reward_max_hp_100",
+      "displayName": "血上限+100",
+      "rewardRarity": "Rare",
+      "applyActions": "MaxHP += 100; HP += 100",
+      "designNotes": "原血上限 +10 映射为 +100。"
+    },
+    {
+      "id": "reward_max_mana_30",
+      "displayName": "Mana上限+30",
+      "rewardRarity": "Rare",
+      "applyActions": "MaxMana += 30",
+      "designNotes": "原能量上限 +1 映射为 +30 Mana。"
+    },
+    {
+      "id": "reward_heal_40",
+      "displayName": "回血40%",
+      "rewardRarity": "Rare",
+      "applyActions": "HealPercent(Self,40)",
+      "designNotes": "稀有奖励。"
+    },
+    {
+      "id": "reward_start_strength_2",
+      "displayName": "每场战斗开始获得2点力量",
+      "rewardRarity": "Rare",
+      "applyActions": "GrantPermanentBattleStartModifier(ApplyEffect(Self,strength,2))",
+      "designNotes": "每场战斗开始 +20 Attack。"
+    },
+    {
+      "id": "reward_keep_shield",
+      "displayName": "防御不在回合结束后消失",
+      "rewardRarity": "Rare",
+      "applyActions": "ApplyEffect(Self,shield_persist,1)",
+      "designNotes": "保留原奖励。"
+    }
+  ]
+}

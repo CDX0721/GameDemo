@@ -53,6 +53,14 @@ def as_bool(value: Any) -> bool:
     return text in ("y", "yes", "true", "1")
 
 
+def split_ids(value: Any) -> List[str]:
+    text = as_text(value)
+    if not text:
+        return []
+    parts = re.split(r"[;；,，\n\r]+", text)
+    return [p.strip() for p in parts if p and p.strip()]
+
+
 def sanitize_name(name: str) -> str:
     safe = re.sub(r'[<>:"/\\|?*]+', "_", name.strip())
     safe = re.sub(r"\s+", "_", safe)
@@ -195,6 +203,81 @@ def map_enemy(row: RowAccessor, row_index: int, seen: set[str], issues: List[Iss
     }
 
 
+def map_design_guideline(row: RowAccessor, row_index: int, seen: set[str], issues: List[Issue], sheet: str):
+    topic = as_text(row.get("项目"))
+    content = as_text(row.get("整理后的口径"))
+    if not topic and not content:
+        return None
+    rid = unique_id(topic or content, seen, "guideline", row_index)
+    return {"id": rid, "topic": topic, "content": content}
+
+
+def map_battle_unit(row: RowAccessor, row_index: int, seen: set[str], issues: List[Issue], sheet: str):
+    rid = unique_id(as_text(row.get("Id")), seen, "unit", row_index)
+    return {
+        "id": rid,
+        "displayName": as_text(row.get("DisplayName")),
+        "faction": as_text(row.get("Faction")),
+        "role": as_text(row.get("Role")),
+        "hp": as_int(row.get("HP")),
+        "attack": as_int(row.get("Attack")),
+        "defense": as_int(row.get("Defense")),
+        "speed": as_int(row.get("Speed")),
+        "mana": as_int(row.get("Mana")),
+        "innateSkillIds": split_ids(row.get("InnateSkillIds")),
+        "designNotes": as_text(row.get("DesignNotes")),
+    }
+
+
+def map_new_skill(row: RowAccessor, row_index: int, seen: set[str], issues: List[Issue], sheet: str):
+    rid = unique_id(as_text(row.get("Id")), seen, "skill", row_index)
+    return {
+        "id": rid,
+        "displayName": as_text(row.get("DisplayName")),
+        "ownerUnitId": as_text(row.get("OwnerUnitId")),
+        "skillType": as_text(row.get("SkillType")),
+        "targetType": as_text(row.get("TargetType")),
+        "level": as_int(row.get("Level")),
+        "manaCost": as_int(row.get("ManaCost")),
+        "oncePerBattle": as_bool(row.get("OncePerBattle")),
+        "quality": as_int(row.get("Quality")),
+        "canCastConditions": as_text(row.get("CanCastConditions")),
+        "applyActions": as_text(row.get("ApplyActions")),
+        "animationCue": as_text(row.get("AnimationCue")),
+        "sfxCue": as_text(row.get("SfxCue")),
+        "designNotes": as_text(row.get("DesignNotes")),
+    }
+
+
+def map_battle_effect(row: RowAccessor, row_index: int, seen: set[str], issues: List[Issue], sheet: str):
+    rid = unique_id(as_text(row.get("Id")), seen, "effect", row_index)
+    return {
+        "id": rid,
+        "displayName": as_text(row.get("DisplayName")),
+        "effectType": as_text(row.get("EffectType")),
+        "statusType": as_text(row.get("StatusType")),
+        "initialTurns": as_int(row.get("InitialTurns")),
+        "maxStackCount": as_int(row.get("MaxStackCount")),
+        "stackRule": as_text(row.get("StackRule")),
+        "triggerTiming": as_text(row.get("TriggerTiming")),
+        "applyActions": as_text(row.get("ApplyActions")),
+        "visualCue": as_text(row.get("VisualCue")),
+        "sfxCue": as_text(row.get("SfxCue")),
+        "designNotes": as_text(row.get("DesignNotes")),
+    }
+
+
+def map_battle_reward_new(row: RowAccessor, row_index: int, seen: set[str], issues: List[Issue], sheet: str):
+    rid = unique_id(as_text(row.get("Id")), seen, "reward", row_index)
+    return {
+        "id": rid,
+        "displayName": as_text(row.get("DisplayName")),
+        "rewardRarity": as_text(row.get("RewardRarity")),
+        "applyActions": as_text(row.get("ApplyActions")),
+        "designNotes": as_text(row.get("DesignNotes")),
+    }
+
+
 def map_battle_reward(row: RowAccessor, row_index: int, seen: set[str], issues: List[Issue], sheet: str):
     reward_name = as_text(row.get("奖励类型"))
     rid = unique_id(reward_name, seen, "reward", row_index)
@@ -263,65 +346,34 @@ def map_item(row: RowAccessor, row_index: int, seen: set[str], issues: List[Issu
 
 SPECS = [
     {
-        "sheetNames": ["游戏核心框架"],
-        "output": "core_framework_modules.json",
+        "sheetNames": ["设计口径"],
+        "output": "design_guidelines.json",
         "headerAliases": {},
-        "mapper": map_core_framework,
+        "mapper": map_design_guideline,
     },
     {
-        "sheetNames": ["角色数据"],
-        "output": "characters.json",
+        "sheetNames": ["BattleUnit"],
+        "output": "battle_units.json",
         "headerAliases": {},
-        "mapper": map_character,
+        "mapper": map_battle_unit,
     },
     {
-        "sheetNames": ["技能数据"],
+        "sheetNames": ["Skill"],
         "output": "skills.json",
         "headerAliases": {},
-        "mapper": map_skill,
+        "mapper": map_new_skill,
     },
     {
-        "sheetNames": ["anemy"],
-        "output": "enemies.json",
+        "sheetNames": ["BattleEffect"],
+        "output": "battle_effects.json",
         "headerAliases": {},
-        "mapper": map_enemy,
+        "mapper": map_battle_effect,
     },
     {
-        "sheetNames": ["战斗奖励"],
+        "sheetNames": ["BattleReward"],
         "output": "battle_rewards.json",
-        "headerAliases": {
-            "普通奖励": "奖励类型",
-            "回血20%": "奖励选项1",
-            "下三场战斗第一回合获得10防御": "奖励选项2",
-            "下两场战斗开始给予敌人一层易伤": "奖励选项3",
-            "下两场战斗开始给予敌人一层 虚弱": "奖励选项4",
-            "": "奖励选项5",
-        },
-        "mapper": map_battle_reward,
-    },
-    {
-        "sheetNames": ["State数据"],
-        "output": "states.json",
         "headerAliases": {},
-        "mapper": map_state,
-    },
-    {
-        "sheetNames": ["一些混淆的点"],
-        "output": "design_rule_notes.json",
-        "headerAliases": {"损失生命值和被攻击是不同的，\n损失生命值会无视格挡扣血，\n攻击会先作用于格挡，再扣血": "规则说明"},
-        "mapper": map_design_note,
-    },
-    {
-        "sheetNames": ["战斗属性结算"],
-        "output": "battle_formulas.json",
-        "headerAliases": {},
-        "mapper": map_formula,
-    },
-    {
-        "sheetNames": ["物品 装备", "物品装备"],
-        "output": "items_equipment.json",
-        "headerAliases": {},
-        "mapper": map_item,
+        "mapper": map_battle_reward_new,
     },
 ]
 

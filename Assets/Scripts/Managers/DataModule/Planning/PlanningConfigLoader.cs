@@ -13,33 +13,24 @@ namespace GameDemo.DataConfig.Planning
         {
             var batch = new PlanningConfigBatchReport();
 
-            var coreReport = _service.LoadTable<CoreFrameworkModuleConfig>(PlanningConfigPaths.CoreFrameworkModules);
-            batch.Add(coreReport);
+            batch.Add(_service.LoadTable<DesignGuidelineConfig>(PlanningConfigPaths.DesignGuidelines));
 
-            var characterReport = _service.LoadTable<CharacterConfig>(PlanningConfigPaths.Characters);
-            batch.Add(characterReport);
-            var characters = _service.GetAll<CharacterConfig>();
-
-            var rewardsReport = _service.LoadTable<BattleRewardConfig>(PlanningConfigPaths.BattleRewards);
-            batch.Add(rewardsReport);
-            var rewards = _service.GetAll<BattleRewardConfig>();
+            var unitsReport = _service.LoadTable<BattleUnitConfig>(PlanningConfigPaths.BattleUnits);
+            batch.Add(unitsReport);
+            var units = _service.GetAll<BattleUnitConfig>();
 
             var skillsValidator = new CompositeConfigValidator<SkillConfig>()
                 .Add(new DefaultConfigValidator<SkillConfig>())
-                .Add(PlanningConfigValidators.BuildSkillValidator(characters));
+                .Add(PlanningConfigValidators.BuildSkillValidator(units));
             var skillsReport = _service.LoadTable(PlanningConfigPaths.Skills, skillsValidator);
             batch.Add(skillsReport);
 
-            var enemiesValidator = new CompositeConfigValidator<EnemyConfig>()
-                .Add(new DefaultConfigValidator<EnemyConfig>())
-                .Add(PlanningConfigValidators.BuildEnemyValidator(rewards));
-            var enemiesReport = _service.LoadTable(PlanningConfigPaths.Enemies, enemiesValidator);
-            batch.Add(enemiesReport);
+            var effectsValidator = new CompositeConfigValidator<BattleEffectConfig>()
+                .Add(new DefaultConfigValidator<BattleEffectConfig>())
+                .Add(PlanningConfigValidators.BuildBattleEffectValidator());
+            batch.Add(_service.LoadTable(PlanningConfigPaths.BattleEffects, effectsValidator));
 
-            batch.Add(_service.LoadTable<StateConfig>(PlanningConfigPaths.States));
-            batch.Add(_service.LoadTable<DesignRuleNoteConfig>(PlanningConfigPaths.DesignRuleNotes));
-            batch.Add(_service.LoadTable<BattleFormulaConfig>(PlanningConfigPaths.BattleFormulas));
-            batch.Add(_service.LoadTable<ItemEquipmentConfig>(PlanningConfigPaths.ItemsEquipment));
+            batch.Add(_service.LoadTable<BattleRewardConfig>(PlanningConfigPaths.BattleRewards));
 
             return batch;
         }

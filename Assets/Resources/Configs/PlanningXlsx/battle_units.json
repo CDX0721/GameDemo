@@ -1,0 +1,83 @@
+{
+  "items": [
+    {
+      "id": "player_001",
+      "displayName": "就一个角色",
+      "faction": "Player",
+      "role": "随机能量技能牌使用者",
+      "hp": 800,
+      "attack": 60,
+      "defense": 120,
+      "speed": 100,
+      "mana": 90,
+      "innateSkillIds": [
+        "skill_basic_attack",
+        "skill_guard",
+        "skill_thorns",
+        "skill_vulnerable_attack",
+        "skill_weak_vulnerable_attack",
+        "skill_big_guard",
+        "skill_finisher",
+        "skill_pray",
+        "skill_boost",
+        "skill_baka_mode",
+        "skill_elbow",
+        "skill_flower_hand",
+        "skill_overdraw"
+      ],
+      "designNotes": "原 80HP/3 能量映射为 800HP/90 Mana。Defense 约低防御，只提供少量减伤，核心防御仍靠 Shield。"
+    },
+    {
+      "id": "enemy_101",
+      "displayName": "练习敌人101",
+      "faction": "Enemy",
+      "role": "普通敌人-重击/连击/防御",
+      "hp": 480,
+      "attack": 80,
+      "defense": 80,
+      "speed": 85,
+      "mana": 90,
+      "innateSkillIds": [
+        "enemy101_heavy",
+        "enemy101_combo",
+        "enemy101_guard_power"
+      ],
+      "designNotes": "原敌人 101。普通奖励。AI 行动按 AISequence 结算，暂不消耗 Mana。"
+    },
+    {
+      "id": "enemy_102",
+      "displayName": "练习敌人102",
+      "faction": "Enemy",
+      "role": "普通敌人-易伤/连击",
+      "hp": 540,
+      "attack": 95,
+      "defense": 100,
+      "speed": 90,
+      "mana": 90,
+      "innateSkillIds": [
+        "enemy102_heavy",
+        "enemy102_apply_vulnerable",
+        "enemy102_combo",
+        "enemy102_guard_power"
+      ],
+      "designNotes": "原敌人 102。普通奖励。AI 行动按 AISequence 结算，暂不消耗 Mana。"
+    },
+    {
+      "id": "enemy_201",
+      "displayName": "精英敌人201",
+      "faction": "Enemy",
+      "role": "精英敌人-高压输出",
+      "hp": 780,
+      "attack": 150,
+      "defense": 180,
+      "speed": 105,
+      "mana": 90,
+      "innateSkillIds": [
+        "enemy201_heavy",
+        "enemy201_combo",
+        "enemy201_power_heavy"
+      ],
+      "designNotes": "原精英 201。稀有奖励，HP/Attack 更高，Defense 仍不作为主要平衡旋钮。AI 行动暂不消耗 Mana。"
+    }
+  ]
+}
