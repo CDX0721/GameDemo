@@ -111,7 +111,11 @@ namespace GameDemo.Battle
             InitialCost = initialCost;
             RemainingCost = initialCost;
 
-            Skills = new List<Skill>(template.InnateSkills);
+            Skills = new List<Skill>(template.InnateSkills.Count);
+            for (int i = 0; i < template.InnateSkills.Count; i++)
+            {
+                Skills.Add(template.InnateSkills[i].Clone());
+            }
             Effects = new List<BattleEffectInstance>();
         }
 

@@ -18,11 +18,11 @@ namespace GameDemo.DataConfig.Planning
         public string displayName;
         public string faction;
         public string role;
-        public int hp;
-        public int attack;
-        public int defense;
-        public int speed;
-        public int mana;
+        public float hp;
+        public float attack;
+        public float defense;
+        public float speed;
+        public float mana;
         public string[] innateSkillIds;
         public string designNotes;
         public string Id => id;

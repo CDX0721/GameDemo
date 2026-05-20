@@ -55,8 +55,12 @@ namespace GameDemo.Battle
             {
                 var validTargets = new List<BattleUnitInstance>();
                 foreach (BattleUnitInstance candidate in enemyFormation.Units)
-                    if (candidate.IsAlive && skill.CanCast(new List<BattleUnitInstance> { candidate }))
-                        validTargets.Add(candidate);
+                    if (candidate.IsAlive)
+                    {
+                        skill.Caster = unit;
+                        if (skill.CanCast(new List<BattleUnitInstance> { candidate }))
+                            validTargets.Add(candidate);
+                    }
 
                 if (validTargets.Count > 0)
                     result.Add((skill, validTargets));
@@ -191,10 +195,17 @@ namespace GameDemo.Battle
             {
                 if (!SelectedUnit.IsAlive) break;
                 if (targets.Count == 0) continue;
+                skill.Caster = SelectedUnit;
                 if (!skill.CanCast(targets)) continue;
 
                 SelectedSkill = skill;
+                if (skill.ManaCost > 0 && SelectedUnit.CurrentMana > 0f)
+                {
+                    SelectedUnit.CurrentMana = MathF.Max(0f, SelectedUnit.CurrentMana - skill.ManaCost);
+                }
                 skill.Apply(targets);
+                if (skill.OncePerBattle)
+                    skill.UsedThisBattle = true;
                 OnSkillUsed?.Invoke(SelectedUnit, skill, targets);
                 RefreshAllUnits();
                 CleanupDeadUnits();
@@ -293,6 +304,7 @@ namespace GameDemo.Battle
             foreach (Skill skill in unit.Skills)
             {
                 var targets = FindTargetsForSkill(unit, skill);
+                skill.Caster = unit;
                 if (targets.Count > 0 && skill.CanCast(targets))
                     result.Add((skill, targets));
             }
@@ -317,7 +329,9 @@ namespace GameDemo.Battle
                     return FindAllAlive(allyOfCaster);
                 case TargetType.SingleBoth:
                     first = FindFirstAlive(enemyOfCaster);
-                    return first != null ? new List<BattleUnitInstance> { first } : new List<BattleUnitInstance>();
+                    if (first == null)
+                        return new List<BattleUnitInstance> { caster };
+                    return new List<BattleUnitInstance> { caster, first };
                 case TargetType.AllBoth:
                     var all = FindAllAlive(enemyOfCaster);
                     all.AddRange(FindAllAlive(allyOfCaster));

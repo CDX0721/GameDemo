@@ -25,7 +25,15 @@ namespace GameDemo.Battle
 
         public void ApplyTo(BattleUnitInstance unit)
         {
-            Template.Apply(new List<BattleUnitInstance> { unit });
+            BattleEffectContext.Current = this;
+            try
+            {
+                Template.Apply(new List<BattleUnitInstance> { unit });
+            }
+            finally
+            {
+                BattleEffectContext.Current = null;
+            }
         }
     }
 }

@@ -53,6 +53,22 @@ def as_bool(value: Any) -> bool:
     return text in ("y", "yes", "true", "1")
 
 
+def as_float(value: Any) -> float:
+    if value is None:
+        return 0.0
+    if isinstance(value, bool):
+        return 1.0 if value else 0.0
+    if isinstance(value, (int, float)):
+        return float(value)
+    text = as_text(value)
+    if text == "":
+        return 0.0
+    try:
+        return float(text)
+    except Exception:
+        return 0.0
+
+
 def split_ids(value: Any) -> List[str]:
     text = as_text(value)
     if not text:
@@ -219,11 +235,11 @@ def map_battle_unit(row: RowAccessor, row_index: int, seen: set[str], issues: Li
         "displayName": as_text(row.get("DisplayName")),
         "faction": as_text(row.get("Faction")),
         "role": as_text(row.get("Role")),
-        "hp": as_int(row.get("HP")),
-        "attack": as_int(row.get("Attack")),
-        "defense": as_int(row.get("Defense")),
-        "speed": as_int(row.get("Speed")),
-        "mana": as_int(row.get("Mana")),
+        "hp": as_float(row.get("HP")),
+        "attack": as_float(row.get("Attack")),
+        "defense": as_float(row.get("Defense")),
+        "speed": as_float(row.get("Speed")),
+        "mana": as_float(row.get("Mana")),
         "innateSkillIds": split_ids(row.get("InnateSkillIds")),
         "designNotes": as_text(row.get("DesignNotes")),
     }
