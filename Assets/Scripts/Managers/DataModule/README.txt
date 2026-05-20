@@ -9,15 +9,11 @@ Key modules
 - AssetManagerLoader + AssetManagerTextProvider: integration bridge to AssetModule
 - ConfigModule: top-level facade singleton
 - Planning configs: typed runtime tables exported from 策划案.xlsx
-  - CoreFrameworkModuleConfig
-  - CharacterConfig
+  - DesignGuidelineConfig
+  - BattleUnitConfig
   - SkillConfig
-  - EnemyConfig
+  - BattleEffectConfig
   - BattleRewardConfig
-  - StateConfig
-  - DesignRuleNoteConfig
-  - BattleFormulaConfig
-  - ItemEquipmentConfig
   - PlanningConfigLoader + cross-table validators
 
 Usage

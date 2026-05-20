@@ -3,23 +3,28 @@ using System;
 namespace GameDemo.DataConfig.Planning
 {
     [Serializable]
-    public sealed class CoreFrameworkModuleConfig : IConfigRecord
+    public sealed class DesignGuidelineConfig : IConfigRecord
     {
         public string id;
-        public string moduleName;
-        public string stage;
-        public string featureDescription;
-        public string note;
+        public string topic;
+        public string content;
         public string Id => id;
     }
 
     [Serializable]
-    public sealed class CharacterConfig : IConfigRecord
+    public sealed class BattleUnitConfig : IConfigRecord
     {
         public string id;
-        public string roleName;
-        public int initialHp;
-        public int initialMpSp;
+        public string displayName;
+        public string faction;
+        public string role;
+        public float hp;
+        public float attack;
+        public float defense;
+        public float speed;
+        public float mana;
+        public string[] innateSkillIds;
+        public string designNotes;
         public string Id => id;
     }
 
@@ -27,25 +32,37 @@ namespace GameDemo.DataConfig.Planning
     public sealed class SkillConfig : IConfigRecord
     {
         public string id;
-        public string ownerRoleId;
-        public int quality;
-        public bool singleUsePerBattle;
-        public string skillName;
+        public string displayName;
+        public string ownerUnitId;
         public string skillType;
-        public int costValue;
-        public string target;
-        public string effects;
-        public string description;
+        public string targetType;
+        public int level;
+        public int manaCost;
+        public bool oncePerBattle;
+        public int quality;
+        public string canCastConditions;
+        public string applyActions;
+        public string animationCue;
+        public string sfxCue;
+        public string designNotes;
         public string Id => id;
     }
 
     [Serializable]
-    public sealed class EnemyConfig : IConfigRecord
+    public sealed class BattleEffectConfig : IConfigRecord
     {
         public string id;
-        public bool isElite;
-        public string battlePattern;
-        public string rewardId;
+        public string displayName;
+        public string effectType;
+        public string statusType;
+        public int initialTurns;
+        public int maxStackCount;
+        public string stackRule;
+        public string triggerTiming;
+        public string applyActions;
+        public string visualCue;
+        public string sfxCue;
+        public string designNotes;
         public string Id => id;
     }
 
@@ -53,55 +70,10 @@ namespace GameDemo.DataConfig.Planning
     public sealed class BattleRewardConfig : IConfigRecord
     {
         public string id;
-        public string rewardName;
-        public string[] options;
-        public string Id => id;
-    }
-
-    [Serializable]
-    public sealed class StateConfig : IConfigRecord
-    {
-        public string id;
-        public string stateName;
-        public string stateType;
-        public string duration;
-        public string affectedAttribute;
-        public string valueDescription;
-        public string description;
-        public string Id => id;
-    }
-
-    [Serializable]
-    public sealed class DesignRuleNoteConfig : IConfigRecord
-    {
-        public string id;
-        public string content;
-        public string Id => id;
-    }
-
-    [Serializable]
-    public sealed class BattleFormulaConfig : IConfigRecord
-    {
-        public string id;
-        public string formulaType;
-        public string formulaContent;
-        public string variables;
-        public string effectTriggerChance;
-        public string note;
-        public string Id => id;
-    }
-
-    [Serializable]
-    public sealed class ItemEquipmentConfig : IConfigRecord
-    {
-        public string id;
-        public string name;
-        public string itemType;
-        public string propertyBonus1;
-        public string propertyBonus2;
-        public string source;
-        public string restriction;
+        public string displayName;
+        public string rewardRarity;
+        public string applyActions;
+        public string designNotes;
         public string Id => id;
     }
 }
-

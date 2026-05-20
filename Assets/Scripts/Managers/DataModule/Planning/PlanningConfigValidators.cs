@@ -4,16 +4,16 @@ namespace GameDemo.DataConfig.Planning
 {
     public static class PlanningConfigValidators
     {
-        public static IConfigValidator<SkillConfig> BuildSkillValidator(IReadOnlyList<CharacterConfig> characters)
+        public static IConfigValidator<SkillConfig> BuildSkillValidator(IReadOnlyList<BattleUnitConfig> units)
         {
-            var characterIds = new HashSet<string>();
-            if (characters != null)
+            var unitIds = new HashSet<string>();
+            if (units != null)
             {
-                for (int i = 0; i < characters.Count; i++)
+                for (int i = 0; i < units.Count; i++)
                 {
-                    if (characters[i] != null && !string.IsNullOrWhiteSpace(characters[i].id))
+                    if (units[i] != null && !string.IsNullOrWhiteSpace(units[i].id))
                     {
-                        characterIds.Add(characters[i].id);
+                        unitIds.Add(units[i].id);
                     }
                 }
             }
@@ -35,30 +35,28 @@ namespace GameDemo.DataConfig.Planning
                         continue;
                     }
 
-                    if (s.costValue < 0)
+                    if (s.manaCost < 0)
                     {
                         issues.Add(new ConfigIssue(
                             ConfigIssueLevel.Error,
                             "planning.skills.cost.negative",
-                            $"Skill id={s.id} has negative cost: {s.costValue}."));
+                            $"Skill id={s.id} has negative mana cost: {s.manaCost}."));
                     }
 
-                    if (string.IsNullOrWhiteSpace(s.target))
+                    if (s.level <= 0)
                     {
                         issues.Add(new ConfigIssue(
                             ConfigIssueLevel.Warning,
-                            "planning.skills.target.empty",
-                            $"Skill id={s.id} has empty target."));
+                            "planning.skills.level.invalid",
+                            $"Skill id={s.id} has non-positive level: {s.level}."));
                     }
 
-                    if (!string.IsNullOrWhiteSpace(s.ownerRoleId) &&
-                        s.ownerRoleId != "通用" &&
-                        !characterIds.Contains(s.ownerRoleId))
+                    if (!string.IsNullOrWhiteSpace(s.ownerUnitId) && !unitIds.Contains(s.ownerUnitId))
                     {
                         issues.Add(new ConfigIssue(
                             ConfigIssueLevel.Error,
                             "planning.skills.owner.not_found",
-                            $"Skill id={s.id} ownerRoleId={s.ownerRoleId} was not found in characters."));
+                            $"Skill id={s.id} ownerUnitId={s.ownerUnitId} was not found in battle units."));
                     }
                 }
 
@@ -66,52 +64,39 @@ namespace GameDemo.DataConfig.Planning
             });
         }
 
-        public static IConfigValidator<EnemyConfig> BuildEnemyValidator(IReadOnlyList<BattleRewardConfig> rewards)
+        public static IConfigValidator<BattleEffectConfig> BuildBattleEffectValidator()
         {
-            var rewardIds = new HashSet<string>();
-            if (rewards != null)
-            {
-                for (int i = 0; i < rewards.Count; i++)
-                {
-                    if (rewards[i] != null && !string.IsNullOrWhiteSpace(rewards[i].id))
-                    {
-                        rewardIds.Add(rewards[i].id);
-                    }
-                }
-            }
-
-            return new DelegateConfigValidator<EnemyConfig>(records =>
+            return new DelegateConfigValidator<BattleEffectConfig>(records =>
             {
                 var issues = new List<ConfigIssue>();
                 if (records == null)
                 {
-                    issues.Add(new ConfigIssue(ConfigIssueLevel.Error, "planning.enemies.null", "Enemy records are null."));
+                    issues.Add(new ConfigIssue(ConfigIssueLevel.Error, "planning.effects.null", "BattleEffect records are null."));
                     return new ConfigValidationReport(issues);
                 }
 
                 for (int i = 0; i < records.Count; i++)
                 {
-                    var e = records[i];
-                    if (e == null)
+                    var effect = records[i];
+                    if (effect == null)
                     {
                         continue;
                     }
 
-                    if (string.IsNullOrWhiteSpace(e.rewardId))
-                    {
-                        issues.Add(new ConfigIssue(
-                            ConfigIssueLevel.Warning,
-                            "planning.enemies.reward.empty",
-                            $"Enemy id={e.id} has empty rewardId."));
-                        continue;
-                    }
-
-                    if (!rewardIds.Contains(e.rewardId))
+                    if (effect.maxStackCount < 0)
                     {
                         issues.Add(new ConfigIssue(
                             ConfigIssueLevel.Error,
-                            "planning.enemies.reward.not_found",
-                            $"Enemy id={e.id} rewardId={e.rewardId} was not found."));
+                            "planning.effects.max_stack.negative",
+                            $"BattleEffect id={effect.id} has negative maxStackCount: {effect.maxStackCount}."));
+                    }
+
+                    if (effect.initialTurns < 0)
+                    {
+                        issues.Add(new ConfigIssue(
+                            ConfigIssueLevel.Error,
+                            "planning.effects.initial_turns.negative",
+                            $"BattleEffect id={effect.id} has negative initialTurns: {effect.initialTurns}."));
                     }
                 }
 

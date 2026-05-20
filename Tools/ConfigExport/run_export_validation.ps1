@@ -1,9 +1,11 @@
 param(
-    [string]$ProjectRoot = "E:\QQ Files\游戏\GameDemo"
+    [string]$ProjectRoot = "E:\QQ Files\游戏\GameDemo",
+    [switch]$KeepRuntimeOutput
 )
 
 $source = Join-Path $ProjectRoot "Assets\ConfigSource\策划案.xlsx"
 $tempOutput = Join-Path $ProjectRoot "Temp\ConfigExportValidation\Output"
+$runtimeOutput = Join-Path $ProjectRoot "Assets\Resources\Configs\PlanningXlsx"
 $logDir = Join-Path $ProjectRoot "TestLogs\ConfigExport"
 $exportLogPath = Join-Path $logDir "planning_xlsx_export.log"
 $validateLogPath = Join-Path $logDir "planning_xlsx_validation.log"
@@ -27,6 +29,12 @@ else {
 
 if (Test-Path $manifestPath) {
     Remove-Item -LiteralPath $manifestPath -Force
+}
+
+if ($exportExitCode -eq 0 -and $validateExitCode -eq 0 -and $KeepRuntimeOutput) {
+    New-Item -ItemType Directory -Force -Path $runtimeOutput | Out-Null
+    Get-ChildItem -Path $runtimeOutput -File -ErrorAction SilentlyContinue | Remove-Item -Force
+    Copy-Item -Path (Join-Path $tempOutput "*") -Destination $runtimeOutput -Recurse -Force
 }
 
 if (Test-Path $tempOutput) {

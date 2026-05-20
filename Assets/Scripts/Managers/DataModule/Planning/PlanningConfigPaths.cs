@@ -4,15 +4,10 @@ namespace GameDemo.DataConfig.Planning
     {
         public const string Base = "Configs/PlanningXlsx/";
 
-        public const string CoreFrameworkModules = Base + "core_framework_modules";
-        public const string Characters = Base + "characters";
+        public const string DesignGuidelines = Base + "design_guidelines";
+        public const string BattleUnits = Base + "battle_units";
         public const string Skills = Base + "skills";
-        public const string Enemies = Base + "enemies";
+        public const string BattleEffects = Base + "battle_effects";
         public const string BattleRewards = Base + "battle_rewards";
-        public const string States = Base + "states";
-        public const string DesignRuleNotes = Base + "design_rule_notes";
-        public const string BattleFormulas = Base + "battle_formulas";
-        public const string ItemsEquipment = Base + "items_equipment";
     }
 }
-
