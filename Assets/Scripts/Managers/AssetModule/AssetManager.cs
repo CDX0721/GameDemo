@@ -57,6 +57,21 @@ namespace GameDemo
 
         #endregion
 
+        /// <summary>
+        /// Synchronously load all sub-assets of a given type from a Resources path.
+        /// Used for sliced sprite sheets where each frame is a sub-asset.
+        /// Note: returned array is NOT cached by AssetManager; caller should cache if needed.
+        /// </summary>
+        public T[] LoadAll<T>(string path) where T : Object
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                Debug.LogError("[AssetManager] LoadAll: path is null or empty.");
+                return null;
+            }
+            return Resources.LoadAll<T>(path);
+        }
+
         #region Asynchronous Load
 
         /// <summary>
