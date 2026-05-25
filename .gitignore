@@ -57,3 +57,7 @@ crashlytics-build.properties
 # --- Rider ---
 .idea/
 *.sln.DotSettings.user
+
+# --- TextMesh Pro (shipping only essentials) ---
+Assets/TextMesh Pro/Examples & Extras/
+Assets/TextMesh Pro/Examples & Extras.meta

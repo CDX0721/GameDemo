@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2761f517a648e7f4a959e9d190b1d793, type: 3}
+  m_Name: AnimationCache
+  m_EditorClassIdentifier: 
+  _entries:
+  - Key: e_archer_attack
+    Path: Art/Sprites/Units/e_archer_attack
+  - Key: e_archer_idle
+    Path: Art/Sprites/Units/e_archer_idle
+  - Key: e_goblin_attack
+    Path: Art/Sprites/Units/e_goblin_attack
+  - Key: e_goblin_idle
+    Path: Art/Sprites/Units/e_goblin_idle
+  - Key: e_troll_attack
+    Path: Art/Sprites/Units/e_troll_attack
+  - Key: e_troll_idle
+    Path: Art/Sprites/Units/e_troll_idle
+  - Key: p_mage_attack
+    Path: Art/Sprites/Units/p_mage_attack
+  - Key: p_mage_idle
+    Path: Art/Sprites/Units/p_mage_idle
+  - Key: p_priest_attack
+    Path: Art/Sprites/Units/p_priest_attack
+  - Key: p_priest_idle
+    Path: Art/Sprites/Units/p_priest_idle
+  - Key: p_warrior_attack
+    Path: Art/Sprites/Units/p_warrior_attack
+  - Key: p_warrior_idle
+    Path: Art/Sprites/Units/p_warrior_idle
+  - Key: fx_arrow
+    Path: Art/Sprites/Skills/fx_arrow
+  - Key: fx_buff
+    Path: Art/Sprites/Skills/fx_buff
+  - Key: fx_debuff
+    Path: Art/Sprites/Skills/fx_debuff
+  - Key: fx_heal
+    Path: Art/Sprites/Skills/fx_heal
+  - Key: fx_magic_blast
+    Path: Art/Sprites/Skills/fx_magic_blast
+  - Key: fx_poison
+    Path: Art/Sprites/Skills/fx_poison
+  - Key: fx_slash
+    Path: Art/Sprites/Skills/fx_slash
+  - Key: fx_stun
+    Path: Art/Sprites/Skills/fx_stun
