@@ -19,11 +19,29 @@ namespace GameDemo.Battle
         /// <summary>当前待执行的行动列表（只读），供表现层协程读取。</summary>
         public IReadOnlyList<(Skill skill, List<BattleUnitInstance> targets)>? PendingActions => _pendingActions;
 
-        /// <summary>玩家输入回调：传入可操控单位，返回(技能, 目标列表)列表，按顺序尝试释放。</summary>
-        public Func<PlayableUnitInstance, List<(Skill skill, List<BattleUnitInstance> targets)>> PlayerInputCallback { get; set; }
+        // ==================== 玩家/AI 输入事件 ====================
 
-        /// <summary>自动行动回调：传入自动单位，返回(技能, 目标列表)列表，按顺序尝试释放。</summary>
-        public Func<AutoUnitInstance, List<(Skill skill, List<BattleUnitInstance> targets)>> AutoActionCallback { get; set; }
+        /// <summary>轮到玩家操作时触发。UI 应展示技能选择界面，玩家确认后调用 SubmitPlayerAction。</summary>
+        public event Action<PlayableUnitInstance>? OnWaitingForPlayerInput;
+
+        /// <summary>轮到自动单位行动时触发。AI 系统应处理并调用 SubmitAutoAction。</summary>
+        public event Action<AutoUnitInstance>? OnWaitingForAutoAction;
+
+        /// <summary>外部提交玩家选择的技能与目标，进入 Acting 阶段。</summary>
+        public void SubmitPlayerAction(Skill skill, List<BattleUnitInstance> targets)
+        {
+            if (SelectedUnit is not PlayableUnitInstance) return;
+            _pendingActions = new List<(Skill, List<BattleUnitInstance>)> { (skill, targets) };
+            StateMachine.SetState(BattleState.Acting);
+        }
+
+        /// <summary>外部提交自动单位的行动列表，进入 Acting 阶段。</summary>
+        public void SubmitAutoAction(List<(Skill, List<BattleUnitInstance>)> actions)
+        {
+            if (SelectedUnit is not AutoUnitInstance) return;
+            _pendingActions = actions;
+            StateMachine.SetState(BattleState.Acting);
+        }
 
         // ==================== 外部事件（UI / 输入系统订阅）====================
 
@@ -78,9 +96,6 @@ namespace GameDemo.Battle
             EnemyFormation = new Formation();
             ActionQueue = new ActionQueue();
             StateMachine = new BattleStateMachine();
-
-            PlayerInputCallback = DefaultPlayerInput;
-            AutoActionCallback = DefaultAutoAction;
         }
 
         // ==================== 状态入口 ====================
@@ -178,14 +193,10 @@ namespace GameDemo.Battle
             if (SelectedUnit == null) return;
 
             if (SelectedUnit is PlayableUnitInstance playable)
-                _pendingActions = PlayerInputCallback(playable);
+                OnWaitingForPlayerInput?.Invoke(playable);
             else if (SelectedUnit is AutoUnitInstance auto)
-                _pendingActions = AutoActionCallback(auto);
-            else
-                return;
-
-            StateMachine.SetState(BattleState.Acting);
-            // EnterActing() 不再在此处调用——由表现层协程接管 Acting 状态
+                OnWaitingForAutoAction?.Invoke(auto);
+            // 不在此处进入 Acting——由 SubmitPlayerAction / SubmitAutoAction 接管
         }
 
         public void EnterActing()
@@ -279,30 +290,6 @@ namespace GameDemo.Battle
                 RefreshPersistentEffects(unit);
             foreach (BattleUnitInstance unit in EnemyFormation.Units)
                 RefreshPersistentEffects(unit);
-        }
-
-        // ==================== 默认回调 ====================
-
-        private List<(Skill skill, List<BattleUnitInstance> targets)> DefaultPlayerInput(PlayableUnitInstance unit)
-        {
-            return FindAllCastable(unit);
-        }
-
-        private List<(Skill skill, List<BattleUnitInstance> targets)> DefaultAutoAction(AutoUnitInstance unit)
-        {
-            return FindAllCastable(unit);
-        }
-
-        private List<(Skill skill, List<BattleUnitInstance> targets)> FindAllCastable(BattleUnitInstance unit)
-        {
-            var result = new List<(Skill skill, List<BattleUnitInstance> targets)>();
-            foreach (Skill skill in unit.Skills)
-            {
-                var targets = FindTargetsForSkill(unit, skill);
-                if (targets.Count > 0 && skill.CanCast(targets))
-                    result.Add((skill, targets));
-            }
-            return result;
         }
 
         private List<BattleUnitInstance> FindTargetsForSkill(BattleUnitInstance caster, Skill skill)

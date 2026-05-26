@@ -23,7 +23,7 @@ namespace GameDemo.Rogue
         RogueMap _map;
         RogueRunState _state;
         string _savePath;
-        Random _rng;
+        System.Random _rng;
 
         public event Action<RogueRunState> OnRunStarted;
         public event Action<RogueNode> OnNodeEntered;
@@ -83,7 +83,7 @@ namespace GameDemo.Rogue
             }
 
             int seed = config.seed != 0 ? config.seed : Environment.TickCount;
-            _rng = new Random(seed);
+            _rng = new System.Random(seed);
             _map = RogueMapGenerator.Generate(config, _rng);
             _config = config;
             _shopStates.Clear();
@@ -555,7 +555,7 @@ namespace GameDemo.Rogue
             _config = snapshot.config;
             _map = snapshot.map;
             _state = snapshot.state;
-            _rng = new Random(_state != null ? _state.seed : Environment.TickCount);
+            _rng = new System.Random(_state != null ? _state.seed : Environment.TickCount);
 
             BuildIndex();
             _visited.Clear();

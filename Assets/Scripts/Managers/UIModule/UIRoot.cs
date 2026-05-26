@@ -27,10 +27,13 @@ namespace GameDemo.UI
                 manager.UpdateUnityContext(_canvas, this);
             }
 
-            foreach (UIPanel panel in _prePlacedPanels)
+            if (_prePlacedPanels != null)
             {
-                if (panel != null)
-                    manager.Register(panel);
+                foreach (UIPanel panel in _prePlacedPanels)
+                {
+                    if (panel != null)
+                        manager.Register(panel);
+                }
             }
         }
 

@@ -1,7 +1,11 @@
 using System.Collections.Generic;
 using GameDemo;
 using GameDemo.Battle;
+using GameDemo.UI;
+using GameDemo.UI.Panels;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 /// <summary>
 /// 战斗场景启动器。通过 AssetManager 加载所有资源，构建 UnitView 并绑定 BattleUnitInstance。
@@ -53,9 +57,58 @@ public class BattleSceneBootstrapper : MonoBehaviour
         EnsureDamageCanvas();
         BuildPendingViews();
         _driver.Setup(_config.PlayerUnits, _config.EnemyUnits, this);
-        BindInstancesToViews(_driver.Manager.PlayerFormation);
-        BindInstancesToViews(_driver.Manager.EnemyFormation);
+        BindInstancesToViews(_driver.Manager.PlayerFormation, isPlayer: true);
+        BindInstancesToViews(_driver.Manager.EnemyFormation, isPlayer: false);
         _pendingViews.Clear();
+
+        InitializeUI();
+    }
+
+    private void InitializeUI()
+    {
+        // Always create a dedicated ScreenSpace UI Canvas (avoid picking up WorldSpace canvases)
+        var uiCanvasGO = new GameObject("UICanvas");
+        Canvas canvas = uiCanvasGO.AddComponent<Canvas>();
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        canvas.sortingOrder = 100; // Render above everything else
+        CanvasScaler scaler = uiCanvasGO.AddComponent<CanvasScaler>();
+        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.referenceResolution = new Vector2(1920, 1080);
+        scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+        scaler.matchWidthOrHeight = 0.5f;
+        uiCanvasGO.AddComponent<GraphicRaycaster>();
+        uiCanvasGO.AddComponent<UIRoot>();
+
+        if (FindFirstObjectByType<EventSystem>() == null)
+        {
+            var esGO = new GameObject("EventSystem");
+            esGO.AddComponent<EventSystem>();
+        }
+
+        // MainMenu: code-built (simple)
+        var menuGO = new GameObject("MainMenuPanel", typeof(RectTransform));
+        menuGO.transform.SetParent(canvas.transform, false);
+        Stretch(menuGO.GetComponent<RectTransform>());
+        menuGO.AddComponent<MainMenuPanel>();
+
+        // BattlePanel: load prefab from Resources
+        var bpPrefab = Resources.Load<GameObject>("UI/BattlePanel");
+        if (bpPrefab != null)
+        {
+            var bpGO = Instantiate(bpPrefab, canvas.transform);
+            bpGO.name = "BattlePanel";
+            var bp = bpGO.GetComponent<BattlePanel>();
+            if (bp == null) bp = bpGO.AddComponent<BattlePanel>();
+            bp.BindBattleManager(_driver.Manager);
+        }
+
+        UIManager.Instance.Show<MainMenuPanel>();
+    }
+
+    private static void Stretch(RectTransform rt)
+    {
+        rt.anchorMin = Vector2.zero; rt.anchorMax = Vector2.one;
+        rt.offsetMin = Vector2.zero; rt.offsetMax = Vector2.zero;
     }
 
     // ==================== 动画帧加载 ====================
@@ -164,27 +217,33 @@ public class BattleSceneBootstrapper : MonoBehaviour
         }
     }
 
-    private void BindInstancesToViews(Formation formation)
+    private void BindInstancesToViews(Formation formation, bool isPlayer)
     {
         foreach (var instance in formation.Units)
         {
             if (!_pendingViews.TryGetValue(instance.Id, out var view))
             {
-                Debug.LogWarning($"未找到 UnitView for {instance.Id}");
+                Debug.LogWarning(string.Format("View for {0} not found", instance.Id));
                 continue;
             }
 
             var (idle, attack) = GetUnitFrames(instance.Id);
-            Debug.Log($"[Boot] 绑定 {instance.Id}: idle={idle.Length}帧 attack={attack.Length}帧 HP={instance.CurrentHP:F0}/{instance.MaxHP:F0}");
             view.Setup(instance, idle, attack);
             UnitViews[instance] = view;
 
             var hpBar = view.GetComponentInChildren<HPBar>();
             if (hpBar != null)
             {
-                hpBar.Setup(instance.MaxHP);
-                hpBar.SetHP(instance.CurrentHP, instance.MaxHP);
-                HPBars[instance] = hpBar;
+                if (isPlayer)
+                {
+                    hpBar.gameObject.SetActive(false);
+                }
+                else
+                {
+                    hpBar.Setup(instance.MaxHP, barWidth: 1.5f, barHeight: 0.3f);
+                    hpBar.SetHP(instance.CurrentHP, instance.MaxHP);
+                    HPBars[instance] = hpBar;
+                }
             }
         }
     }

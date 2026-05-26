@@ -18,10 +18,11 @@ public class HPBar : MonoBehaviour
             _white = CreateSprite();
     }
 
-    public void Setup(float maxHp, float barWidth = 5.0f)
+    public void Setup(float maxHp, float barWidth = 5.0f, float barHeight = 0.6f)
     {
         _maxHp = maxHp;
         _barWidth = barWidth;
+        _barHeight = barHeight;
 
         if (_border == null)     { _border = AddChild("Border"); }
         if (_background == null) { _background = AddChild("BG"); }

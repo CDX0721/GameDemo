@@ -13,7 +13,6 @@ public class BattleDriver : MonoBehaviour
     private BattleSceneBootstrapper _bootstrapper = null!;
 
     private bool _isAnimating;
-    private bool _isAwaitingTurn;
 
     // ==================== Update ====================
 
@@ -22,13 +21,12 @@ public class BattleDriver : MonoBehaviour
         if (Manager == null) return;
         if (Manager.StateMachine.IsBattleEnd) return;
         if (_isAnimating) return;
-        if (_isAwaitingTurn) return;
 
         switch (Manager.StateMachine.CurrentState)
         {
             case BattleState.BattleStart:   break;
             case BattleState.PreAction:     Manager.EnterPreAction(); break;
-            case BattleState.WaitingAction: HandleWaitingAction(); break;
+            case BattleState.WaitingAction: Manager.EnterWaitingAction(); break;
             case BattleState.Acting:        StartCoroutine(DoActingWithAnimations()); break;
             case BattleState.PostAction:    Manager.EnterPostAction(); break;
         }
@@ -41,9 +39,8 @@ public class BattleDriver : MonoBehaviour
         _bootstrapper = bootstrapper;
 
         Manager = new BattleManager();
-        Manager.PlayerInputCallback = HandlePlayerInput;
-        Manager.AutoActionCallback = HandleAutoAction;
-
+        Manager.OnWaitingForPlayerInput += OnWaitingForPlayerInputEvent;
+        Manager.OnWaitingForAutoAction += OnWaitingForAutoActionEvent;
         Manager.OnBattleEnded += OnBattleEnded;
         Manager.OnSkillUsed += OnSkillUsed;
         Manager.OnUnitDamaged += OnUnitDamaged;
@@ -54,39 +51,43 @@ public class BattleDriver : MonoBehaviour
         foreach (var cfg in enemyConfigs)
             PlaceUnit(cfg, Manager.EnemyFormation);
 
+        // StartBattle() must be called separately after UI is ready
+    }
+
+    public void StartBattle()
+    {
         Manager.StartBattle();
     }
 
-    // ==================== WaitingAction 分派 ====================
+    // ==================== 输入事件处理 ====================
 
-    private void HandleWaitingAction()
+    private void OnWaitingForPlayerInputEvent(PlayableUnitInstance unit)
     {
-        if (_isAwaitingTurn) return; // 已在等待中，防止每帧重复启动协程
-
-        _isAwaitingTurn = true;
-
-        if (Manager.SelectedUnit is PlayableUnitInstance)
+        // 玩家输入事件：UI 层通过 BattlePanel 监听并展示技能选择。
+        // 此处提供兜底自动解决（无 UI 时也能运行）。
+        StartCoroutine(AutoResolveDelay(0.5f, () =>
         {
-            StartCoroutine(AutoResolvePlayerTurn());
-        }
-        else
-        {
-            StartCoroutine(AutoActionDelay());
-        }
+            var skills = Manager.GetCastableSkills(unit);
+            if (skills.Count > 0)
+                Manager.SubmitPlayerAction(skills[0].skill, skills[0].targets);
+        }));
     }
 
-    private IEnumerator AutoResolvePlayerTurn()
+    private void OnWaitingForAutoActionEvent(AutoUnitInstance unit)
     {
-        yield return new WaitForSeconds(0.5f);
-        _isAwaitingTurn = false;
-        Manager.EnterWaitingAction();
+        // AI 自动行动：收集所有可释放技能并提交。
+        StartCoroutine(AutoResolveDelay(0.8f, () =>
+        {
+            var skills = Manager.GetCastableSkills(unit);
+            if (skills.Count > 0)
+                Manager.SubmitAutoAction(skills);
+        }));
     }
 
-    private IEnumerator AutoActionDelay()
+    private IEnumerator AutoResolveDelay(float delay, System.Action action)
     {
-        yield return new WaitForSeconds(0.8f);
-        _isAwaitingTurn = false;
-        Manager.EnterWaitingAction();
+        yield return new WaitForSeconds(delay);
+        action();
     }
 
     // ==================== Acting 协程（动画编排） ====================
@@ -177,7 +178,6 @@ public class BattleDriver : MonoBehaviour
 
     private void FinishActing()
     {
-        ClearPendingActions();
         Manager.StateMachine.SetState(BattleState.PostAction);
         _isAnimating = false;
     }
@@ -200,14 +200,6 @@ public class BattleDriver : MonoBehaviour
         }
         return System.Array.Empty<Sprite>();
     }
-
-    // ==================== 输入回调 ====================
-
-    private List<(Skill, List<BattleUnitInstance>)> HandlePlayerInput(PlayableUnitInstance unit)
-        => Manager.GetCastableSkills(unit);
-
-    private List<(Skill, List<BattleUnitInstance>)> HandleAutoAction(AutoUnitInstance unit)
-        => Manager.GetCastableSkills(unit);
 
     // ==================== 事件响应 ====================
 
@@ -245,6 +237,8 @@ public class BattleDriver : MonoBehaviour
     void OnDestroy()
     {
         if (Manager == null) return;
+        Manager.OnWaitingForPlayerInput -= OnWaitingForPlayerInputEvent;
+        Manager.OnWaitingForAutoAction -= OnWaitingForAutoActionEvent;
         Manager.OnBattleEnded -= OnBattleEnded;
         Manager.OnSkillUsed -= OnSkillUsed;
         Manager.OnUnitDamaged -= OnUnitDamaged;
@@ -294,11 +288,4 @@ public class BattleDriver : MonoBehaviour
         }
     }
 
-    private void ClearPendingActions()
-    {
-        typeof(BattleManager)
-            .GetField("_pendingActions",
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-            ?.SetValue(Manager, null);
-    }
 }
