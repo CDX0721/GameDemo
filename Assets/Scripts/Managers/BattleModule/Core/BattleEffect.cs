@@ -20,9 +20,9 @@ namespace GameDemo.Battle
         public int MaxStackCount { get; set; }
 
         /// <summary>
-        /// 影响函数列表。层数等信息通过闭包捕获 BattleEffectInstance，仅承受方列表作为参数。
+        /// 影响函数列表，签名为 (来源, 承受方)。
         /// </summary>
-        public List<Action<List<BattleUnitInstance>>> ApplyActions { get; }
+        public List<Action<BattleUnitInstance?, BattleUnitInstance>> ApplyActions { get; }
 
         public BattleEffect(string id, string displayName, BattleEffectType effectType, BattleEffectStatusType statusType,
             int initialTurns = 1, int maxStackCount = 1)
@@ -33,13 +33,13 @@ namespace GameDemo.Battle
             StatusType = statusType;
             InitialTurns = initialTurns;
             MaxStackCount = maxStackCount;
-            ApplyActions = new List<Action<List<BattleUnitInstance>>>();
+            ApplyActions = new List<Action<BattleUnitInstance?, BattleUnitInstance>>();
         }
 
-        public void Apply(List<BattleUnitInstance> units)
+        public void Apply(BattleUnitInstance? source, BattleUnitInstance unit)
         {
             foreach (var action in ApplyActions)
-                action(units);
+                action(source, unit);
         }
     }
 }

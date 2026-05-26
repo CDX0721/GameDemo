@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace GameDemo.Battle
 {
     /// <summary>
@@ -25,7 +23,7 @@ namespace GameDemo.Battle
 
         public void ApplyTo(BattleUnitInstance unit)
         {
-            Template.Apply(new List<BattleUnitInstance> { unit });
+            Template.Apply(Source, unit);
         }
     }
 }

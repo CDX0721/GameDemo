@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace GameDemo.Battle
 {
     /// <summary>
-    /// 技能定义。施法者、数值等信息通过闭包捕获，仅承受方列表作为参数传入。
+    /// 技能定义。委托签名包含施法者和单个承受方。
     /// </summary>
     public class Skill
     {
@@ -13,9 +13,13 @@ namespace GameDemo.Battle
         public SkillType SkillType { get; set; }
         public TargetType TargetType { get; set; }
         public int Level { get; set; }
+        public string Description { get; set; } = "";
 
-        public List<Func<List<BattleUnitInstance>, bool>> CanCastConditions { get; }
-        public List<Action<List<BattleUnitInstance>>> ApplyActions { get; }
+        public List<Func<BattleUnitInstance, BattleUnitInstance, bool>> CanCastConditions { get; }
+        /// <summary>每个目标分别执行。</summary>
+        public List<Action<BattleUnitInstance, BattleUnitInstance>> ApplyActions { get; }
+        /// <summary>每次施放仅执行一次（如消耗法力），在所有 Apply 之前调用。</summary>
+        public List<Action<BattleUnitInstance>> CastActions { get; }
 
         public Skill(string id, string displayName, SkillType skillType, TargetType targetType, int level = 1)
         {
@@ -24,22 +28,29 @@ namespace GameDemo.Battle
             SkillType = skillType;
             TargetType = targetType;
             Level = level;
-            CanCastConditions = new List<Func<List<BattleUnitInstance>, bool>>();
-            ApplyActions = new List<Action<List<BattleUnitInstance>>>();
+            CanCastConditions = new List<Func<BattleUnitInstance, BattleUnitInstance, bool>>();
+            ApplyActions = new List<Action<BattleUnitInstance, BattleUnitInstance>>();
+            CastActions = new List<Action<BattleUnitInstance>>();
         }
 
-        public bool CanCast(List<BattleUnitInstance> targets)
+        public bool CanCast(BattleUnitInstance caster, BattleUnitInstance target)
         {
             foreach (var condition in CanCastConditions)
-                if (!condition(targets))
+                if (!condition(caster, target))
                     return false;
             return true;
         }
 
-        public void Apply(List<BattleUnitInstance> targets)
+        public void Cast(BattleUnitInstance caster)
+        {
+            foreach (var action in CastActions)
+                action(caster);
+        }
+
+        public void Apply(BattleUnitInstance caster, BattleUnitInstance target)
         {
             foreach (var action in ApplyActions)
-                action(targets);
+                action(caster, target);
         }
     }
 }

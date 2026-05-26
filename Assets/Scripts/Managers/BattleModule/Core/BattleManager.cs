@@ -82,7 +82,7 @@ namespace GameDemo.Battle
             foreach (Skill skill in unit.Skills)
             {
                 var targets = FindTargetsForSkill(unit, skill);
-                if (targets.Count > 0 && skill.CanCast(targets))
+                if (targets.Count > 0 && skill.CanCast(unit, targets[0]))
                     result.Add((skill, targets));
             }
             return result;
@@ -208,10 +208,12 @@ namespace GameDemo.Battle
             {
                 if (!SelectedUnit.IsAlive) break;
                 if (targets.Count == 0) continue;
-                if (!skill.CanCast(targets)) continue;
+                if (!skill.CanCast(SelectedUnit, targets[0])) continue;
 
                 SelectedSkill = skill;
-                skill.Apply(targets);
+                skill.Cast(SelectedUnit);
+                foreach (var t in targets)
+                    skill.Apply(SelectedUnit, t);
                 OnSkillUsed?.Invoke(SelectedUnit, skill, targets);
                 RefreshAllUnits();
                 CleanupDeadUnits();
@@ -300,6 +302,8 @@ namespace GameDemo.Battle
             switch (skill.TargetType)
             {
                 case TargetType.SingleEnemy:
+                    if (skill.SkillType == SkillType.Spread)
+                        return FindAllAliveInColumn(enemyOfCaster, caster.Col);
                     var first = FindFirstAlive(enemyOfCaster);
                     return first != null ? new List<BattleUnitInstance> { first } : new List<BattleUnitInstance>();
                 case TargetType.AllEnemies:
@@ -315,6 +319,8 @@ namespace GameDemo.Battle
                     var all = FindAllAlive(enemyOfCaster);
                     all.AddRange(FindAllAlive(allyOfCaster));
                     return all;
+                case TargetType.SingleSelf:
+                    return caster.IsAlive ? new List<BattleUnitInstance> { caster } : new List<BattleUnitInstance>();
                 default:
                     return new List<BattleUnitInstance>();
             }
@@ -338,6 +344,15 @@ namespace GameDemo.Battle
             var result = new List<BattleUnitInstance>();
             foreach (BattleUnitInstance unit in formation.Units)
                 if (unit.IsAlive)
+                    result.Add(unit);
+            return result;
+        }
+
+        private List<BattleUnitInstance> FindAllAliveInColumn(Formation formation, int col)
+        {
+            var result = new List<BattleUnitInstance>();
+            foreach (BattleUnitInstance unit in formation.Units)
+                if (unit.IsAlive && unit.Col == col)
                     result.Add(unit);
             return result;
         }

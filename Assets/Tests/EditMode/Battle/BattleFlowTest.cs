@@ -170,7 +170,7 @@ namespace GameDemo.Tests.EditMode
             {
                 if (!_selectedUnit.IsAlive) break;
                 if (targets.Count == 0) continue;
-                if (!skill.CanCast(targets))
+                if (!skill.CanCast(_selectedUnit, targets[0]))
                 {
                     Log($"  {_selectedUnit.DisplayName} 技能 [{skill.DisplayName}] 不满足释放条件，跳过");
                     continue;
@@ -179,7 +179,9 @@ namespace GameDemo.Tests.EditMode
                 var targetNames = string.Join(", ", targets.ConvertAll(t => $"{t.DisplayName}(HP:{t.CurrentHP:F0})"));
                 Log($"  {_selectedUnit.DisplayName} 对 [{targetNames}] 使用 [{skill.DisplayName}]");
 
-                skill.Apply(targets);
+                skill.Cast(_selectedUnit);
+                foreach (var t in targets)
+                    skill.Apply(_selectedUnit, t);
 
                 foreach (var t in targets)
                     Log($"    → {t.DisplayName} HP: {t.CurrentHP:F0}");
@@ -274,11 +276,8 @@ namespace GameDemo.Tests.EditMode
             foreach (Skill skill in caster.Skills)
             {
                 var target = FindTarget(skill.TargetType, enemyFormation);
-                var targets = target != null
-                    ? new List<BattleUnitInstance> { target }
-                    : new List<BattleUnitInstance>();
-                if (targets.Count > 0 && skill.CanCast(targets))
-                    result.Add((skill, targets));
+                if (target != null && skill.CanCast(caster, target))
+                    result.Add((skill, new List<BattleUnitInstance> { target }));
             }
             return result;
         }
@@ -358,26 +357,26 @@ namespace GameDemo.Tests.EditMode
             var pt3 = new BattleUnit("p_priest",  "牧师",   attack: 50f,  defense: 20f, hp: 350f, speed: 50f,  mana: 150f);
 
             var p1 = CreateUnitWithSkill(pt1, 100f, "attack", "攻击",
-                unit => targets => targets[0].TakeDamage(unit.CurrentAttack));
+                (caster, target) => target.TakeDamage(caster.CurrentAttack));
 
             var p2 = CreateUnitWithSkill(pt2, 120f, "poison", "毒刃",
-                unit => targets =>
+                (caster, target) =>
                 {
                     var dot = new BattleEffect("dot", "中毒", BattleEffectType.Negative, BattleEffectStatusType.Damage,
                         initialTurns: 2, maxStackCount: 3);
-                    dot.ApplyActions.Add(units => { units[0].CurrentHP -= 20f; });
-                    targets[0].AddEffect(dot, unit);
-                    Log($"  [附加效果] {targets[0].DisplayName} 被施加 [{dot.DisplayName}]");
+                    dot.ApplyActions.Add((source, u) => { u.CurrentHP -= 20f; });
+                    target.AddEffect(dot, caster);
+                    Log($"  [附加效果] {target.DisplayName} 被施加 [{dot.DisplayName}]");
                 });
 
             var p3 = CreateUnitWithSkill(pt3, 110f, "stun", "眩晕",
-                unit => targets =>
+                (caster, target) =>
                 {
                     var stun = new BattleEffect("stun", "眩晕", BattleEffectType.Negative, BattleEffectStatusType.Control,
                         initialTurns: 1, maxStackCount: 1);
-                    stun.ApplyActions.Add(units => { units[0].CanAct = false; });
-                    targets[0].AddEffect(stun, unit);
-                    Log($"  [附加效果] {targets[0].DisplayName} 被施加 [{stun.DisplayName}]");
+                    stun.ApplyActions.Add((source, u) => { u.CanAct = false; });
+                    target.AddEffect(stun, caster);
+                    Log($"  [附加效果] {target.DisplayName} 被施加 [{stun.DisplayName}]");
                 });
 
             _playerFormation.PlaceUnit(p1, new BattleSlot(1, 0));
@@ -393,11 +392,11 @@ namespace GameDemo.Tests.EditMode
             var et3 = new BattleUnit("e_troll",  "巨魔",       attack: 100f, defense: 40f, hp: 600f, speed: 30f,  mana: 80f);
 
             var e1 = CreateUnitWithSkill(et1, 100f, "attack", "攻击",
-                unit => targets => targets[0].TakeDamage(unit.CurrentAttack));
+                (caster, target) => target.TakeDamage(caster.CurrentAttack));
             var e2 = CreateUnitWithSkill(et2, 100f, "attack", "攻击",
-                unit => targets => targets[0].TakeDamage(unit.CurrentAttack));
+                (caster, target) => target.TakeDamage(caster.CurrentAttack));
             var e3 = CreateUnitWithSkill(et3, 130f, "attack", "攻击",
-                unit => targets => targets[0].TakeDamage(unit.CurrentAttack));
+                (caster, target) => target.TakeDamage(caster.CurrentAttack));
 
             _enemyFormation.PlaceUnit(e1, new BattleSlot(1, 1));
             _enemyFormation.PlaceUnit(e2, new BattleSlot(0, 2));
@@ -412,11 +411,11 @@ namespace GameDemo.Tests.EditMode
 
         private AutoUnitInstance CreateUnitWithSkill(BattleUnit template, float initialCost,
             string skillId, string skillName,
-            Func<AutoUnitInstance, Action<List<BattleUnitInstance>>> makeApply)
+            Action<BattleUnitInstance, BattleUnitInstance> applyAction)
         {
             var unit = new AutoUnitInstance(template, initialCost);
             var skill = new Skill(skillId, skillName, SkillType.SingleAttack, TargetType.SingleEnemy);
-            skill.ApplyActions.Add(makeApply(unit));
+            skill.ApplyActions.Add(applyAction);
             unit.Skills.Add(skill);
             return unit;
         }

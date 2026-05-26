@@ -116,7 +116,7 @@ public class BattleDriver : MonoBehaviour
         {
             if (!caster.IsAlive) break;
             if (targets.Count == 0) continue;
-            if (!skill.CanCast(targets)) continue;
+            if (!skill.CanCast(caster, targets[0])) continue;
 
             // 1. 播放攻击动画 + 技能特效
             bool animationDone = false;
@@ -144,7 +144,9 @@ public class BattleDriver : MonoBehaviour
             var hpBefore = new Dictionary<BattleUnitInstance, float>();
             foreach (var t in targets) hpBefore[t] = t.CurrentHP;
 
-            skill.Apply(targets);
+            skill.Cast(caster);
+            foreach (var t in targets)
+                skill.Apply(caster, t);
             Manager.RaiseSkillUsed(caster, skill, targets);
             Manager.RefreshAllUnits();
             Manager.CleanupDeadUnits();
@@ -253,35 +255,33 @@ public class BattleDriver : MonoBehaviour
         var unit = new AutoUnitInstance(template, initialCost: config.InitialCost);
         // 构造函数已复制 template.InnateSkills → unit.Skills，只需附加行为逻辑
         foreach (var skill in unit.Skills)
-            AttachDefaultBehavior(skill, unit);
+            AttachDefaultBehavior(skill);
 
         formation.PlaceUnit(unit, new BattleSlot(config.Row, config.Col));
     }
 
     /// <summary>为 SkillConfig 创建的空壳技能挂载默认伤害/治疗逻辑。</summary>
-    private static void AttachDefaultBehavior(Skill skill, BattleUnitInstance caster)
+    private static void AttachDefaultBehavior(Skill skill)
     {
         switch (skill.SkillType)
         {
             case SkillType.SingleAttack:
             case SkillType.Spread:
             case SkillType.AoE:
-                skill.ApplyActions.Add(targets =>
+                skill.ApplyActions.Add((caster, target) =>
                 {
-                    foreach (var t in targets)
-                        if (t.IsAlive)
-                            t.TakeDamage(caster.CurrentAttack);
+                    if (target.IsAlive)
+                        target.TakeDamage(caster.CurrentAttack);
                 });
                 break;
 
             case SkillType.Healing:
-                skill.ApplyActions.Add(targets =>
+                skill.ApplyActions.Add((caster, target) =>
                 {
-                    foreach (var t in targets)
+                    if (target.IsAlive)
                     {
-                        if (!t.IsAlive) continue;
                         float healed = caster.CurrentAttack * 0.5f;
-                        t.CurrentHP = Mathf.Min(t.CurrentHP + healed, t.MaxHP);
+                        target.CurrentHP = Mathf.Min(target.CurrentHP + healed, target.MaxHP);
                     }
                 });
                 break;

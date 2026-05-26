@@ -7,6 +7,7 @@ namespace GameDemo.Battle
         SingleEnemy,
         AllEnemies,
         SingleBoth,
-        AllBoth
+        AllBoth,
+        SingleSelf
     }
 }
