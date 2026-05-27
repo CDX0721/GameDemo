@@ -11,18 +11,14 @@ namespace GameDemo.Tests.EditMode
 {
     public class BattleFlowTest
     {
-        private Formation _playerFormation = null!;
-        private Formation _enemyFormation = null!;
-        private ActionQueue _actionQueue = null!;
-        private BattleStateMachine _stateMachine = null!;
-        private BattleUnitInstance? _selectedUnit;
-        private int _frame;
-        private readonly StringBuilder _log = new StringBuilder();
+        private BattleManager _mgr = null!;
+        private readonly StringBuilder _log = new();
+        private int _round;
 
         private void Log(string msg)
         {
-            _log.AppendLine(msg);
-            Debug.Log(msg);
+            _log.AppendLine($"[{_round:D3}] {msg}");
+            Debug.Log($"[{_round:D3}] {msg}");
         }
 
         [Test]
@@ -30,395 +26,374 @@ namespace GameDemo.Tests.EditMode
         {
             SetupBattle();
 
+            _round = 0;
+            _mgr.StartBattle();
+
             const int maxFrames = 500;
-
-            while (_frame < maxFrames)
+            while (_round < maxFrames && !_mgr.StateMachine.IsBattleEnd)
             {
-                _frame++;
-
-                if (_stateMachine.CurrentState == BattleState.BattleEnd)
-                    break;
-
-                switch (_stateMachine.CurrentState)
-                {
-                    case BattleState.BattleStart:
-                        DoBattleStart();
-                        break;
-                    case BattleState.PreAction:
-                        DoPreAction();
-                        break;
-                    case BattleState.WaitingAction:
-                        DoWaitingAction();
-                        break;
-                    case BattleState.Acting:
-                        DoActing();
-                        break;
-                    case BattleState.PostAction:
-                        DoPostAction();
-                        break;
-                }
+                _round++;
+                var st = _mgr.StateMachine.CurrentState;
+                if (st == BattleState.PreAction)
+                    _mgr.EnterPreAction();
+                else if (st == BattleState.WaitingAction)
+                    _mgr.EnterWaitingAction();
+                else if (st == BattleState.PostAction)
+                    _mgr.EnterPostAction();
             }
 
-            if (_frame >= maxFrames)
-                Log("[警告] 达到最大帧数上限，战斗可能未正常结束");
+            if (_round >= maxFrames)
+                Log("【警告】达到最大帧数上限");
 
-            Log($"[Frame {_frame}] ========== 战斗结束 ==========");
-            Log($"  我方存活: {CountAlive(_playerFormation)}  敌方存活: {CountAlive(_enemyFormation)}");
+            int aliveP = _mgr.AliveCountPlayer;
+            int aliveE = _mgr.AliveCountEnemy;
+            Log($"========== 战斗结束 ==========");
+            Log($"我方存活: {aliveP}  敌方存活: {aliveE}");
+            Log($"结果: {(aliveP > 0 && aliveE == 0 ? "玩家胜利" : aliveE > 0 && aliveP == 0 ? "玩家败北" : "未分胜负")}");
 
             string logPath = Path.Combine(Application.dataPath, "Tests", "EditMode", "Battle", "BattleFlowTest.log");
             File.WriteAllText(logPath, _log.ToString());
             Debug.Log($"日志已保存到: {logPath}");
 
-            Assert.Less(_frame, maxFrames, "战斗未在最大帧数内结束，可能存在死循环");
+            Assert.Less(_round, maxFrames, "战斗未在最大帧数内结束");
+
+            // 验证关键逻辑是否在日志中出现
+            string logStr = _log.ToString();
+            Assert.IsTrue(logStr.Contains("攻击") || logStr.Contains("普通攻击"), "日志应包含攻击行为");
+            Assert.IsTrue(logStr.Contains("强化") && logStr.Contains("法师"), "战士应给法师加攻击强化");
+            Assert.IsTrue(logStr.Contains("荆棘") && logStr.Contains("x4"), "荆棘应正确叠加至 x4");
+            Assert.IsTrue(logStr.Contains("沙暴"), "巨魔应使用过沙暴");
+            Assert.IsTrue(logStr.Contains("哈米吉多顿"), "战士仅剩自己时应使用哈米吉多顿");
+            Assert.IsTrue(logStr.Contains("法师") && logStr.Contains("战士") && logStr.Contains("牧师"), "至少应出现三个我方单位");
+            Assert.IsTrue(logStr.Contains("玩家胜利") || logStr.Contains("玩家败北"), "战斗应有明确结果");
         }
 
-        private void DoBattleStart()
-        {
-            Log($"[Frame {_frame}] >>> BattleStart");
-            _actionQueue.Rebuild(_playerFormation, _enemyFormation);
-            _stateMachine.SetState(BattleState.PreAction);
-        }
-
-        private void DoPreAction()
-        {
-            Log($"[Frame {_frame}] >>> PreAction");
-
-            _selectedUnit = _actionQueue.Current;
-            if (_selectedUnit == null)
-            {
-                _stateMachine.SetState(BattleState.BattleEnd);
-                return;
-            }
-
-            LogActionQueue();
-
-            float t = _selectedUnit.ActionValue;
-            Log($"  选中: {_selectedUnit.DisplayName} ({_selectedUnit.Id})  HP={_selectedUnit.CurrentHP:F0}  ATK={_selectedUnit.CurrentAttack:F0}");
-
-            _actionQueue.AdvanceTime();
-            Log($"  [时间推进] t={t:F2}，所有单位 RemainingCost -= t * Speed");
-
-            // 刷新非持续伤害效果
-            RefreshPersistentEffects(_selectedUnit);
-
-            // 单独应用持续伤害类效果
-            foreach (BattleEffectInstance effect in _selectedUnit.Effects)
-            {
-                if (!_selectedUnit.IsAlive) break;
-                if (effect.Template.StatusType != BattleEffectStatusType.Damage) continue;
-                float hpBefore = _selectedUnit.CurrentHP;
-                Log($"  [DoT生效] [{effect.Template.DisplayName}] 作用于 {_selectedUnit.DisplayName}  (剩余 {effect.RemainingTurns} 回合  x{effect.CurrentStackCount})");
-                effect.ApplyTo(_selectedUnit);
-                float delta = hpBefore - _selectedUnit.CurrentHP;
-                if (delta > 0f)
-                    Log($"    → 造成 {delta:F0} 点伤害，HP: {hpBefore:F0} → {_selectedUnit.CurrentHP:F0}");
-            }
-
-            _selectedUnit.RecalculateStats();
-            CleanupDeadUnits();
-
-            if (CheckGameOver())
-            {
-                _stateMachine.SetState(BattleState.BattleEnd);
-                return;
-            }
-
-            if (!_selectedUnit.IsAlive)
-            {
-                Log($"  {_selectedUnit.DisplayName} 已阵亡，跳过行动 → 进入 PostAction");
-                _stateMachine.SetState(BattleState.PostAction);
-                return;
-            }
-
-            if (!_selectedUnit.CanAct)
-            {
-                Log($"  {_selectedUnit.DisplayName} 不可行动（被控制），跳过行动 → 进入 PostAction");
-                _stateMachine.SetState(BattleState.PostAction);
-                return;
-            }
-
-            _stateMachine.SetState(BattleState.WaitingAction);
-        }
-
-        private List<(Skill skill, List<BattleUnitInstance> targets)> _pendingActions = null!;
-
-        private void DoWaitingAction()
-        {
-            Log($"[Frame {_frame}] >>> WaitingAction");
-
-            if (_selectedUnit == null) return;
-
-            _pendingActions = FindAllCastable(_selectedUnit, GetEnemyFormationOf(_selectedUnit));
-
-            if (_pendingActions.Count == 0)
-            {
-                Log($"  {_selectedUnit.DisplayName} 无可用技能，跳过");
-                _stateMachine.SetState(BattleState.PostAction);
-                return;
-            }
-
-            _stateMachine.SetState(BattleState.Acting);
-        }
-
-        private void DoActing()
-        {
-            Log($"[Frame {_frame}] >>> Acting");
-
-            if (_selectedUnit == null) return;
-
-            foreach (var (skill, targets) in _pendingActions)
-            {
-                if (!_selectedUnit.IsAlive) break;
-                if (targets.Count == 0) continue;
-                if (!skill.CanCast(_selectedUnit, targets[0]))
-                {
-                    Log($"  {_selectedUnit.DisplayName} 技能 [{skill.DisplayName}] 不满足释放条件，跳过");
-                    continue;
-                }
-
-                var targetNames = string.Join(", ", targets.ConvertAll(t => $"{t.DisplayName}(HP:{t.CurrentHP:F0})"));
-                Log($"  {_selectedUnit.DisplayName} 对 [{targetNames}] 使用 [{skill.DisplayName}]");
-
-                skill.Cast(_selectedUnit);
-                foreach (var t in targets)
-                    skill.Apply(_selectedUnit, t);
-
-                foreach (var t in targets)
-                    Log($"    → {t.DisplayName} HP: {t.CurrentHP:F0}");
-
-                RefreshAllUnits();
-                CleanupDeadUnits();
-            }
-
-            _pendingActions = null!;
-            _stateMachine.SetState(BattleState.PostAction);
-        }
-
-        private void DoPostAction()
-        {
-            Log($"[Frame {_frame}] >>> PostAction");
-
-            if (_selectedUnit != null && _selectedUnit.IsAlive)
-            {
-                TickEffects(_selectedUnit);
-                RefreshPersistentEffects(_selectedUnit);
-                Log($"  [效果刷新] {_selectedUnit.DisplayName} CanAct={_selectedUnit.CanAct}  HP={_selectedUnit.CurrentHP:F0}");
-            }
-
-            CleanupDeadUnits();
-
-            _selectedUnit?.ResetCost();
-            _actionQueue.Rebuild(_playerFormation, _enemyFormation);
-
-            if (CheckGameOver())
-            {
-                _stateMachine.SetState(BattleState.BattleEnd);
-                return;
-            }
-
-            _stateMachine.SetState(BattleState.PreAction);
-        }
-
-        /// <summary>效果倒计时，仅减少剩余回合、移除过期效果。</summary>
-        private void TickEffects(BattleUnitInstance unit)
-        {
-            for (int i = unit.Effects.Count - 1; i >= 0; i--)
-            {
-                BattleEffectInstance effect = unit.Effects[i];
-                effect.RemainingTurns--;
-                Log($"  [效果回合] [{effect.Template.DisplayName}] 剩余 {effect.RemainingTurns} 回合");
-                if (effect.IsExpired)
-                {
-                    unit.Effects.RemoveAt(i);
-                    Log($"  [效果移除] [{effect.Template.DisplayName}] 从 {unit.DisplayName} 移除");
-                }
-            }
-        }
-
-        /// <summary>重置修正 → 应用所有非持续伤害效果 → 重算属性。</summary>
-        private void RefreshPersistentEffects(BattleUnitInstance unit)
-        {
-            if (!unit.IsAlive) return;
-            unit.ResetModifiers();
-            foreach (BattleEffectInstance effect in unit.Effects)
-            {
-                if (effect.Template.StatusType == BattleEffectStatusType.Damage) continue;
-                Log($"  [效果刷新] [{effect.Template.DisplayName}] 重新作用于 {unit.DisplayName}");
-                effect.ApplyTo(unit);
-            }
-            unit.RecalculateStats();
-        }
-
-        /// <summary>刷新双方所有存活单位的非持续伤害效果。</summary>
-        private void RefreshAllUnits()
-        {
-            foreach (BattleUnitInstance unit in _playerFormation.Units)
-                RefreshPersistentEffects(unit);
-            foreach (BattleUnitInstance unit in _enemyFormation.Units)
-                RefreshPersistentEffects(unit);
-        }
-
-        private void LogActionQueue()
-        {
-            Log("  --- 当前行动队列 ---");
-            for (int i = 0; i < _actionQueue.Count; i++)
-            {
-                BattleUnitInstance? u = _actionQueue[i];
-                if (u != null)
-                    Log($"  [{i}] {u.DisplayName} ({u.Id})  行动值={u.ActionValue:F2}  剩余代价={u.RemainingCost:F1}  速度={u.CurrentSpeed:F0}");
-            }
-        }
-
-        private List<(Skill skill, List<BattleUnitInstance> targets)> FindAllCastable(
-            BattleUnitInstance caster, Formation enemyFormation)
-        {
-            var result = new List<(Skill skill, List<BattleUnitInstance> targets)>();
-            foreach (Skill skill in caster.Skills)
-            {
-                var target = FindTarget(skill.TargetType, enemyFormation);
-                if (target != null && skill.CanCast(caster, target))
-                    result.Add((skill, new List<BattleUnitInstance> { target }));
-            }
-            return result;
-        }
-
-        private BattleUnitInstance? FindTarget(TargetType targetType, Formation enemyFormation)
-        {
-            switch (targetType)
-            {
-                case TargetType.SingleEnemy:
-                case TargetType.AllEnemies:
-                    return FindFirstAlive(enemyFormation);
-                case TargetType.SingleAlly:
-                case TargetType.AllAllies:
-                    return _selectedUnit;
-                default:
-                    return null;
-            }
-        }
-
-        private BattleUnitInstance? FindFirstAlive(Formation formation)
-        {
-            foreach (BattleUnitInstance unit in formation.Units)
-                if (unit.IsAlive)
-                    return unit;
-            return null;
-        }
-
-        private Formation GetEnemyFormationOf(BattleUnitInstance unit)
-        {
-            return _playerFormation.FindUnit(unit).IsValid ? _enemyFormation : _playerFormation;
-        }
-
-        private void CleanupDeadUnits()
-        {
-            CleanupDeadInFormation(_playerFormation);
-            CleanupDeadInFormation(_enemyFormation);
-        }
-
-        private void CleanupDeadInFormation(Formation formation)
-        {
-            foreach (BattleUnitInstance unit in formation.Units)
-            {
-                if (!unit.IsAlive)
-                {
-                    BattleSlot slot = formation.FindUnit(unit);
-                    formation.RemoveUnit(slot);
-                    Log($"  [死亡移除] {unit.DisplayName} 阵亡，移出场地");
-                }
-            }
-        }
-
-        private bool CheckGameOver()
-        {
-            return CountAlive(_playerFormation) == 0 || CountAlive(_enemyFormation) == 0;
-        }
-
-        private int CountAlive(Formation formation)
-        {
-            int count = 0;
-            foreach (BattleUnitInstance unit in formation.Units)
-                if (unit.IsAlive) count++;
-            return count;
-        }
+        // ==================== 布阵 ====================
 
         private void SetupBattle()
         {
             Log("========== 初始化战斗 ==========");
 
-            _playerFormation = new Formation();
-            _enemyFormation = new Formation();
-            _actionQueue = new ActionQueue();
-            _stateMachine = new BattleStateMachine();
-            _stateMachine.SetState(BattleState.BattleStart);
+            _mgr = new BattleManager();
+            _mgr.OnWaitingForAutoAction += AI_OnTurn;
 
-            var pt1 = new BattleUnit("p_warrior", "战士",   attack: 80f,  defense: 30f, hp: 500f, speed: 60f,  mana: 100f);
-            var pt2 = new BattleUnit("p_mage",    "法师",   attack: 120f, defense: 15f, hp: 300f, speed: 40f,  mana: 200f);
-            var pt3 = new BattleUnit("p_priest",  "牧师",   attack: 50f,  defense: 20f, hp: 350f, speed: 50f,  mana: 150f);
+            // --- 我方 ---
+            var ptWarrior = new BattleUnit("p_warrior", "战士",   attack: 80, defense: 30, hp: 800, speed: 60, mana: 100);
+            var ptMage    = new BattleUnit("p_mage",    "法师",   attack: 120, defense: 15, hp: 300, speed: 40, mana: 200);
+            var ptPriest  = new BattleUnit("p_priest",  "牧师",   attack: 50, defense: 20, hp: 350, speed: 50, mana: 150);
 
-            var p1 = CreateUnitWithSkill(pt1, 100f, "attack", "攻击",
-                (caster, target) => target.TakeDamage(caster.CurrentAttack));
+            PlaceUnit(ptWarrior, 1, 0, true,
+                SkillCatalog.Get("NormalAttack", 2),
+                SkillCatalog.Get("Shield", 2),
+                SkillCatalog.Get("AtkStrongUp", 1),
+                SkillCatalog.Get("Armageddon", 1));
 
-            var p2 = CreateUnitWithSkill(pt2, 120f, "poison", "毒刃",
-                (caster, target) =>
-                {
-                    var dot = new BattleEffect("dot", "中毒", BattleEffectType.Negative, BattleEffectStatusType.Damage,
-                        initialTurns: 2, maxStackCount: 3);
-                    dot.ApplyActions.Add((source, u) => { u.CurrentHP -= 20f; });
-                    target.AddEffect(dot, caster);
-                    Log($"  [附加效果] {target.DisplayName} 被施加 [{dot.DisplayName}]");
-                });
+            PlaceUnit(ptMage, 0, 1, true,
+                SkillCatalog.Get("NormalAttack", 2),
+                SkillCatalog.Get("ManaDrain", 2),
+                SkillCatalog.Get("ThornsWrap", 2));
 
-            var p3 = CreateUnitWithSkill(pt3, 110f, "stun", "眩晕",
-                (caster, target) =>
-                {
-                    var stun = new BattleEffect("stun", "眩晕", BattleEffectType.Negative, BattleEffectStatusType.Control,
-                        initialTurns: 1, maxStackCount: 1);
-                    stun.ApplyActions.Add((source, u) => { u.CanAct = false; });
-                    target.AddEffect(stun, caster);
-                    Log($"  [附加效果] {target.DisplayName} 被施加 [{stun.DisplayName}]");
-                });
+            PlaceUnit(ptPriest, 2, 1, true,
+                SkillCatalog.Get("NormalAttack", 1),
+                SkillCatalog.Get("Heal", 3),
+                SkillCatalog.Get("FlashStrike", 1));
 
-            _playerFormation.PlaceUnit(p1, new BattleSlot(1, 0));
-            _playerFormation.PlaceUnit(p2, new BattleSlot(0, 1));
-            _playerFormation.PlaceUnit(p3, new BattleSlot(2, 1));
+            Log($"我方: 战士(HP:800 ATK:80) 法师(HP:300 ATK:120) 牧师(HP:350 ATK:50)");
 
-            Log($"  我方: {p1.DisplayName}(HP:{p1.MaxHP:F0} ATK:{p1.CurrentAttack:F0}) " +
-                $"{p2.DisplayName}(HP:{p2.MaxHP:F0} ATK:{p2.CurrentAttack:F0}) " +
-                $"{p3.DisplayName}(HP:{p3.MaxHP:F0} ATK:{p3.CurrentAttack:F0})");
+            // --- 敌方 ---
+            var etGoblin = new BattleUnit("e_goblin", "哥布林",     attack: 60, defense: 10, hp: 300, speed: 70, mana: 50);
+            var etArcher = new BattleUnit("e_archer", "哥布林射手", attack: 70, defense: 8,  hp: 250, speed: 80, mana: 50);
+            var etTroll  = new BattleUnit("e_troll",  "巨魔",       attack: 100, defense: 40, hp: 650, speed: 30, mana: 80);
 
-            var et1 = new BattleUnit("e_goblin", "哥布林",     attack: 60f,  defense: 10f, hp: 200f, speed: 70f,  mana: 50f);
-            var et2 = new BattleUnit("e_archer", "哥布林射手", attack: 70f,  defense: 8f,  hp: 180f, speed: 80f,  mana: 50f);
-            var et3 = new BattleUnit("e_troll",  "巨魔",       attack: 100f, defense: 40f, hp: 600f, speed: 30f,  mana: 80f);
+            PlaceUnit(etGoblin, 1, 1, false,
+                SkillCatalog.Get("NormalAttack", 2),
+                SkillCatalog.Get("Shield", 1));
 
-            var e1 = CreateUnitWithSkill(et1, 100f, "attack", "攻击",
-                (caster, target) => target.TakeDamage(caster.CurrentAttack));
-            var e2 = CreateUnitWithSkill(et2, 100f, "attack", "攻击",
-                (caster, target) => target.TakeDamage(caster.CurrentAttack));
-            var e3 = CreateUnitWithSkill(et3, 130f, "attack", "攻击",
-                (caster, target) => target.TakeDamage(caster.CurrentAttack));
+            PlaceUnit(etArcher, 0, 2, false,
+                SkillCatalog.Get("NormalAttack", 2),
+                SkillCatalog.Get("ThornsWrap", 2));
 
-            _enemyFormation.PlaceUnit(e1, new BattleSlot(1, 1));
-            _enemyFormation.PlaceUnit(e2, new BattleSlot(0, 2));
-            _enemyFormation.PlaceUnit(e3, new BattleSlot(1, 2));
+            PlaceUnit(etTroll, 1, 2, false,
+                SkillCatalog.Get("NormalAttack", 3),
+                SkillCatalog.Get("SandStorm", 1));
 
-            Log($"  敌方: {e1.DisplayName}(HP:{e1.MaxHP:F0} ATK:{e1.CurrentAttack:F0}) " +
-                $"{e2.DisplayName}(HP:{e2.MaxHP:F0} ATK:{e2.CurrentAttack:F0}) " +
-                $"{e3.DisplayName}(HP:{e3.MaxHP:F0} ATK:{e3.CurrentAttack:F0})");
-
+            Log($"敌方: 哥布林(HP:300 ATK:60) 射手(HP:250 ATK:70) 巨魔(HP:650 ATK:100)");
             Log("========== 战斗开始 ==========\n");
         }
 
-        private AutoUnitInstance CreateUnitWithSkill(BattleUnit template, float initialCost,
-            string skillId, string skillName,
-            Action<BattleUnitInstance, BattleUnitInstance> applyAction)
+        private void PlaceUnit(BattleUnit template, int row, int col, bool isPlayer, params Skill[] skills)
         {
-            var unit = new AutoUnitInstance(template, initialCost);
-            var skill = new Skill(skillId, skillName, SkillType.SingleAttack, TargetType.SingleEnemy);
-            skill.ApplyActions.Add(applyAction);
-            unit.Skills.Add(skill);
-            return unit;
+            foreach (var s in skills)
+                template.InnateSkills.Add(s);
+            var unit = new AutoUnitInstance(template, initialCost: 100f);
+            var formation = isPlayer ? _mgr.PlayerFormation : _mgr.EnemyFormation;
+            formation.PlaceUnit(unit, new BattleSlot(row, col));
         }
+
+        // ==================== AI 逻辑 ====================
+
+        private void AI_OnTurn(AutoUnitInstance caster)
+        {
+            var skills = _mgr.GetCastableSkills(caster);
+            if (skills.Count == 0)
+            {
+                Log($"[AI] {caster.DisplayName} 无可用技能，跳过");
+                _mgr.StateMachine.SetState(BattleState.PostAction);
+                return;
+            }
+
+            bool isPlayer = _mgr.IsPlayerUnit(caster);
+            Formation enemyForm = isPlayer ? _mgr.EnemyFormation : _mgr.PlayerFormation;
+            Formation allyForm  = isPlayer ? _mgr.PlayerFormation : _mgr.EnemyFormation;
+
+            float hpPct = caster.CurrentHP / caster.MaxHP;
+
+            // 0. 哈米吉多顿：只剩自己时秒杀全场
+            var armageddon = FindSkill(skills, "Armageddon");
+            if (armageddon.HasValue)
+            {
+                Log($"[AI] {caster.DisplayName} 仅剩自己，发动 [{armageddon.Value.skill.DisplayName}]！");
+                SubmitAndAct(caster, armageddon.Value.skill, armageddon.Value.targets);
+                return;
+            }
+
+            // 1. 自救：自身 HP < 35%
+            if (hpPct < 0.35f)
+            {
+                // 找最低血量队友（包含自己）治疗
+                var lowestAlly = FindLowestHpUnit(allyForm);
+                var heal = FindSkill(skills, "Heal");
+                if (heal.HasValue)
+                {
+                    var target = lowestAlly ?? caster;
+                    Log($"[AI] {caster.DisplayName} HP={caster.CurrentHP:F0} ({(hpPct*100):F0}%)，低血量，使用 [{heal.Value.skill.DisplayName}] 治疗 {target.DisplayName}");
+                    SubmitAndAct(caster, heal.Value.skill, new List<BattleUnitInstance> { target });
+                    return;
+                }
+                var shield = FindSkill(skills, "Shield");
+                if (shield.HasValue)
+                {
+                    Log($"[AI] {caster.DisplayName} HP={caster.CurrentHP:F0} ({(hpPct*100):F0}%)，低血量，使用 [{shield.Value.skill.DisplayName}] 自救");
+                    SubmitAndAct(caster, shield.Value.skill, shield.Value.targets);
+                    return;
+                }
+            }
+
+            // 2. 救援队友：任何队友 HP < 30%
+            var criticalAlly = FindCriticalAlly(allyForm, 0.30f);
+            if (criticalAlly != null)
+            {
+                var heal = FindSkill(skills, "Heal");
+                if (heal.HasValue)
+                {
+                    Log($"[AI] {caster.DisplayName} 发现 {criticalAlly.DisplayName} HP={criticalAlly.CurrentHP:F0} 危急，使用 [{heal.Value.skill.DisplayName}] 救援");
+                    SubmitAndAct(caster, heal.Value.skill, new List<BattleUnitInstance> { criticalAlly });
+                    return;
+                }
+            }
+
+            // 3. 强化攻击最高的未持有 Buff 的队友
+            var atkBuff = FindSkill(skills, "AtkStrongUp");
+            if (atkBuff.HasValue)
+            {
+                var bestAlly = FindBestAtkBuffTarget(allyForm, caster);
+                if (bestAlly != null)
+                {
+                    Log($"[AI] {caster.DisplayName} 使用 [{atkBuff.Value.skill.DisplayName}] 强化 {bestAlly.DisplayName}");
+                    SubmitAndAct(caster, atkBuff.Value.skill, new List<BattleUnitInstance> { bestAlly });
+                    return;
+                }
+            }
+
+            var lastStand = FindSkill(skills, "TheLastStand");
+            if (lastStand.HasValue && !HasEffect(caster, "DmgBonusUp"))
+            {
+                Log($"[AI] {caster.DisplayName} 使用 [{lastStand.Value.skill.DisplayName}] 强化全体");
+                SubmitAndAct(caster, lastStand.Value.skill, lastStand.Value.targets);
+                return;
+            }
+
+            // 4. 群体攻击（敌方 >= 2 时优先 AOE）
+            var sandStorm = FindSkill(skills, "SandStorm");
+            if (sandStorm.HasValue && CountAlive(enemyForm) >= 2)
+            {
+                Log($"[AI] {caster.DisplayName} 使用 [{sandStorm.Value.skill.DisplayName}] 攻击全体");
+                SubmitAndAct(caster, sandStorm.Value.skill, sandStorm.Value.targets);
+                return;
+            }
+
+            // 5. 荆棘缠绕
+            var thorns = FindSkill(skills, "ThornsWrap");
+            if (thorns.HasValue)
+            {
+                Log($"[AI] {caster.DisplayName} 使用 [{thorns.Value.skill.DisplayName}]");
+                SubmitAndAct(caster, thorns.Value.skill, thorns.Value.targets);
+                return;
+            }
+
+            // 6. 吸魔
+            var manaDrain = FindSkill(skills, "ManaDrain");
+            if (manaDrain.HasValue)
+            {
+                Log($"[AI] {caster.DisplayName} 使用 [{manaDrain.Value.skill.DisplayName}]");
+                SubmitAndAct(caster, manaDrain.Value.skill, manaDrain.Value.targets);
+                return;
+            }
+
+            // 7. 攻击最低血量敌人
+            var normalAtk = FindLowestHpTarget(skills, "NormalAttack", enemyForm);
+            if (normalAtk.HasValue)
+            {
+                var (ns, nt) = normalAtk.Value;
+                Log($"[AI] {caster.DisplayName} 使用 [{ns.DisplayName}] → {nt.DisplayName}(HP:{nt.CurrentHP:F0})");
+                SubmitAndAct(caster, ns, new List<BattleUnitInstance> { nt });
+                return;
+            }
+
+            // 8. 默认
+            var first = skills[0];
+            Log($"[AI] {caster.DisplayName} 使用 [{first.skill.DisplayName}]（默认）");
+            SubmitAndAct(caster, first.skill, first.targets);
+        }
+
+        private void SubmitAndAct(BattleUnitInstance caster, Skill skill, List<BattleUnitInstance> targets)
+        {
+            // 记录前HP
+            var sb = new StringBuilder();
+            foreach (var u in GetAllAlive(_mgr.PlayerFormation, _mgr.EnemyFormation))
+                sb.Append($"{u.DisplayName}(HP:{u.CurrentHP:F0} MP:{u.CurrentMana:F0}) ");
+            Log($"  [状态] {sb}");
+
+            if (targets.Count == 0 || !skill.CanCast(caster, targets[0]))
+            {
+                Log($"  [失败] 不满足释放条件，跳过");
+                _mgr.StateMachine.SetState(BattleState.PostAction);
+                return;
+            }
+
+            _mgr.SelectedSkill = skill;
+            skill.Cast(caster);
+
+            // 记录施放
+            var targetNames = string.Join(", ", targets.ConvertAll(t => $"{t.DisplayName}"));
+            Log($"  [施放] {caster.DisplayName} → [{skill.DisplayName}] → [{targetNames}]");
+
+            foreach (var t in targets)
+                skill.Apply(caster, t);
+
+            // 记录后HP
+            sb.Clear();
+            foreach (var u in GetAllAlive(_mgr.PlayerFormation, _mgr.EnemyFormation))
+            {
+                sb.Append($"{u.DisplayName}(HP:{u.CurrentHP:F0} MP:{u.CurrentMana:F0}) ");
+                if (u.Effects.Count > 0)
+                {
+                    sb.Append("[");
+                    foreach (var e in u.Effects)
+                        sb.Append($"{e.Template.DisplayName}x{e.CurrentStackCount}({e.RemainingTurns}t) ");
+                    sb.Append("]");
+                }
+                sb.Append("| ");
+            }
+            Log($"  [结果] {sb}");
+
+            _mgr.RaiseSkillUsed(caster, skill, targets);
+            _mgr.RefreshAllUnits();
+            _mgr.CleanupDeadUnits();
+
+            _mgr.StateMachine.SetState(BattleState.PostAction);
+        }
+
+        // ==================== 辅助 ====================
+
+        private static BattleUnitInstance? FindBestAtkBuffTarget(Formation allyForm, BattleUnitInstance caster)
+        {
+            BattleUnitInstance? best = null;
+            float maxAtk = 0f;
+            foreach (var u in allyForm.Units)
+            {
+                if (!u.IsAlive) continue;
+                if (u == caster) continue;          // 不加给自己
+                if (HasEffect(u, "AtkMultUp")) continue; // 已有 buff 跳过
+                if (u.CurrentAttack > maxAtk)
+                { maxAtk = u.CurrentAttack; best = u; }
+            }
+            return best;
+        }
+
+        private static bool HasEffect(BattleUnitInstance unit, string effectId)
+        {
+            foreach (var e in unit.Effects)
+                if (e.Template.Id == effectId)
+                    return true;
+            return false;
+        }
+
+        private static BattleUnitInstance? FindCriticalAlly(Formation allyForm, float threshold)
+        {
+            foreach (var u in allyForm.Units)
+                if (u.IsAlive && u.CurrentHP / u.MaxHP < threshold)
+                    return u;
+            return null;
+        }
+
+        private static BattleUnitInstance? FindLowestHpUnit(Formation formation)
+        {
+            BattleUnitInstance? best = null;
+            float minHp = float.MaxValue;
+            foreach (var u in formation.Units)
+                if (u.IsAlive && u.CurrentHP < minHp)
+                { minHp = u.CurrentHP; best = u; }
+            return best;
+        }
+
+        private static (Skill skill, List<BattleUnitInstance> targets)? FindSkill(
+            List<(Skill skill, List<BattleUnitInstance> targets)> skills, string id)
+        {
+            foreach (var (s, ts) in skills)
+                if (s.Id == id)
+                    return (s, ts);
+            return null;
+        }
+
+        private static (Skill skill, BattleUnitInstance target)? FindLowestHpTarget(
+            List<(Skill skill, List<BattleUnitInstance> targets)> skills, string id, Formation enemyForm)
+        {
+            BattleUnitInstance? lowest = null;
+            float minHp = float.MaxValue;
+            foreach (var u in enemyForm.Units)
+                if (u.IsAlive && u.CurrentHP < minHp)
+                { minHp = u.CurrentHP; lowest = u; }
+
+            if (lowest == null) return null;
+
+            foreach (var (s, ts) in skills)
+                if (s.Id == id)
+                    return (s, lowest);
+            return null;
+        }
+
+        private static int CountAlive(Formation f)
+        {
+            int c = 0;
+            foreach (var u in f.Units) if (u.IsAlive) c++;
+            return c;
+        }
+
+        private static List<BattleUnitInstance> FindAllAlive(Formation f)
+        {
+            var r = new List<BattleUnitInstance>();
+            foreach (var u in f.Units) if (u.IsAlive) r.Add(u);
+            return r;
+        }
+
+        private static List<BattleUnitInstance> GetAllAlive(Formation a, Formation b)
+        {
+            var r = FindAllAlive(a);
+            r.AddRange(FindAllAlive(b));
+            return r;
+        }
+
     }
 }
 #endif

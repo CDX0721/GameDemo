@@ -10,6 +10,7 @@ namespace GameDemo.Battle
     {
         public string Id { get; }
         public string DisplayName { get; set; }
+        public string Description { get; set; } = "";
         public BattleEffectType EffectType { get; set; }
         public BattleEffectStatusType StatusType { get; set; }
 
@@ -22,7 +23,7 @@ namespace GameDemo.Battle
         /// <summary>
         /// 影响函数列表，签名为 (来源, 承受方)。
         /// </summary>
-        public List<Action<BattleUnitInstance?, BattleUnitInstance>> ApplyActions { get; }
+        public List<Action<BattleUnitInstance?, BattleUnitInstance, int>> ApplyActions { get; }
 
         public BattleEffect(string id, string displayName, BattleEffectType effectType, BattleEffectStatusType statusType,
             int initialTurns = 1, int maxStackCount = 1)
@@ -33,13 +34,13 @@ namespace GameDemo.Battle
             StatusType = statusType;
             InitialTurns = initialTurns;
             MaxStackCount = maxStackCount;
-            ApplyActions = new List<Action<BattleUnitInstance?, BattleUnitInstance>>();
+            ApplyActions = new List<Action<BattleUnitInstance?, BattleUnitInstance, int>>();
         }
 
-        public void Apply(BattleUnitInstance? source, BattleUnitInstance unit)
+        public void Apply(BattleUnitInstance? source, BattleUnitInstance unit, int stackCount)
         {
             foreach (var action in ApplyActions)
-                action(source, unit);
+                action(source, unit, stackCount);
         }
     }
 }

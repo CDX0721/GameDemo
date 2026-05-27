@@ -14,6 +14,8 @@ namespace GameDemo.Battle
         public TargetType TargetType { get; set; }
         public int Level { get; set; }
         public string Description { get; set; } = "";
+        /// <summary>若设置，施放时要求己方存活单位数恰好等于此值。</summary>
+        public int? ExactAllyCount { get; set; }
 
         public List<Func<BattleUnitInstance, BattleUnitInstance, bool>> CanCastConditions { get; }
         /// <summary>每个目标分别执行。</summary>

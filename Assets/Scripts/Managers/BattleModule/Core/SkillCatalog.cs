@@ -40,6 +40,12 @@ namespace GameDemo.Battle
             Get("ManaDrain", 1);
             Get("ManaDrain", 2);
             Get("ManaDrain", 3);
+            Get("AtkStrongUp", 1);
+            Get("ThornsWrap", 1);
+            Get("ThornsWrap", 2);
+            Get("ThornsWrap", 3);
+            Get("TheLastStand", 1);
+            Get("Armageddon", 1);
         }
 
         private static Skill Build(string id, int level) => id switch
@@ -52,6 +58,10 @@ namespace GameDemo.Battle
             "SandStorm"          => BuildSandStorm(),
             "FlashStrike"        => BuildFlashStrike(),
             "ManaDrain"          => BuildManaDrain(level),
+            "AtkStrongUp"        => BuildAtkStrongUp(),
+            "ThornsWrap"         => BuildThornsWrap(level),
+            "TheLastStand"       => BuildTheLastStand(),
+            "Armageddon"         => BuildArmageddon(),
             _ => throw new KeyNotFoundException($"未知技能 ID: {id}")
         };
 
@@ -282,6 +292,119 @@ namespace GameDemo.Battle
                 float actualDrain = System.MathF.Min(drain, target.CurrentMana);
                 target.CurrentMana -= actualDrain;
                 caster.CurrentMana = System.MathF.Min(caster.CurrentMana + actualDrain, caster.MaxMana);
+            });
+
+            return skill;
+        }
+
+        private static Skill BuildAtkStrongUp()
+        {
+            const int level = 1;
+            const int manaCost = 10;
+
+            var skill = new Skill("AtkStrongUp", "你被强化了！快上！",
+                SkillType.Support, TargetType.SingleAlly, level);
+            skill.Description = $"消耗{manaCost}点法力，使友方单位攻击力提高200%，持续1回合";
+
+            skill.CanCastConditions.Add((caster, target) =>
+                target.IsAlive && caster.CurrentMana >= manaCost);
+
+            skill.ApplyActions.Add((caster, target) =>
+            {
+                caster.CurrentMana -= manaCost;
+                if (target.IsAlive)
+                    target.AddEffect(BattleEffectCatalog.Create("AtkMultUp", caster,
+                        stackCount: 1, turns: 1, 200));
+            });
+
+            return skill;
+        }
+
+        private static Skill BuildThornsWrap(int level)
+        {
+            int manaCost = level switch
+            {
+                1 => 5,
+                2 => 6,
+                3 => 7,
+                _ => 5
+            };
+
+            float damageRatio = level switch
+            {
+                1 => 0.50f,
+                2 => 0.70f,
+                3 => 0.90f,
+                _ => 0.50f
+            };
+
+            var skill = new Skill("ThornsWrap", "荆棘缠绕",
+                SkillType.SingleAttack, TargetType.SingleEnemy, level);
+            skill.Description = $"消耗{manaCost}点法力，为目标施加2层荆棘效果（每回合受到{damageRatio * 100:F0}%攻击力的持续伤害），持续2回合";
+
+            skill.CanCastConditions.Add((caster, target) =>
+                target.IsAlive && caster.CurrentMana >= manaCost);
+
+            skill.ApplyActions.Add((caster, target) =>
+            {
+                caster.CurrentMana -= manaCost;
+                if (!target.IsAlive) return;
+                int perStack = (int)(caster.CurrentAttack * damageRatio);
+                target.AddEffect(BattleEffectCatalog.Create("Thorns", caster,
+                    stackCount: 2, turns: 2, perStack));
+            });
+
+            return skill;
+        }
+
+        private static Skill BuildTheLastStand()
+        {
+            const int level = 1;
+            const int manaCost = 20;
+
+            var skill = new Skill("TheLastStand", "背水一战",
+                SkillType.Support, TargetType.AllAllies, level);
+            skill.Description = $"消耗{manaCost}点法力，为全体友方添加伤害提高100%和受到伤害提高50%，持续3回合";
+
+            skill.CanCastConditions.Add((caster, target) =>
+                caster.CurrentMana >= manaCost);
+
+            skill.CastActions.Add(caster =>
+            {
+                caster.CurrentMana -= manaCost;
+            });
+
+            skill.ApplyActions.Add((caster, target) =>
+            {
+                if (!target.IsAlive) return;
+                target.AddEffect(BattleEffectCatalog.Create("DmgBonusUp", caster,
+                    stackCount: 1, turns: 3, 100));
+                target.AddEffect(BattleEffectCatalog.Create("DmgReductionDown", caster,
+                    stackCount: 1, turns: 3, 50));
+            });
+
+            return skill;
+        }
+
+        private static Skill BuildArmageddon()
+        {
+            const int level = 1;
+
+            var skill = new Skill("Armageddon", "哈米吉多顿",
+                SkillType.AoE, TargetType.AllEnemies, level);
+            skill.Description = "消耗几乎所有的生命和法力值，对敌方全体造成特大伤害。";
+            skill.ExactAllyCount = 1;
+
+            skill.CastActions.Add(caster =>
+            {
+                caster.CurrentHP = 1f;
+                caster.CurrentMana = 1f;
+            });
+
+            skill.ApplyActions.Add((caster, target) =>
+            {
+                if (target.IsAlive)
+                    target.TakeDamage(target.MaxHP * 5f);
             });
 
             return skill;

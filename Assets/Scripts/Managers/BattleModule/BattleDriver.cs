@@ -116,6 +116,12 @@ public class BattleDriver : MonoBehaviour
         {
             if (!caster.IsAlive) break;
             if (targets.Count == 0) continue;
+            if (skill.ExactAllyCount.HasValue)
+            {
+                int aliveCount = Manager.IsPlayerUnit(caster)
+                    ? Manager.AliveCountPlayer : Manager.AliveCountEnemy;
+                if (aliveCount != skill.ExactAllyCount.Value) continue;
+            }
             if (!skill.CanCast(caster, targets[0])) continue;
 
             // 1. 播放攻击动画 + 技能特效

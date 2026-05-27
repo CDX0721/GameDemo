@@ -126,25 +126,34 @@ namespace GameDemo.Battle
         // ==================== 附加效果管理 ====================
 
         /// <summary>
-        /// 施加附加效果。以 (Template.Id, Source) 为关键字去重：
-        /// 相同关键字且未达最大层数时叠加并刷新持续回合；不同关键字则新增实例。
+        /// 施加附加效果实例。以 (Template.Id, Source) 为关键字去重：
+        /// 相同关键字时替换为新模板值，叠层合并，刷新持续回合；不同关键字则新增。
+        /// </summary>
+        public void AddEffect(BattleEffectInstance newEffect)
+        {
+            for (int i = Effects.Count - 1; i >= 0; i--)
+            {
+                var inst = Effects[i];
+                if (inst.Template.Id == newEffect.Template.Id && inst.Source == newEffect.Source)
+                {
+                    int total = inst.CurrentStackCount + newEffect.CurrentStackCount;
+                    if (total > newEffect.Template.MaxStackCount)
+                        total = newEffect.Template.MaxStackCount;
+                    newEffect.CurrentStackCount = total;
+                    Effects.RemoveAt(i);
+                    break;
+                }
+            }
+            Effects.Add(newEffect);
+            OnEffectAdded?.Invoke(newEffect);
+        }
+
+        /// <summary>
+        /// 施加附加效果（简易重载）。模板 + 来源，默认 1 层。
         /// </summary>
         public void AddEffect(BattleEffect template, BattleUnitInstance? source)
         {
-            foreach (BattleEffectInstance inst in Effects)
-            {
-                if (inst.Template.Id == template.Id && inst.Source == source)
-                {
-                    if (inst.CurrentStackCount < template.MaxStackCount)
-                        inst.CurrentStackCount++;
-                    inst.RemainingTurns = template.InitialTurns;
-                    OnEffectAdded?.Invoke(inst); // 刷新也通知
-                    return;
-                }
-            }
-            var newEffect = new BattleEffectInstance(template, source);
-            Effects.Add(newEffect);
-            OnEffectAdded?.Invoke(newEffect);
+            AddEffect(new BattleEffectInstance(template, source));
         }
 
         // ==================== 状态重置 & 重算 ====================

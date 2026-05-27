@@ -23,7 +23,7 @@ namespace GameDemo.Battle
 
         public void ApplyTo(BattleUnitInstance unit)
         {
-            Template.Apply(Source, unit);
+            Template.Apply(Source, unit, CurrentStackCount);
         }
     }
 }

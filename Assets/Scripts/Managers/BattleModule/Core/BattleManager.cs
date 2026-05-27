@@ -79,8 +79,12 @@ namespace GameDemo.Battle
         {
             var result = new List<(Skill, List<BattleUnitInstance>)>();
 
+            Formation allyFormation = IsPlayerUnit(unit) ? PlayerFormation : EnemyFormation;
             foreach (Skill skill in unit.Skills)
             {
+                if (skill.ExactAllyCount.HasValue &&
+                    CountAlive(allyFormation) != skill.ExactAllyCount.Value)
+                    continue;
                 var targets = FindTargetsForSkill(unit, skill);
                 if (targets.Count > 0 && skill.CanCast(unit, targets[0]))
                     result.Add((skill, targets));
@@ -204,10 +208,14 @@ namespace GameDemo.Battle
             if (SelectedUnit == null) return;
             if (_pendingActions == null) return;
 
+            Formation allyForm = IsPlayerUnit(SelectedUnit) ? PlayerFormation : EnemyFormation;
+
             foreach (var (skill, targets) in _pendingActions)
             {
                 if (!SelectedUnit.IsAlive) break;
                 if (targets.Count == 0) continue;
+                if (skill.ExactAllyCount.HasValue &&
+                    CountAlive(allyForm) != skill.ExactAllyCount.Value) continue;
                 if (!skill.CanCast(SelectedUnit, targets[0])) continue;
 
                 SelectedSkill = skill;
