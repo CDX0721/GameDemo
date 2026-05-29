@@ -1,0 +1,33 @@
+﻿{
+  "TestBattleFiled": {
+    "PlayerUnits": [
+      {
+        "id": "Cirno",
+        "row": 1,
+        "col": 2,
+        "initialCost": 10000
+      },
+      {
+        "id": "OrangeDog",
+        "row": 2,
+        "col": 1,
+        "initialCost": 10000
+      },
+      {
+        "id": "Flandre",
+        "row": 2,
+        "col": 3,
+        "initialCost": 10000
+      }
+    ],
+    "EnemyUnits": [
+      {
+        "id": "Sans",
+        "row": 2,
+        "col": 2,
+        "initialCost": 10000
+      }
+    ],
+    "BackGround": "battle_grassland.png"
+  }
+}

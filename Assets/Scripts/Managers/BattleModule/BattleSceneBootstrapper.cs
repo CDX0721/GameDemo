@@ -8,18 +8,13 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 /// <summary>
-/// 战斗场景启动器。通过 AssetManager 加载所有资源，构建 UnitView 并绑定 BattleUnitInstance。
+/// 战斗场景启动器。从 JSON 配置加载战斗信息，构建 UnitView 并绑定 BattleUnitInstance。
 /// </summary>
 [RequireComponent(typeof(BattleDriver))]
 public class BattleSceneBootstrapper : MonoBehaviour
 {
-    [Header("配置表")]
-    [SerializeField] private BattleSceneConfig _config = null!;
-    [SerializeField] private AnimationCache _animationCache = null!;
-
     [Header("背景")]
     [SerializeField] private SpriteRenderer _backgroundRenderer = null!;
-    [SerializeField] private bool _fitBackgroundToCamera = true;
 
     [Header("UnitView")]
     [SerializeField] private Transform _unitParent = null!;
@@ -34,29 +29,29 @@ public class BattleSceneBootstrapper : MonoBehaviour
     public Dictionary<BattleUnitInstance, HPBar> HPBars { get; } = new();
     public DamageNumberSpawner DamageSpawner => _damageSpawner;
 
-    /// <summary>所有单位配置（供 BattleDriver 查技能 FxId）。</summary>
-    internal BattleUnitConfig[] AllUnitConfigs =>
-        Combine(_config?.PlayerUnits, _config?.EnemyUnits);
-
-    // 运行时动画缓存：key → Sprite[]
     private Dictionary<string, Sprite[]> _spriteCache = new();
     private Dictionary<string, UnitView> _pendingViews = new();
     private BattleDriver _driver = null!;
+    private Dictionary<string, BattleUnitDef> _unitDefs = null!;
 
     void Start()
     {
         _driver = GetComponent<BattleDriver>();
 
-        if (_config == null || _animationCache == null)
+        var (fieldDef, unitDefs) = BattleConfigLoader.Load("TestBattleFiled");
+        if (fieldDef == null || unitDefs == null)
         {
-            Debug.LogError("BattleSceneConfig 或 AnimationCache 未配置");
+            Debug.LogError("[Bootstrapper] Failed to load battle configs.");
             return;
         }
+        _unitDefs = unitDefs;
 
-        LoadBackground();
+        if (!string.IsNullOrEmpty(fieldDef.BackGround))
+            LoadBackground(fieldDef.BackGround);
         EnsureDamageCanvas();
-        BuildPendingViews();
-        _driver.Setup(_config.PlayerUnits, _config.EnemyUnits, this);
+        BuildUnitViews(fieldDef.PlayerUnits, isPlayer: true);
+        BuildUnitViews(fieldDef.EnemyUnits, isPlayer: false);
+        _driver.Setup(fieldDef, unitDefs, this);
         BindInstancesToViews(_driver.Manager.PlayerFormation, isPlayer: true);
         BindInstancesToViews(_driver.Manager.EnemyFormation, isPlayer: false);
         _pendingViews.Clear();
@@ -66,11 +61,10 @@ public class BattleSceneBootstrapper : MonoBehaviour
 
     private void InitializeUI()
     {
-        // Always create a dedicated ScreenSpace UI Canvas (avoid picking up WorldSpace canvases)
         var uiCanvasGO = new GameObject("UICanvas");
         Canvas canvas = uiCanvasGO.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        canvas.sortingOrder = 100; // Render above everything else
+        canvas.sortingOrder = 100;
         CanvasScaler scaler = uiCanvasGO.AddComponent<CanvasScaler>();
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
         scaler.referenceResolution = new Vector2(1920, 1080);
@@ -85,13 +79,11 @@ public class BattleSceneBootstrapper : MonoBehaviour
             esGO.AddComponent<EventSystem>();
         }
 
-        // MainMenu: code-built (simple)
         var menuGO = new GameObject("MainMenuPanel", typeof(RectTransform));
         menuGO.transform.SetParent(canvas.transform, false);
         Stretch(menuGO.GetComponent<RectTransform>());
         menuGO.AddComponent<MainMenuPanel>();
 
-        // BattlePanel: load prefab from Resources
         var bpPrefab = Resources.Load<GameObject>("UI/BattlePanel");
         if (bpPrefab != null)
         {
@@ -113,36 +105,40 @@ public class BattleSceneBootstrapper : MonoBehaviour
 
     // ==================== 动画帧加载 ====================
 
-    /// <summary>通过 AssetManager 加载单位动画帧。</summary>
+    /// <summary>通过 BattleUnitDef 加载单位动画帧（4×2 精灵表，0.2s/帧）。</summary>
     public (Sprite[] idle, Sprite[] attack) GetUnitFrames(string unitId)
     {
+        if (_unitDefs == null || !_unitDefs.TryGetValue(unitId, out var def))
+            return (System.Array.Empty<Sprite>(), System.Array.Empty<Sprite>());
+
+        string basePath = "Art/Sprites/Units/";
         return (
-            LoadFrames($"{unitId}_idle"),
-            LoadFrames($"{unitId}_attack")
+            LoadFramesDirect(basePath + def.IdleAnimation),
+            LoadFramesDirect(basePath + def.AttackAnimation)
         );
     }
 
-    /// <summary>通过 AssetManager 加载技能特效帧。</summary>
+    /// <summary>技能特效帧（暂不接入）。</summary>
     public Sprite[] GetSkillEffectFrames(string fxId)
     {
-        return LoadFrames(fxId);
+        return System.Array.Empty<Sprite>();
     }
 
-    private Sprite[] LoadFrames(string key)
+    private Sprite[] LoadFramesDirect(string resourcePath)
     {
+        string key = resourcePath;
         if (_spriteCache.TryGetValue(key, out var cached))
             return cached;
 
-        string path = _animationCache.GetPath(key);
-        if (path == null)
-            return System.Array.Empty<Sprite>();
+        string pathNoExt = resourcePath;
+        int dotIdx = pathNoExt.LastIndexOf('.');
+        if (dotIdx >= 0) pathNoExt = pathNoExt.Substring(0, dotIdx);
 
-        var all = AssetManager.Instance.LoadAll<Sprite>(path);
+        var all = AssetManager.Instance.LoadAll<Sprite>(pathNoExt);
         if (all == null || all.Length == 0)
             return System.Array.Empty<Sprite>();
 
-        // Resources.LoadAll 返回的首个元素可能是主纹理（名称与文件同名），过滤掉
-        string baseName = System.IO.Path.GetFileNameWithoutExtension(path);
+        string baseName = System.IO.Path.GetFileNameWithoutExtension(resourcePath);
         var frames = new List<Sprite>();
         foreach (var s in all)
         {
@@ -157,63 +153,84 @@ public class BattleSceneBootstrapper : MonoBehaviour
             return na.CompareTo(nb);
         });
 
+        if (frames.Count != 8)
+            Debug.LogError($"[Bootstrapper] {baseName}: 期望 8 帧，实际 {frames.Count} 帧。请在 Unity 菜单运行 GameDemo > Step 2 重新切片精灵表。");
+
         var result = frames.ToArray();
         _spriteCache[key] = result;
         return result;
     }
 
-    // ==================== 背景加载 ====================
+    // ==================== 背景 ====================
 
-    private void LoadBackground()
+    private void LoadBackground(string fileName)
     {
-        if (_backgroundRenderer == null || string.IsNullOrEmpty(_config.BackgroundPath))
-            return;
+        string pathNoExt = fileName;
+        int dotIdx = pathNoExt.LastIndexOf('.');
+        if (dotIdx >= 0) pathNoExt = pathNoExt.Substring(0, dotIdx);
 
-        var bg = AssetManager.Instance.Load<Sprite>(_config.BackgroundPath);
-        if (bg == null) return;
+        string fullPath = "Art/Backgrounds/" + pathNoExt;
+        var bg = AssetManager.Instance.Load<Sprite>(fullPath);
+        if (bg == null)
+        {
+            Debug.LogWarning($"[Bootstrapper] Background not found: {fullPath}");
+            return;
+        }
+
+        if (_backgroundRenderer == null)
+        {
+            var bgGo = new GameObject("Background");
+            _backgroundRenderer = bgGo.AddComponent<SpriteRenderer>();
+            _backgroundRenderer.sortingOrder = -1;
+        }
 
         _backgroundRenderer.sprite = bg;
-        if (_fitBackgroundToCamera) FitBackgroundToOrthoCamera(bg);
-    }
 
-    private void FitBackgroundToOrthoCamera(Sprite bg)
-    {
         Camera cam = Camera.main;
-        if (cam == null || !cam.orthographic) return;
-        float scale = cam.orthographicSize * 2f / bg.bounds.size.y;
-        _backgroundRenderer.transform.localScale = new Vector3(scale, scale, 1f);
+        if (cam != null && cam.orthographic)
+        {
+            float camH = cam.orthographicSize * 2f;
+            float camW = camH * cam.aspect;
+
+            float spriteW = bg.bounds.size.x;
+            float spriteH = bg.bounds.size.y;
+
+            // 等比例缩放至铺满屏幕（取较大比例，无黑边）
+            float scale = Mathf.Max(camW / spriteW, camH / spriteH);
+            _backgroundRenderer.transform.localScale = new Vector3(scale, scale, 1f);
+
+            // 居中
+            _backgroundRenderer.transform.position =
+                cam.transform.position + Vector3.forward;
+        }
     }
 
     // ==================== UnitView 构建 ====================
 
-    private void BuildPendingViews()
+    private void BuildUnitViews(List<UnitPlacementDef> placements, bool isPlayer)
     {
         if (_unitParent == null)
         {
             var go = new GameObject("BattleField");
             _unitParent = go.transform;
         }
-        CreatePendingFor(_config.PlayerUnits, isPlayer: true);
-        CreatePendingFor(_config.EnemyUnits, isPlayer: false);
-    }
 
-    private void CreatePendingFor(BattleUnitConfig[] configs, bool isPlayer)
-    {
-        foreach (var cfg in configs)
+        foreach (var p in placements)
         {
             GameObject go = (_unitViewPrefab != null)
                 ? Instantiate(_unitViewPrefab, _unitParent)
-                : CreateDefaultUnitViewGo(cfg.Id);
-            go.name = $"UnitView_{cfg.Id}";
+                : CreateDefaultUnitViewGo(p.id);
+            go.name = $"UnitView_{p.id}";
 
             var unitView = go.GetComponent<UnitView>();
             if (unitView == null) unitView = go.AddComponent<UnitView>();
 
-            float x = isPlayer ? -4f + cfg.Col * 1.5f : 4f - (2 - cfg.Col) * 1.5f;
-            float y = 2f - cfg.Row * 1.8f;
+            // 玩家在左侧，敌方在右侧
+            float x = isPlayer ? -4f + p.col * 1.5f : 4f - (3 - p.col) * 1.5f;
+            float y = 2f - p.row * 1.8f;
             go.transform.position = new Vector3(x, y, 0);
 
-            _pendingViews[cfg.Id] = unitView;
+            _pendingViews[p.id] = unitView;
         }
     }
 
@@ -223,27 +240,19 @@ public class BattleSceneBootstrapper : MonoBehaviour
         {
             if (!_pendingViews.TryGetValue(instance.Id, out var view))
             {
-                Debug.LogWarning(string.Format("View for {0} not found", instance.Id));
+                Debug.LogWarning($"View for {instance.Id} not found");
                 continue;
             }
 
             var (idle, attack) = GetUnitFrames(instance.Id);
             view.Setup(instance, idle, attack);
+            view.SetFacingRight(isPlayer);  // 我方朝右，敌方朝左
             UnitViews[instance] = view;
 
             var hpBar = view.GetComponentInChildren<HPBar>();
             if (hpBar != null)
             {
-                if (isPlayer)
-                {
-                    hpBar.gameObject.SetActive(false);
-                }
-                else
-                {
-                    hpBar.Setup(instance.MaxHP, barWidth: 1.5f, barHeight: 0.3f);
-                    hpBar.SetHP(instance.CurrentHP, instance.MaxHP);
-                    HPBars[instance] = hpBar;
-                }
+                hpBar.gameObject.SetActive(false);
             }
         }
     }
@@ -287,15 +296,6 @@ public class BattleSceneBootstrapper : MonoBehaviour
         canvasGo.transform.position = Vector3.zero;
         _damageSpawner = canvasGo.AddComponent<DamageNumberSpawner>();
         SetPrivateField(_damageSpawner, "_damageNumberPrefab", DamageNumber.CreateDefaultPrefab());
-    }
-
-    private static T[] Combine<T>(T[] a, T[] b)
-    {
-        var r = new T[(a?.Length ?? 0) + (b?.Length ?? 0)];
-        int i = 0;
-        if (a != null) foreach (var x in a) r[i++] = x;
-        if (b != null) foreach (var x in b) r[i++] = x;
-        return r;
     }
 
     internal static void SetPrivateField(object target, string fieldName, object value)

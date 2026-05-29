@@ -13,6 +13,13 @@ public class UnitView : MonoBehaviour
 
     public HPBar HPBarComponent => _hpBar;
 
+    /// <summary>设置单位朝向。true = 朝右（翻转 X），false = 朝左。</summary>
+    public void SetFacingRight(bool right)
+    {
+        if (_bodyAnimator.Renderer != null)
+            _bodyAnimator.Renderer.flipX = right;
+    }
+
     private Sprite[] _idleFrames = Array.Empty<Sprite>();
     private Sprite[] _attackFrames = Array.Empty<Sprite>();
 
@@ -31,7 +38,7 @@ public class UnitView : MonoBehaviour
     /// <summary>播放 idle 循环动画。</summary>
     public void PlayIdle()
     {
-        _bodyAnimator.Play(_idleFrames, totalDuration: 1f, looping: true);
+        _bodyAnimator.Play(_idleFrames, frameDuration: 0.2f, looping: true);
     }
 
     /// <summary>
@@ -49,7 +56,7 @@ public class UnitView : MonoBehaviour
         }
 
         // 身体：攻击动画（一次性）→ 结束后回到 idle
-        _bodyAnimator.Play(_attackFrames, totalDuration: 1f, looping: false, onComplete: () =>
+        _bodyAnimator.Play(_attackFrames, frameDuration: 0.2f, looping: false, onComplete: () =>
         {
             PlayIdle();
             OnOneDone();
@@ -57,7 +64,7 @@ public class UnitView : MonoBehaviour
 
         // 特效：显示 → 播放技能特效 → 隐藏
         _effectAnimator.SetVisible(true);
-        _effectAnimator.Play(effectFrames, totalDuration: 1f, looping: false, onComplete: () =>
+        _effectAnimator.Play(effectFrames, frameDuration: 0.2f, looping: false, onComplete: () =>
         {
             _effectAnimator.SetVisible(false);
             OnOneDone();

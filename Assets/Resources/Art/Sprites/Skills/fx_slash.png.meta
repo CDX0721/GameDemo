@@ -67,7 +67,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -105,7 +105,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -133,12 +133,12 @@ TextureImporter:
       name: fx_slash_0
       rect:
         serializedVersion: 2
-        x: 57
-        y: 52
-        width: 14
-        height: 23
+        x: 0
+        y: 64
+        width: 128
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -155,12 +155,12 @@ TextureImporter:
       name: fx_slash_1
       rect:
         serializedVersion: 2
-        x: 171
-        y: 71
-        width: 7
-        height: 7
+        x: 128
+        y: 64
+        width: 128
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -177,12 +177,12 @@ TextureImporter:
       name: fx_slash_2
       rect:
         serializedVersion: 2
-        x: 180
-        y: 73
-        width: 11
-        height: 11
+        x: 256
+        y: 64
+        width: 128
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -199,12 +199,12 @@ TextureImporter:
       name: fx_slash_3
       rect:
         serializedVersion: 2
-        x: 276
-        y: 43
-        width: 88
-        height: 41
+        x: 384
+        y: 64
+        width: 128
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -221,12 +221,12 @@ TextureImporter:
       name: fx_slash_4
       rect:
         serializedVersion: 2
-        x: 384
-        y: 31
+        x: 0
+        y: 0
         width: 128
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -243,12 +243,12 @@ TextureImporter:
       name: fx_slash_5
       rect:
         serializedVersion: 2
-        x: 73
-        y: 53
-        width: 9
-        height: 9
+        x: 128
+        y: 0
+        width: 128
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -265,12 +265,12 @@ TextureImporter:
       name: fx_slash_6
       rect:
         serializedVersion: 2
-        x: 170
-        y: 55
-        width: 44
-        height: 17
+        x: 256
+        y: 0
+        width: 128
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -287,12 +287,12 @@ TextureImporter:
       name: fx_slash_7
       rect:
         serializedVersion: 2
-        x: 183
-        y: 50
-        width: 7
-        height: 7
+        x: 384
+        y: 0
+        width: 128
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -301,72 +301,6 @@ TextureImporter:
       bones: []
       spriteID: 69bfe2397ebcc3060800000000000000
       internalID: 6934641721710934934
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: fx_slash_8
-      rect:
-        serializedVersion: 2
-        x: 45
-        y: 34
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 415dc9f1c2b2a9540800000000000000
-      internalID: 5015368603539395860
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: fx_slash_9
-      rect:
-        serializedVersion: 2
-        x: 56
-        y: 41
-        width: 11
-        height: 11
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: f38136b106abd06b0800000000000000
-      internalID: -5328397862170322881
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: fx_slash_10
-      rect:
-        serializedVersion: 2
-        x: 67
-        y: 40
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 3df4ba2aa29f74ec0800000000000000
-      internalID: -3582621017036861485
       vertices: []
       indices: 
       edges: []

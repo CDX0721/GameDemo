@@ -1,0 +1,385 @@
+fileFormatVersion: 2
+guid: 73b4a52bf7419fe4d86e5b5dd4d0dd23
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 4035142913473615979
+    second: Cirno_Attack_0
+  - first:
+      213: -6135188824296321925
+    second: Cirno_Attack_1
+  - first:
+      213: 4384921496843007231
+    second: Cirno_Attack_2
+  - first:
+      213: 2237794314385580905
+    second: Cirno_Attack_3
+  - first:
+      213: -2465336350969313275
+    second: Cirno_Attack_4
+  - first:
+      213: 5087746242872238484
+    second: Cirno_Attack_5
+  - first:
+      213: -5384041905530108860
+    second: Cirno_Attack_6
+  - first:
+      213: -2364262937040385772
+    second: Cirno_Attack_7
+  - first:
+      213: -9147550610132654246
+    second: Cirno_Attack_8
+  - first:
+      213: -5297552056440204724
+    second: Cirno_Attack_9
+  - first:
+      213: -5882672981221264275
+    second: Cirno_Attack_10
+  - first:
+      213: -6938765151308025005
+    second: Cirno_Attack_11
+  - first:
+      213: -5388844111535756683
+    second: Cirno_Attack_12
+  - first:
+      213: 872276365854986351
+    second: Cirno_Attack_13
+  - first:
+      213: -9163645165328096725
+    second: Cirno_Attack_14
+  - first:
+      213: -595868538001760006
+    second: Cirno_Attack_15
+  - first:
+      213: 7831197375113865
+    second: Cirno_Attack_16
+  - first:
+      213: -4872570759020463429
+    second: Cirno_Attack_17
+  - first:
+      213: 8761458543407073721
+    second: Cirno_Attack_18
+  - first:
+      213: -2186489673658211280
+    second: Cirno_Attack_19
+  - first:
+      213: -1090370583500601804
+    second: Cirno_Attack_20
+  - first:
+      213: 5479775322813672827
+    second: Cirno_Attack_21
+  - first:
+      213: 4701508782715769495
+    second: Cirno_Attack_22
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Cirno_Attack_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 540
+        width: 270
+        height: 540
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b689787c915bff730800000000000000
+      internalID: 4035142913473615979
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cirno_Attack_1
+      rect:
+        serializedVersion: 2
+        x: 270
+        y: 540
+        width: 270
+        height: 540
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b7c0fd9154e6bdaa0800000000000000
+      internalID: -6135188824296321925
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cirno_Attack_2
+      rect:
+        serializedVersion: 2
+        x: 540
+        y: 540
+        width: 270
+        height: 540
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ff43d4b7ede5adc30800000000000000
+      internalID: 4384921496843007231
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cirno_Attack_3
+      rect:
+        serializedVersion: 2
+        x: 810
+        y: 540
+        width: 270
+        height: 540
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9636755921e3e0f10800000000000000
+      internalID: 2237794314385580905
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cirno_Attack_4
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 270
+        height: 540
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 508cd9496ad59cdd0800000000000000
+      internalID: -2465336350969313275
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cirno_Attack_5
+      rect:
+        serializedVersion: 2
+        x: 270
+        y: 0
+        width: 270
+        height: 540
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4916ab9704e4b9640800000000000000
+      internalID: 5087746242872238484
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cirno_Attack_6
+      rect:
+        serializedVersion: 2
+        x: 540
+        y: 0
+        width: 270
+        height: 540
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4448f0da96a0845b0800000000000000
+      internalID: -5384041905530108860
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cirno_Attack_7
+      rect:
+        serializedVersion: 2
+        x: 810
+        y: 0
+        width: 270
+        height: 540
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 419061a9263703fd0800000000000000
+      internalID: -2364262937040385772
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Cirno_Attack_0: 4035142913473615979
+      Cirno_Attack_1: -6135188824296321925
+      Cirno_Attack_10: -5882672981221264275
+      Cirno_Attack_11: -6938765151308025005
+      Cirno_Attack_12: -5388844111535756683
+      Cirno_Attack_13: 872276365854986351
+      Cirno_Attack_14: -9163645165328096725
+      Cirno_Attack_15: -595868538001760006
+      Cirno_Attack_16: 7831197375113865
+      Cirno_Attack_17: -4872570759020463429
+      Cirno_Attack_18: 8761458543407073721
+      Cirno_Attack_19: -2186489673658211280
+      Cirno_Attack_2: 4384921496843007231
+      Cirno_Attack_20: -1090370583500601804
+      Cirno_Attack_21: 5479775322813672827
+      Cirno_Attack_22: 4701508782715769495
+      Cirno_Attack_3: 2237794314385580905
+      Cirno_Attack_4: -2465336350969313275
+      Cirno_Attack_5: 5087746242872238484
+      Cirno_Attack_6: -5384041905530108860
+      Cirno_Attack_7: -2364262937040385772
+      Cirno_Attack_8: -9147550610132654246
+      Cirno_Attack_9: -5297552056440204724
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

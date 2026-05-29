@@ -14,6 +14,18 @@ TextureImporter:
   - first:
       213: -2154921190939537348
     second: p_warrior_attack_3
+  - first:
+      213: -6040182291493279912
+    second: p_warrior_attack_4
+  - first:
+      213: 6247622109939872630
+    second: p_warrior_attack_5
+  - first:
+      213: -4216334445253721643
+    second: p_warrior_attack_6
+  - first:
+      213: -8462510430990890323
+    second: p_warrior_attack_7
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +58,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -84,7 +96,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -112,12 +124,12 @@ TextureImporter:
       name: p_warrior_attack_0
       rect:
         serializedVersion: 2
-        x: 10
-        y: 13
-        width: 94
-        height: 100
+        x: 0
+        y: 64
+        width: 128
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -134,12 +146,12 @@ TextureImporter:
       name: p_warrior_attack_1
       rect:
         serializedVersion: 2
-        x: 162
-        y: 13
-        width: 94
-        height: 100
+        x: 128
+        y: 64
+        width: 128
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -156,12 +168,12 @@ TextureImporter:
       name: p_warrior_attack_2
       rect:
         serializedVersion: 2
-        x: 302
-        y: 13
-        width: 83
-        height: 100
+        x: 256
+        y: 64
+        width: 128
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -178,12 +190,12 @@ TextureImporter:
       name: p_warrior_attack_3
       rect:
         serializedVersion: 2
-        x: 402
-        y: 13
-        width: 94
-        height: 100
+        x: 384
+        y: 64
+        width: 128
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -192,6 +204,94 @@ TextureImporter:
       bones: []
       spriteID: c305617189e2812e0800000000000000
       internalID: -2154921190939537348
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: p_warrior_attack_4
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 128
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 85720f84536fc2ca0800000000000000
+      internalID: -6040182291493279912
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: p_warrior_attack_5
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 128
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 673b7d9253304b650800000000000000
+      internalID: 6247622109939872630
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: p_warrior_attack_6
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 128
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d1886049229c75c0800000000000000
+      internalID: -4216334445253721643
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: p_warrior_attack_7
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 0
+        width: 128
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: daa00cc699f1f8a80800000000000000
+      internalID: -8462510430990890323
       vertices: []
       indices: 
       edges: []
@@ -214,6 +314,10 @@ TextureImporter:
       p_warrior_attack_1: -2226315137544650829
       p_warrior_attack_2: -1971603520112986574
       p_warrior_attack_3: -2154921190939537348
+      p_warrior_attack_4: -6040182291493279912
+      p_warrior_attack_5: 6247622109939872630
+      p_warrior_attack_6: -4216334445253721643
+      p_warrior_attack_7: -8462510430990890323
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

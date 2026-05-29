@@ -42,7 +42,7 @@ namespace GameDemo.UI.Panels
         private BattleManager _battleManager;
         private PlayableUnitInstance _currentPlayableUnit;
         private Skill _selectedSkill;
-        private List<BattleUnitInstance> _selectedTargets;
+        private BattleUnitInstance? _selectedTarget;
         private Transform _bottomBar;
         private readonly List<GameObject> _skillBtns = new();
         private readonly List<TextMeshProUGUI> _queueEntries = new();
@@ -130,7 +130,7 @@ namespace GameDemo.UI.Panels
         // ============================================================
         // Events
         // ============================================================
-        private void OnPlayerTurn(PlayableUnitInstance u) { _currentPlayableUnit = u; _selectedSkill = null; _selectedTargets = null; BuildSkills(u); RefreshUnits(); }
+        private void OnPlayerTurn(PlayableUnitInstance u) { _currentPlayableUnit = u; _selectedSkill = null; _selectedTarget = null; BuildSkills(u); RefreshUnits(); }
         private void OnBattleEnd(bool won) { ClearSkills(); if (_resultOverlay) { _resultOverlay.SetActive(true); if (_resultText) _resultText.text = won ? "Victory!" : "Defeat..."; } }
 
         // ============================================================
@@ -266,16 +266,16 @@ namespace GameDemo.UI.Panels
                     btn = _skillButtonPrefab ? Instantiate(_skillButtonPrefab, _skillBarContainer) : DefaultSkillBtn();
                     _skillBtns.Add(btn.gameObject);
                 }
-                var lbl = btn.GetComponentInChildren<TextMeshProUGUI>(); if (lbl) lbl.text = s.DisplayName;
+                var lbl = btn.GetComponentInChildren<TextMeshProUGUI>(); if (lbl) lbl.text = $"{s.DisplayName} → {t.DisplayName}";
                 var sk = s; var tg = t;
-                btn.onClick.AddListener(() => { _selectedSkill = sk; _selectedTargets = tg; });
+                btn.onClick.AddListener(() => { _selectedSkill = sk; _selectedTarget = tg; });
                 idx++;
             }
             for (int i = idx; i < _skillBtns.Count; i++) _skillBtns[i].SetActive(false);
             if (_confirmSkillButton) _confirmSkillButton.gameObject.SetActive(true);
         }
-        private void OnConfirm() { if (_currentPlayableUnit == null || _selectedSkill == null || _selectedTargets == null) return; _battleManager.SubmitPlayerAction(_selectedSkill, _selectedTargets); ClearSkills(); if (_confirmSkillButton) _confirmSkillButton.gameObject.SetActive(false); }
-        private void ClearSkills() { foreach (var g in _skillBtns) { var b = g.GetComponent<Button>(); if (b) b.onClick.RemoveAllListeners(); g.SetActive(false); } _currentPlayableUnit = null; _selectedSkill = null; _selectedTargets = null; }
+        private void OnConfirm() { if (_currentPlayableUnit == null || _selectedSkill == null || _selectedTarget == null) return; _battleManager.SubmitPlayerAction(_selectedSkill, _selectedTarget); ClearSkills(); if (_confirmSkillButton) _confirmSkillButton.gameObject.SetActive(false); }
+        private void ClearSkills() { foreach (var g in _skillBtns) { var b = g.GetComponent<Button>(); if (b) b.onClick.RemoveAllListeners(); g.SetActive(false); } _currentPlayableUnit = null; _selectedSkill = null; _selectedTarget = null; }
         private Button DefaultSkillBtn()
         {
             var go = new GameObject("SkillBtn", typeof(RectTransform));

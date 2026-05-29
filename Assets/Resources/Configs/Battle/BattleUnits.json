@@ -1,0 +1,78 @@
+﻿{
+  "BattleUnits": {
+    "OrangeDog": {
+      "DisplayName" : "橘子狗",
+      
+      "Attack": 200,
+      "Defense": 200,
+      "HP": 1000,
+      "Mana": 100,
+      "Speed": 100,
+      
+      "InnateSills": [
+        "NormalAttack"
+      ],
+      
+      "IdleAnimation": "OrangeDog_Idle.png",
+      "AttackAnimation": "OrangeDog_Attack.png",
+      
+      "ControlType": "Auto"
+      
+    },
+    "Cirno": {
+      "DisplayName" : "琪露诺",
+      
+      "Attack": 500,
+      "Defense": 500,
+      "HP": 1000,
+      "Mana": 10,
+      "Speed": 120,
+
+      "InnateSills": [
+        "NormalAttack"
+      ],
+
+      "IdleAnimation": "Cirno_Idle.png",
+      "AttackAnimation": "Cirno_Attack.png",
+
+      "ControlType": "Auto"
+    },
+    "Flandre": {
+      "DisplayName" : "芙兰朵露",
+
+      "Attack": 50,
+      "Defense": 200,
+      "HP": 1000,
+      "Mana": 1000,
+      "Speed": 200,
+
+      "InnateSills": [
+        "NormalAttack"
+      ],
+
+      "IdleAnimation": "Flandre_Idle.png",
+      "AttackAnimation": "Flandre_Attack.png",
+
+      "ControlType": "Auto"
+    },
+    "Sans": {
+      "DisplayName" : "杉斯",
+
+      "Attack": 1,
+      "Defense": 1,
+      "HP": 2147483647,
+      "Mana": 2147483647,
+      "Speed": 100,
+
+      "InnateSills": [
+        "NormalAttack",
+        "Heal"
+      ],
+
+      "IdleAnimation": "Sans_Idle.png",
+      "AttackAnimation": "Sans_Attack.png",
+
+      "ControlType": "Auto"
+    }
+  }
+}

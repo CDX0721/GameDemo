@@ -14,8 +14,8 @@ namespace GameDemo.Battle
         public TargetType TargetType { get; set; }
         public int Level { get; set; }
         public string Description { get; set; } = "";
-        /// <summary>若设置，施放时要求己方存活单位数恰好等于此值。</summary>
-        public int? ExactAllyCount { get; set; }
+        /// <summary>AI 技能优先级。参数为目标单位，返回 0-100 浮点数，数值越大越优先。</summary>
+        public Func<BattleUnitInstance, float> Priority { get; set; }
 
         public List<Func<BattleUnitInstance, BattleUnitInstance, bool>> CanCastConditions { get; }
         /// <summary>每个目标分别执行。</summary>

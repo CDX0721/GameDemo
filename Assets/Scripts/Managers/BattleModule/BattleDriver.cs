@@ -33,7 +33,7 @@ public class BattleDriver : MonoBehaviour
     }
 
     /// <summary>带表现层的战斗初始化。仅创建实例+布阵，不绑定 UnitView。</summary>
-    public void Setup(BattleUnitConfig[] playerConfigs, BattleUnitConfig[] enemyConfigs,
+    public void Setup(BattleFieldDef fieldDef, Dictionary<string, BattleUnitDef> unitDefs,
         BattleSceneBootstrapper bootstrapper)
     {
         _bootstrapper = bootstrapper;
@@ -46,10 +46,12 @@ public class BattleDriver : MonoBehaviour
         Manager.OnUnitDamaged += OnUnitDamaged;
         Manager.OnUnitDied += OnUnitDied;
 
-        foreach (var cfg in playerConfigs)
-            PlaceUnit(cfg, Manager.PlayerFormation);
-        foreach (var cfg in enemyConfigs)
-            PlaceUnit(cfg, Manager.EnemyFormation);
+        foreach (var p in fieldDef.PlayerUnits)
+            if (unitDefs.TryGetValue(p.id, out var def))
+                PlaceUnit(def, p, Manager.PlayerFormation);
+        foreach (var p in fieldDef.EnemyUnits)
+            if (unitDefs.TryGetValue(p.id, out var def))
+                PlaceUnit(def, p, Manager.EnemyFormation);
 
         // StartBattle() must be called separately after UI is ready
     }
@@ -63,24 +65,32 @@ public class BattleDriver : MonoBehaviour
 
     private void OnWaitingForPlayerInputEvent(PlayableUnitInstance unit)
     {
-        // 玩家输入事件：UI 层通过 BattlePanel 监听并展示技能选择。
-        // 此处提供兜底自动解决（无 UI 时也能运行）。
         StartCoroutine(AutoResolveDelay(0.5f, () =>
         {
             var skills = Manager.GetCastableSkills(unit);
             if (skills.Count > 0)
-                Manager.SubmitPlayerAction(skills[0].skill, skills[0].targets);
+                Manager.SubmitPlayerAction(skills[0].skill, skills[0].target);
         }));
     }
 
     private void OnWaitingForAutoActionEvent(AutoUnitInstance unit)
     {
-        // AI 自动行动：收集所有可释放技能并提交。
         StartCoroutine(AutoResolveDelay(0.8f, () =>
         {
             var skills = Manager.GetCastableSkills(unit);
             if (skills.Count > 0)
-                Manager.SubmitAutoAction(skills);
+            {
+                SkillCatalog.EvaluatingUnit = unit;
+                var best = skills[0];
+                float bestPrio = best.skill.Priority?.Invoke(best.target) ?? 0f;
+                for (int i = 1; i < skills.Count; i++)
+                {
+                    float prio = skills[i].skill.Priority?.Invoke(skills[i].target) ?? 0f;
+                    if (prio > bestPrio) { best = skills[i]; bestPrio = prio; }
+                }
+                SkillCatalog.EvaluatingUnit = null;
+                Manager.SubmitAutoAction(new List<(Skill, BattleUnitInstance)> { best });
+            }
         }));
     }
 
@@ -112,17 +122,11 @@ public class BattleDriver : MonoBehaviour
 
         _bootstrapper.UnitViews.TryGetValue(caster, out var casterView);
 
-        foreach (var (skill, targets) in pending)
+        foreach (var (skill, pickedTarget) in pending)
         {
             if (!caster.IsAlive) break;
-            if (targets.Count == 0) continue;
-            if (skill.ExactAllyCount.HasValue)
-            {
-                int aliveCount = Manager.IsPlayerUnit(caster)
-                    ? Manager.AliveCountPlayer : Manager.AliveCountEnemy;
-                if (aliveCount != skill.ExactAllyCount.Value) continue;
-            }
-            if (!skill.CanCast(caster, targets[0])) continue;
+            if (pickedTarget == null) continue;
+            if (!skill.CanCast(caster, pickedTarget)) continue;
 
             // 1. 播放攻击动画 + 技能特效
             bool animationDone = false;
@@ -145,38 +149,37 @@ public class BattleDriver : MonoBehaviour
                 yield return null;
             }
 
-            // 3. 执行技能效果（记录每目标受伤前后的 HP）
+            // 3. 执行技能效果（Apply 内部处理目标展开）
             Manager.SelectedSkill = skill;
+            var allUnits = GetAllLivingUnits();
             var hpBefore = new Dictionary<BattleUnitInstance, float>();
-            foreach (var t in targets) hpBefore[t] = t.CurrentHP;
+            foreach (var u in allUnits) hpBefore[u] = u.CurrentHP;
 
             skill.Cast(caster);
-            foreach (var t in targets)
-                skill.Apply(caster, t);
-            Manager.RaiseSkillUsed(caster, skill, targets);
+            skill.Apply(caster, pickedTarget);
+            Manager.RaiseSkillUsed(caster, skill,
+                new List<BattleUnitInstance> { pickedTarget });
             Manager.RefreshAllUnits();
             Manager.CleanupDeadUnits();
 
-            // 逐目标触发伤害事件（驱动血条更新 + 伤害数字）
-            foreach (var t in targets)
+            // 逐单位触发伤害事件（驱动血条更新 + 伤害数字）
+            foreach (var u in allUnits)
             {
-                float damage = hpBefore[t] - t.CurrentHP;
+                float damage = hpBefore.TryGetValue(u, out float before) ? before - u.CurrentHP : 0f;
                 if (damage > 0f)
-                    Manager.RaiseUnitDamaged(t, damage, caster);
-            }
-
-            // 4. 目标受击
-            foreach (var target in targets)
-            {
-                if (_bootstrapper.UnitViews.TryGetValue(target, out var targetView))
-                    targetView.PlayHitFlash();
+                    Manager.RaiseUnitDamaged(u, damage, caster);
+                if (_bootstrapper.UnitViews.TryGetValue(u, out var view))
+                {
+                    if (damage > 0f || !u.IsAlive)
+                        view.PlayHitFlash();
+                }
             }
             yield return new WaitForSeconds(0.3f);
 
             // 5. 死亡单位隐藏
-            foreach (var target in targets)
+            foreach (var u in allUnits)
             {
-                if (!target.IsAlive && _bootstrapper.UnitViews.TryGetValue(target, out var deadView))
+                if (!u.IsAlive && _bootstrapper.UnitViews.TryGetValue(u, out var deadView))
                     deadView.gameObject.SetActive(false);
             }
         }
@@ -194,18 +197,7 @@ public class BattleDriver : MonoBehaviour
 
     private Sprite[] GetSkillFxFrames(Skill skill)
     {
-        if (_bootstrapper == null) return System.Array.Empty<Sprite>();
-
-        var caster = Manager.SelectedUnit;
-        if (caster == null) return System.Array.Empty<Sprite>();
-
-        foreach (var cfg in _bootstrapper.AllUnitConfigs)
-        {
-            if (cfg.Id != caster.Id || cfg.Skills == null) continue;
-            foreach (var sc in cfg.Skills)
-                if (sc.Id == skill.Id)
-                    return _bootstrapper.GetSkillEffectFrames(sc.PerformanceFxId);
-        }
+        // 技能/效果动画暂不接入
         return System.Array.Empty<Sprite>();
     }
 
@@ -255,43 +247,25 @@ public class BattleDriver : MonoBehaviour
 
     // ==================== 辅助 ====================
 
-    private void PlaceUnit(BattleUnitConfig config, Formation formation)
+    private List<BattleUnitInstance> GetAllLivingUnits()
     {
-        var template = config.CreateTemplate();
-        var unit = new AutoUnitInstance(template, initialCost: config.InitialCost);
-        // 构造函数已复制 template.InnateSkills → unit.Skills，只需附加行为逻辑
-        foreach (var skill in unit.Skills)
-            AttachDefaultBehavior(skill);
-
-        formation.PlaceUnit(unit, new BattleSlot(config.Row, config.Col));
+        var result = new List<BattleUnitInstance>();
+        foreach (var u in Manager.PlayerFormation.Units)
+            if (u.IsAlive) result.Add(u);
+        foreach (var u in Manager.EnemyFormation.Units)
+            if (u.IsAlive) result.Add(u);
+        return result;
     }
 
-    /// <summary>为 SkillConfig 创建的空壳技能挂载默认伤害/治疗逻辑。</summary>
-    private static void AttachDefaultBehavior(Skill skill)
+    private void PlaceUnit(BattleUnitDef def, UnitPlacementDef placement, Formation formation)
     {
-        switch (skill.SkillType)
-        {
-            case SkillType.SingleAttack:
-            case SkillType.Spread:
-            case SkillType.AoE:
-                skill.ApplyActions.Add((caster, target) =>
-                {
-                    if (target.IsAlive)
-                        target.TakeDamage(caster.CurrentAttack);
-                });
-                break;
+        var template = new BattleUnit(placement.id, def.DisplayName,
+            def.Attack, def.Defense, def.HP, def.Speed, def.Mana);
+        foreach (var skillId in def.InnateSills)
+            template.InnateSkills.Add(SkillCatalog.Get(skillId));
 
-            case SkillType.Healing:
-                skill.ApplyActions.Add((caster, target) =>
-                {
-                    if (target.IsAlive)
-                    {
-                        float healed = caster.CurrentAttack * 0.5f;
-                        target.CurrentHP = Mathf.Min(target.CurrentHP + healed, target.MaxHP);
-                    }
-                });
-                break;
-        }
+        var unit = new AutoUnitInstance(template, placement.initialCost);
+        formation.PlaceUnit(unit, new BattleSlot(placement.row - 1, placement.col - 1));
     }
 
 }

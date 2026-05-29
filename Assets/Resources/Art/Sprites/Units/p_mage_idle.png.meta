@@ -14,6 +14,18 @@ TextureImporter:
   - first:
       213: 398570169994604663
     second: p_mage_idle_3
+  - first:
+      213: -1187113549075986361
+    second: p_mage_idle_4
+  - first:
+      213: 3458909439702200294
+    second: p_mage_idle_5
+  - first:
+      213: -756828820672451660
+    second: p_mage_idle_6
+  - first:
+      213: -8498469832917268279
+    second: p_mage_idle_7
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +58,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -84,7 +96,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -112,12 +124,12 @@ TextureImporter:
       name: p_mage_idle_0
       rect:
         serializedVersion: 2
-        x: 18
-        y: 13
-        width: 94
-        height: 100
+        x: 0
+        y: 64
+        width: 128
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -134,12 +146,12 @@ TextureImporter:
       name: p_mage_idle_1
       rect:
         serializedVersion: 2
-        x: 146
-        y: 13
-        width: 94
-        height: 106
+        x: 128
+        y: 64
+        width: 128
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -156,12 +168,12 @@ TextureImporter:
       name: p_mage_idle_2
       rect:
         serializedVersion: 2
-        x: 274
-        y: 13
-        width: 94
-        height: 100
+        x: 256
+        y: 64
+        width: 128
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -178,12 +190,12 @@ TextureImporter:
       name: p_mage_idle_3
       rect:
         serializedVersion: 2
-        x: 402
-        y: 7
-        width: 94
-        height: 106
+        x: 384
+        y: 64
+        width: 128
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -192,6 +204,94 @@ TextureImporter:
       bones: []
       spriteID: 77078983571088500800000000000000
       internalID: 398570169994604663
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: p_mage_idle_4
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 128
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 748c5474486868fe0800000000000000
+      internalID: -1187113549075986361
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: p_mage_idle_5
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 128
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6efe1bf2fc3800030800000000000000
+      internalID: 3458909439702200294
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: p_mage_idle_6
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 128
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4bb6a0c82343f75f0800000000000000
+      internalID: -756828820672451660
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: p_mage_idle_7
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 0
+        width: 128
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c8c79ab6be5f0a80800000000000000
+      internalID: -8498469832917268279
       vertices: []
       indices: 
       edges: []
@@ -214,6 +314,10 @@ TextureImporter:
       p_mage_idle_1: -7816094998812183670
       p_mage_idle_2: -6309952015055045787
       p_mage_idle_3: 398570169994604663
+      p_mage_idle_4: -1187113549075986361
+      p_mage_idle_5: 3458909439702200294
+      p_mage_idle_6: -756828820672451660
+      p_mage_idle_7: -8498469832917268279
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

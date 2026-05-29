@@ -14,6 +14,18 @@ TextureImporter:
   - first:
       213: 2222724301385001600
     second: p_warrior_idle_3
+  - first:
+      213: 1776785083471821412
+    second: p_warrior_idle_4
+  - first:
+      213: 3189700313306867945
+    second: p_warrior_idle_5
+  - first:
+      213: 4545843331961938634
+    second: p_warrior_idle_6
+  - first:
+      213: -7454351366843611287
+    second: p_warrior_idle_7
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +58,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -84,7 +96,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -112,12 +124,12 @@ TextureImporter:
       name: p_warrior_idle_0
       rect:
         serializedVersion: 2
-        x: 18
-        y: 13
-        width: 94
-        height: 100
+        x: 0
+        y: 64
+        width: 128
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -134,12 +146,12 @@ TextureImporter:
       name: p_warrior_idle_1
       rect:
         serializedVersion: 2
-        x: 146
-        y: 13
-        width: 94
-        height: 106
+        x: 128
+        y: 64
+        width: 128
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -156,12 +168,12 @@ TextureImporter:
       name: p_warrior_idle_2
       rect:
         serializedVersion: 2
-        x: 274
-        y: 13
-        width: 94
-        height: 100
+        x: 256
+        y: 64
+        width: 128
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -178,12 +190,12 @@ TextureImporter:
       name: p_warrior_idle_3
       rect:
         serializedVersion: 2
-        x: 402
-        y: 7
-        width: 94
-        height: 106
+        x: 384
+        y: 64
+        width: 128
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -192,6 +204,94 @@ TextureImporter:
       bones: []
       spriteID: 08a6ea1c9f3b8de10800000000000000
       internalID: 2222724301385001600
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: p_warrior_idle_4
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 128
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 46afc8e9e9868a810800000000000000
+      internalID: 1776785083471821412
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: p_warrior_idle_5
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 128
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e8ab920987144c20800000000000000
+      internalID: 3189700313306867945
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: p_warrior_idle_6
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 128
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac26b2eec64161f30800000000000000
+      internalID: 4545843331961938634
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: p_warrior_idle_7
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 0
+        width: 128
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 967c65c3de2dc8890800000000000000
+      internalID: -7454351366843611287
       vertices: []
       indices: 
       edges: []
@@ -214,6 +314,10 @@ TextureImporter:
       p_warrior_idle_1: 1142224646536460398
       p_warrior_idle_2: 1526255938974639341
       p_warrior_idle_3: 2222724301385001600
+      p_warrior_idle_4: 1776785083471821412
+      p_warrior_idle_5: 3189700313306867945
+      p_warrior_idle_6: 4545843331961938634
+      p_warrior_idle_7: -7454351366843611287
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

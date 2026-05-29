@@ -1,0 +1,413 @@
+fileFormatVersion: 2
+guid: 5da4bd05359739d42b1f605e975b7192
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -4934855278895189346
+    second: OrangeDog_Attack_0
+  - first:
+      213: 810708789432410564
+    second: OrangeDog_Attack_1
+  - first:
+      213: 3301932301670434198
+    second: OrangeDog_Attack_2
+  - first:
+      213: 5025388917725755534
+    second: OrangeDog_Attack_3
+  - first:
+      213: -8778613782649006687
+    second: OrangeDog_Attack_4
+  - first:
+      213: 7551373436194152224
+    second: OrangeDog_Attack_5
+  - first:
+      213: -8468782184271608271
+    second: OrangeDog_Attack_6
+  - first:
+      213: 7856946620692901102
+    second: OrangeDog_Attack_7
+  - first:
+      213: -4236006416359051956
+    second: OrangeDog_Attack_8
+  - first:
+      213: -8652756775836647804
+    second: OrangeDog_Attack_9
+  - first:
+      213: -1410385389837792185
+    second: OrangeDog_Attack_10
+  - first:
+      213: 2617505274587329481
+    second: OrangeDog_Attack_11
+  - first:
+      213: 2882139383762632299
+    second: OrangeDog_Attack_12
+  - first:
+      213: 3548355370727441067
+    second: OrangeDog_Attack_13
+  - first:
+      213: -8599784848271879723
+    second: OrangeDog_Attack_14
+  - first:
+      213: 8047241396119672658
+    second: OrangeDog_Attack_15
+  - first:
+      213: -1927682083002033051
+    second: OrangeDog_Attack_16
+  - first:
+      213: 2714926381243240064
+    second: OrangeDog_Attack_17
+  - first:
+      213: 1194677127466886429
+    second: OrangeDog_Attack_18
+  - first:
+      213: 2009239246879752737
+    second: OrangeDog_Attack_19
+  - first:
+      213: 3223424860292874851
+    second: OrangeDog_Attack_20
+  - first:
+      213: -1369859570206804640
+    second: OrangeDog_Attack_21
+  - first:
+      213: -6086218208204606753
+    second: OrangeDog_Attack_22
+  - first:
+      213: 4067209231927474842
+    second: OrangeDog_Attack_23
+  - first:
+      213: -7395345042533245071
+    second: OrangeDog_Attack_24
+  - first:
+      213: 3970301045658855308
+    second: OrangeDog_Attack_25
+  - first:
+      213: -6955431887028779559
+    second: OrangeDog_Attack_26
+  - first:
+      213: -5669387432155854137
+    second: OrangeDog_Attack_27
+  - first:
+      213: -3569209196545456470
+    second: OrangeDog_Attack_28
+  - first:
+      213: 3128853390581436511
+    second: OrangeDog_Attack_29
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: OrangeDog_Attack_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 540
+        width: 270
+        height: 540
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e92bd73154fd38bb0800000000000000
+      internalID: -4934855278895189346
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: OrangeDog_Attack_1
+      rect:
+        serializedVersion: 2
+        x: 270
+        y: 540
+        width: 270
+        height: 540
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4c1e7624957304b00800000000000000
+      internalID: 810708789432410564
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: OrangeDog_Attack_2
+      rect:
+        serializedVersion: 2
+        x: 540
+        y: 540
+        width: 270
+        height: 540
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 69544791fe1d2dd20800000000000000
+      internalID: 3301932301670434198
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: OrangeDog_Attack_3
+      rect:
+        serializedVersion: 2
+        x: 810
+        y: 540
+        width: 270
+        height: 540
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e887a335894cdb540800000000000000
+      internalID: 5025388917725755534
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: OrangeDog_Attack_4
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 270
+        height: 540
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1a59bd896491c2680800000000000000
+      internalID: -8778613782649006687
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: OrangeDog_Attack_5
+      rect:
+        serializedVersion: 2
+        x: 270
+        y: 0
+        width: 270
+        height: 540
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 02f5cae912edbc860800000000000000
+      internalID: 7551373436194152224
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: OrangeDog_Attack_6
+      rect:
+        serializedVersion: 2
+        x: 540
+        y: 0
+        width: 270
+        height: 540
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 13685521977d87a80800000000000000
+      internalID: -8468782184271608271
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: OrangeDog_Attack_7
+      rect:
+        serializedVersion: 2
+        x: 810
+        y: 0
+        width: 270
+        height: 540
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eec2b99d25b790d60800000000000000
+      internalID: 7856946620692901102
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      OrangeDog_Attack_0: -4934855278895189346
+      OrangeDog_Attack_1: 810708789432410564
+      OrangeDog_Attack_10: -1410385389837792185
+      OrangeDog_Attack_11: 2617505274587329481
+      OrangeDog_Attack_12: 2882139383762632299
+      OrangeDog_Attack_13: 3548355370727441067
+      OrangeDog_Attack_14: -8599784848271879723
+      OrangeDog_Attack_15: 8047241396119672658
+      OrangeDog_Attack_16: -1927682083002033051
+      OrangeDog_Attack_17: 2714926381243240064
+      OrangeDog_Attack_18: 1194677127466886429
+      OrangeDog_Attack_19: 2009239246879752737
+      OrangeDog_Attack_2: 3301932301670434198
+      OrangeDog_Attack_20: 3223424860292874851
+      OrangeDog_Attack_21: -1369859570206804640
+      OrangeDog_Attack_22: -6086218208204606753
+      OrangeDog_Attack_23: 4067209231927474842
+      OrangeDog_Attack_24: -7395345042533245071
+      OrangeDog_Attack_25: 3970301045658855308
+      OrangeDog_Attack_26: -6955431887028779559
+      OrangeDog_Attack_27: -5669387432155854137
+      OrangeDog_Attack_28: -3569209196545456470
+      OrangeDog_Attack_29: 3128853390581436511
+      OrangeDog_Attack_3: 5025388917725755534
+      OrangeDog_Attack_4: -8778613782649006687
+      OrangeDog_Attack_5: 7551373436194152224
+      OrangeDog_Attack_6: -8468782184271608271
+      OrangeDog_Attack_7: 7856946620692901102
+      OrangeDog_Attack_8: -4236006416359051956
+      OrangeDog_Attack_9: -8652756775836647804
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

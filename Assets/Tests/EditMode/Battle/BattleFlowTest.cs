@@ -153,7 +153,7 @@ namespace GameDemo.Tests.EditMode
             if (armageddon.HasValue)
             {
                 Log($"[AI] {caster.DisplayName} 仅剩自己，发动 [{armageddon.Value.skill.DisplayName}]！");
-                SubmitAndAct(caster, armageddon.Value.skill, armageddon.Value.targets);
+                SubmitAndAct(caster, armageddon.Value.skill, armageddon.Value.target);
                 return;
             }
 
@@ -167,14 +167,14 @@ namespace GameDemo.Tests.EditMode
                 {
                     var target = lowestAlly ?? caster;
                     Log($"[AI] {caster.DisplayName} HP={caster.CurrentHP:F0} ({(hpPct*100):F0}%)，低血量，使用 [{heal.Value.skill.DisplayName}] 治疗 {target.DisplayName}");
-                    SubmitAndAct(caster, heal.Value.skill, new List<BattleUnitInstance> { target });
+                    SubmitAndAct(caster, heal.Value.skill, target);
                     return;
                 }
                 var shield = FindSkill(skills, "Shield");
                 if (shield.HasValue)
                 {
                     Log($"[AI] {caster.DisplayName} HP={caster.CurrentHP:F0} ({(hpPct*100):F0}%)，低血量，使用 [{shield.Value.skill.DisplayName}] 自救");
-                    SubmitAndAct(caster, shield.Value.skill, shield.Value.targets);
+                    SubmitAndAct(caster, shield.Value.skill, shield.Value.target);
                     return;
                 }
             }
@@ -187,7 +187,7 @@ namespace GameDemo.Tests.EditMode
                 if (heal.HasValue)
                 {
                     Log($"[AI] {caster.DisplayName} 发现 {criticalAlly.DisplayName} HP={criticalAlly.CurrentHP:F0} 危急，使用 [{heal.Value.skill.DisplayName}] 救援");
-                    SubmitAndAct(caster, heal.Value.skill, new List<BattleUnitInstance> { criticalAlly });
+                    SubmitAndAct(caster, heal.Value.skill, criticalAlly);
                     return;
                 }
             }
@@ -200,7 +200,7 @@ namespace GameDemo.Tests.EditMode
                 if (bestAlly != null)
                 {
                     Log($"[AI] {caster.DisplayName} 使用 [{atkBuff.Value.skill.DisplayName}] 强化 {bestAlly.DisplayName}");
-                    SubmitAndAct(caster, atkBuff.Value.skill, new List<BattleUnitInstance> { bestAlly });
+                    SubmitAndAct(caster, atkBuff.Value.skill, bestAlly);
                     return;
                 }
             }
@@ -209,7 +209,7 @@ namespace GameDemo.Tests.EditMode
             if (lastStand.HasValue && !HasEffect(caster, "DmgBonusUp"))
             {
                 Log($"[AI] {caster.DisplayName} 使用 [{lastStand.Value.skill.DisplayName}] 强化全体");
-                SubmitAndAct(caster, lastStand.Value.skill, lastStand.Value.targets);
+                SubmitAndAct(caster, lastStand.Value.skill, lastStand.Value.target);
                 return;
             }
 
@@ -218,7 +218,7 @@ namespace GameDemo.Tests.EditMode
             if (sandStorm.HasValue && CountAlive(enemyForm) >= 2)
             {
                 Log($"[AI] {caster.DisplayName} 使用 [{sandStorm.Value.skill.DisplayName}] 攻击全体");
-                SubmitAndAct(caster, sandStorm.Value.skill, sandStorm.Value.targets);
+                SubmitAndAct(caster, sandStorm.Value.skill, sandStorm.Value.target);
                 return;
             }
 
@@ -227,7 +227,7 @@ namespace GameDemo.Tests.EditMode
             if (thorns.HasValue)
             {
                 Log($"[AI] {caster.DisplayName} 使用 [{thorns.Value.skill.DisplayName}]");
-                SubmitAndAct(caster, thorns.Value.skill, thorns.Value.targets);
+                SubmitAndAct(caster, thorns.Value.skill, thorns.Value.target);
                 return;
             }
 
@@ -236,7 +236,7 @@ namespace GameDemo.Tests.EditMode
             if (manaDrain.HasValue)
             {
                 Log($"[AI] {caster.DisplayName} 使用 [{manaDrain.Value.skill.DisplayName}]");
-                SubmitAndAct(caster, manaDrain.Value.skill, manaDrain.Value.targets);
+                SubmitAndAct(caster, manaDrain.Value.skill, manaDrain.Value.target);
                 return;
             }
 
@@ -246,17 +246,17 @@ namespace GameDemo.Tests.EditMode
             {
                 var (ns, nt) = normalAtk.Value;
                 Log($"[AI] {caster.DisplayName} 使用 [{ns.DisplayName}] → {nt.DisplayName}(HP:{nt.CurrentHP:F0})");
-                SubmitAndAct(caster, ns, new List<BattleUnitInstance> { nt });
+                SubmitAndAct(caster, ns, nt);
                 return;
             }
 
             // 8. 默认
             var first = skills[0];
             Log($"[AI] {caster.DisplayName} 使用 [{first.skill.DisplayName}]（默认）");
-            SubmitAndAct(caster, first.skill, first.targets);
+            SubmitAndAct(caster, first.skill, first.target);
         }
 
-        private void SubmitAndAct(BattleUnitInstance caster, Skill skill, List<BattleUnitInstance> targets)
+        private void SubmitAndAct(BattleUnitInstance caster, Skill skill, BattleUnitInstance target)
         {
             // 记录前HP
             var sb = new StringBuilder();
@@ -264,7 +264,7 @@ namespace GameDemo.Tests.EditMode
                 sb.Append($"{u.DisplayName}(HP:{u.CurrentHP:F0} MP:{u.CurrentMana:F0}) ");
             Log($"  [状态] {sb}");
 
-            if (targets.Count == 0 || !skill.CanCast(caster, targets[0]))
+            if (!skill.CanCast(caster, target))
             {
                 Log($"  [失败] 不满足释放条件，跳过");
                 _mgr.StateMachine.SetState(BattleState.PostAction);
@@ -275,11 +275,9 @@ namespace GameDemo.Tests.EditMode
             skill.Cast(caster);
 
             // 记录施放
-            var targetNames = string.Join(", ", targets.ConvertAll(t => $"{t.DisplayName}"));
-            Log($"  [施放] {caster.DisplayName} → [{skill.DisplayName}] → [{targetNames}]");
+            Log($"  [施放] {caster.DisplayName} → [{skill.DisplayName}] → [{target.DisplayName}]");
 
-            foreach (var t in targets)
-                skill.Apply(caster, t);
+            skill.Apply(caster, target);
 
             // 记录后HP
             sb.Clear();
@@ -297,7 +295,7 @@ namespace GameDemo.Tests.EditMode
             }
             Log($"  [结果] {sb}");
 
-            _mgr.RaiseSkillUsed(caster, skill, targets);
+            _mgr.RaiseSkillUsed(caster, skill, new List<BattleUnitInstance> { target });
             _mgr.RefreshAllUnits();
             _mgr.CleanupDeadUnits();
 
@@ -313,8 +311,8 @@ namespace GameDemo.Tests.EditMode
             foreach (var u in allyForm.Units)
             {
                 if (!u.IsAlive) continue;
-                if (u == caster) continue;          // 不加给自己
-                if (HasEffect(u, "AtkMultUp")) continue; // 已有 buff 跳过
+                if (u == caster) continue;
+                if (HasEffect(u, "AtkMultUp")) continue;
                 if (u.CurrentAttack > maxAtk)
                 { maxAtk = u.CurrentAttack; best = u; }
             }
@@ -347,17 +345,17 @@ namespace GameDemo.Tests.EditMode
             return best;
         }
 
-        private static (Skill skill, List<BattleUnitInstance> targets)? FindSkill(
-            List<(Skill skill, List<BattleUnitInstance> targets)> skills, string id)
+        private static (Skill skill, BattleUnitInstance target)? FindSkill(
+            List<(Skill skill, BattleUnitInstance target)> skills, string id)
         {
-            foreach (var (s, ts) in skills)
+            foreach (var (s, t) in skills)
                 if (s.Id == id)
-                    return (s, ts);
+                    return (s, t);
             return null;
         }
 
         private static (Skill skill, BattleUnitInstance target)? FindLowestHpTarget(
-            List<(Skill skill, List<BattleUnitInstance> targets)> skills, string id, Formation enemyForm)
+            List<(Skill skill, BattleUnitInstance target)> skills, string id, Formation enemyForm)
         {
             BattleUnitInstance? lowest = null;
             float minHp = float.MaxValue;
@@ -367,7 +365,7 @@ namespace GameDemo.Tests.EditMode
 
             if (lowest == null) return null;
 
-            foreach (var (s, ts) in skills)
+            foreach (var (s, t) in skills)
                 if (s.Id == id)
                     return (s, lowest);
             return null;

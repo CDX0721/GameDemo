@@ -14,6 +14,18 @@ TextureImporter:
   - first:
       213: -4988616958931745643
     second: fx_magic_blast_3
+  - first:
+      213: -5136105229521899823
+    second: fx_magic_blast_4
+  - first:
+      213: 7810751957149128848
+    second: fx_magic_blast_5
+  - first:
+      213: -3951549166604449639
+    second: fx_magic_blast_6
+  - first:
+      213: 5074763471710095038
+    second: fx_magic_blast_7
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +58,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -84,7 +96,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -112,12 +124,12 @@ TextureImporter:
       name: fx_magic_blast_0
       rect:
         serializedVersion: 2
-        x: 43
-        y: 42
-        width: 43
-        height: 43
+        x: 0
+        y: 64
+        width: 128
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -134,12 +146,12 @@ TextureImporter:
       name: fx_magic_blast_1
       rect:
         serializedVersion: 2
-        x: 162
-        y: 34
-        width: 60
-        height: 60
+        x: 128
+        y: 64
+        width: 128
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -156,12 +168,12 @@ TextureImporter:
       name: fx_magic_blast_2
       rect:
         serializedVersion: 2
-        x: 277
-        y: 21
-        width: 86
-        height: 86
+        x: 256
+        y: 64
+        width: 128
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -178,12 +190,12 @@ TextureImporter:
       name: fx_magic_blast_3
       rect:
         serializedVersion: 2
-        x: 392
-        y: 7
-        width: 113
-        height: 113
+        x: 384
+        y: 64
+        width: 128
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -192,6 +204,94 @@ TextureImporter:
       bones: []
       spriteID: 59442628e4fd4cab0800000000000000
       internalID: -4988616958931745643
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fx_magic_blast_4
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 128
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1de22598183e8b8b0800000000000000
+      internalID: -5136105229521899823
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fx_magic_blast_5
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 128
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0989f8a958d556c60800000000000000
+      internalID: 7810751957149128848
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fx_magic_blast_6
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 128
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9980d0c18f64929c0800000000000000
+      internalID: -3951549166604449639
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fx_magic_blast_7
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 0
+        width: 128
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eb688628d7e2d6640800000000000000
+      internalID: 5074763471710095038
       vertices: []
       indices: 
       edges: []
@@ -214,6 +314,10 @@ TextureImporter:
       fx_magic_blast_1: -3123159707462964319
       fx_magic_blast_2: -1129471704621131207
       fx_magic_blast_3: -4988616958931745643
+      fx_magic_blast_4: -5136105229521899823
+      fx_magic_blast_5: 7810751957149128848
+      fx_magic_blast_6: -3951549166604449639
+      fx_magic_blast_7: 5074763471710095038
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

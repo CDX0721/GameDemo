@@ -5,6 +5,8 @@ namespace GameDemo.Battle
 {
     public class BattleManager
     {
+        public static BattleManager? Instance { get; private set; }
+
         public Formation PlayerFormation { get; }
         public Formation EnemyFormation { get; }
 
@@ -14,10 +16,10 @@ namespace GameDemo.Battle
         public BattleUnitInstance? SelectedUnit { get; private set; }
         public Skill? SelectedSkill { get; set; }
 
-        private List<(Skill skill, List<BattleUnitInstance> targets)>? _pendingActions;
+        private List<(Skill skill, BattleUnitInstance target)>? _pendingActions;
 
         /// <summary>当前待执行的行动列表（只读），供表现层协程读取。</summary>
-        public IReadOnlyList<(Skill skill, List<BattleUnitInstance> targets)>? PendingActions => _pendingActions;
+        public IReadOnlyList<(Skill skill, BattleUnitInstance target)>? PendingActions => _pendingActions;
 
         // ==================== 玩家/AI 输入事件 ====================
 
@@ -27,16 +29,16 @@ namespace GameDemo.Battle
         /// <summary>轮到自动单位行动时触发。AI 系统应处理并调用 SubmitAutoAction。</summary>
         public event Action<AutoUnitInstance>? OnWaitingForAutoAction;
 
-        /// <summary>外部提交玩家选择的技能与目标，进入 Acting 阶段。</summary>
-        public void SubmitPlayerAction(Skill skill, List<BattleUnitInstance> targets)
+        /// <summary>外部提交玩家选择的技能与单个目标，进入 Acting 阶段。扩散/群体目标由内部展开。</summary>
+        public void SubmitPlayerAction(Skill skill, BattleUnitInstance target)
         {
             if (SelectedUnit is not PlayableUnitInstance) return;
-            _pendingActions = new List<(Skill, List<BattleUnitInstance>)> { (skill, targets) };
+            _pendingActions = new List<(Skill, BattleUnitInstance)> { (skill, target) };
             StateMachine.SetState(BattleState.Acting);
         }
 
-        /// <summary>外部提交自动单位的行动列表，进入 Acting 阶段。</summary>
-        public void SubmitAutoAction(List<(Skill, List<BattleUnitInstance>)> actions)
+        /// <summary>外部提交自动单位的行动列表（每项含单个目标），进入 Acting 阶段。</summary>
+        public void SubmitAutoAction(List<(Skill, BattleUnitInstance target)> actions)
         {
             if (SelectedUnit is not AutoUnitInstance) return;
             _pendingActions = actions;
@@ -75,19 +77,19 @@ namespace GameDemo.Battle
         public bool IsPlayerUnit(BattleUnitInstance unit) =>
             PlayerFormation.FindUnit(unit).IsValid;
 
-        public List<(Skill skill, List<BattleUnitInstance> targets)> GetCastableSkills(BattleUnitInstance unit)
+        /// <summary>返回所有可释放的 (技能, 单个候选目标) 对。群体技能的扩散由 ApplyAction 内部处理。</summary>
+        public List<(Skill skill, BattleUnitInstance target)> GetCastableSkills(BattleUnitInstance unit)
         {
-            var result = new List<(Skill, List<BattleUnitInstance>)>();
+            var result = new List<(Skill, BattleUnitInstance)>();
 
-            Formation allyFormation = IsPlayerUnit(unit) ? PlayerFormation : EnemyFormation;
             foreach (Skill skill in unit.Skills)
             {
-                if (skill.ExactAllyCount.HasValue &&
-                    CountAlive(allyFormation) != skill.ExactAllyCount.Value)
-                    continue;
-                var targets = FindTargetsForSkill(unit, skill);
-                if (targets.Count > 0 && skill.CanCast(unit, targets[0]))
-                    result.Add((skill, targets));
+                var candidates = FindCandidateTargetsForSkill(unit, skill);
+                foreach (var target in candidates)
+                {
+                    if (skill.CanCast(unit, target))
+                        result.Add((skill, target));
+                }
             }
             return result;
         }
@@ -96,6 +98,7 @@ namespace GameDemo.Battle
 
         public BattleManager()
         {
+            Instance = this;
             PlayerFormation = new Formation();
             EnemyFormation = new Formation();
             ActionQueue = new ActionQueue();
@@ -135,6 +138,7 @@ namespace GameDemo.Battle
                 SelectedUnit = ActionQueue.Current;
                 if (SelectedUnit == null)
                 {
+                    Instance = null;
                     StateMachine.SetState(BattleState.BattleEnd);
                     return;
                 }
@@ -165,6 +169,7 @@ namespace GameDemo.Battle
                 // Step 3: 检查游戏结束条件
                 if (CheckGameOver())
                 {
+                    Instance = null;
                     StateMachine.SetState(BattleState.BattleEnd);
                     OnBattleEnded?.Invoke(AliveCountPlayer > 0);
                     return;
@@ -208,21 +213,17 @@ namespace GameDemo.Battle
             if (SelectedUnit == null) return;
             if (_pendingActions == null) return;
 
-            Formation allyForm = IsPlayerUnit(SelectedUnit) ? PlayerFormation : EnemyFormation;
-
-            foreach (var (skill, targets) in _pendingActions)
+            foreach (var (skill, pickedTarget) in _pendingActions)
             {
                 if (!SelectedUnit.IsAlive) break;
-                if (targets.Count == 0) continue;
-                if (skill.ExactAllyCount.HasValue &&
-                    CountAlive(allyForm) != skill.ExactAllyCount.Value) continue;
-                if (!skill.CanCast(SelectedUnit, targets[0])) continue;
+                if (pickedTarget == null) continue;
+                if (!skill.CanCast(SelectedUnit, pickedTarget)) continue;
 
                 SelectedSkill = skill;
                 skill.Cast(SelectedUnit);
-                foreach (var t in targets)
-                    skill.Apply(SelectedUnit, t);
-                OnSkillUsed?.Invoke(SelectedUnit, skill, targets);
+                skill.Apply(SelectedUnit, pickedTarget);
+                OnSkillUsed?.Invoke(SelectedUnit, skill,
+                    new List<BattleUnitInstance> { pickedTarget });
                 RefreshAllUnits();
                 CleanupDeadUnits();
             }
@@ -250,6 +251,7 @@ namespace GameDemo.Battle
 
             if (CheckGameOver())
             {
+                Instance = null;
                 StateMachine.SetState(BattleState.BattleEnd);
                 OnBattleEnded?.Invoke(AliveCountPlayer > 0);
                 return;
@@ -302,7 +304,8 @@ namespace GameDemo.Battle
                 RefreshPersistentEffects(unit);
         }
 
-        private List<BattleUnitInstance> FindTargetsForSkill(BattleUnitInstance caster, Skill skill)
+        /// <summary>返回技能可选的所有单个候选目标，供 UI/AI 选择。群体技能的扩散由 ApplyAction 内部处理。</summary>
+        private List<BattleUnitInstance> FindCandidateTargetsForSkill(BattleUnitInstance caster, Skill skill)
         {
             Formation enemyOfCaster = GetEnemyFormationOf(caster);
             Formation allyOfCaster = IsPlayerUnit(caster) ? PlayerFormation : EnemyFormation;
@@ -310,19 +313,13 @@ namespace GameDemo.Battle
             switch (skill.TargetType)
             {
                 case TargetType.SingleEnemy:
-                    if (skill.SkillType == SkillType.Spread)
-                        return FindAllAliveInColumn(enemyOfCaster, caster.Col);
-                    var first = FindFirstAlive(enemyOfCaster);
-                    return first != null ? new List<BattleUnitInstance> { first } : new List<BattleUnitInstance>();
                 case TargetType.AllEnemies:
                     return FindAllAlive(enemyOfCaster);
                 case TargetType.SingleAlly:
-                    return new List<BattleUnitInstance> { caster };
                 case TargetType.AllAllies:
                     return FindAllAlive(allyOfCaster);
                 case TargetType.SingleBoth:
-                    first = FindFirstAlive(enemyOfCaster);
-                    return first != null ? new List<BattleUnitInstance> { first } : new List<BattleUnitInstance>();
+                    return FindAllAlive(enemyOfCaster);
                 case TargetType.AllBoth:
                     var all = FindAllAlive(enemyOfCaster);
                     all.AddRange(FindAllAlive(allyOfCaster));
@@ -334,17 +331,10 @@ namespace GameDemo.Battle
             }
         }
 
+
         private Formation GetEnemyFormationOf(BattleUnitInstance unit)
         {
             return PlayerFormation.FindUnit(unit).IsValid ? EnemyFormation : PlayerFormation;
-        }
-
-        private BattleUnitInstance? FindFirstAlive(Formation formation)
-        {
-            foreach (BattleUnitInstance unit in formation.Units)
-                if (unit.IsAlive)
-                    return unit;
-            return null;
         }
 
         private List<BattleUnitInstance> FindAllAlive(Formation formation)
@@ -352,15 +342,6 @@ namespace GameDemo.Battle
             var result = new List<BattleUnitInstance>();
             foreach (BattleUnitInstance unit in formation.Units)
                 if (unit.IsAlive)
-                    result.Add(unit);
-            return result;
-        }
-
-        private List<BattleUnitInstance> FindAllAliveInColumn(Formation formation, int col)
-        {
-            var result = new List<BattleUnitInstance>();
-            foreach (BattleUnitInstance unit in formation.Units)
-                if (unit.IsAlive && unit.Col == col)
                     result.Add(unit);
             return result;
         }

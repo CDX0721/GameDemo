@@ -12,8 +12,8 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public static class BattleSceneSetup
 {
-    private const int FRAME_W = 128;
-    private const int FRAME_H = 128;
+    private const int FRAME_COLS = 4;
+    private const int FRAME_ROWS = 2;
 
     // ==================== 主菜单项 ====================
 
@@ -109,40 +109,31 @@ public static class BattleSceneSetup
             string[] files = Directory.GetFiles(dir, "*.png");
             foreach (string file in files)
             {
-                if (SliceSpriteSheet(file, FRAME_W, FRAME_H))
+                if (SliceSpriteSheet(file, FRAME_COLS, FRAME_ROWS))
                     count++;
             }
         }
 
         AssetDatabase.Refresh();
-        Debug.Log($"[Slice] 已处理 {count} 张精灵表 (每格 {FRAME_W}x{FRAME_H})");
+        Debug.Log($"[Slice] 已处理 {count} 张精灵表 ({FRAME_COLS}x{FRAME_ROWS} 网格)");
     }
 
-    private static bool SliceSpriteSheet(string assetPath, int frameW, int frameH)
+    private static bool SliceSpriteSheet(string assetPath, int cols, int rows)
     {
         assetPath = assetPath.Replace("\\", "/");
         TextureImporter importer = AssetImporter.GetAtPath(assetPath) as TextureImporter;
         if (importer == null) return false;
 
-        // 读取纹理尺寸确定列数
-        string absPath = Path.Combine(Directory.GetCurrentDirectory(), assetPath);
-        if (!File.Exists(absPath)) return false;
-
-        // 使用 Unity 方式获取纹理信息
         Texture2D tex = AssetDatabase.LoadAssetAtPath<Texture2D>(assetPath);
         if (tex == null) return false;
 
-        int cols = tex.width / frameW;
-        int rows = tex.height / frameH;
-        if (cols == 0 || rows == 0) return false;
-
-        // 已有切片的跳过
-        if (importer.spritesheet != null && importer.spritesheet.Length > 0)
-            return false;
+        int frameW = tex.width / cols;
+        int frameH = tex.height / rows;
+        if (frameW == 0 || frameH == 0) return false;
 
         importer.textureType = TextureImporterType.Sprite;
         importer.spriteImportMode = SpriteImportMode.Multiple;
-        importer.filterMode = FilterMode.Point;  // 像素风
+        importer.filterMode = FilterMode.Point;
         importer.textureCompression = TextureImporterCompression.Uncompressed;
 
         string baseName = Path.GetFileNameWithoutExtension(assetPath);

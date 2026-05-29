@@ -13,6 +13,10 @@ MonoBehaviour:
   m_Name: AnimationCache
   m_EditorClassIdentifier: 
   _entries:
+  - Key: Cirno_Attack
+    Path: Art/Sprites/Units/Cirno_Attack
+  - Key: Cirno_Idle
+    Path: Art/Sprites/Units/Cirno_Idle
   - Key: e_archer_attack
     Path: Art/Sprites/Units/e_archer_attack
   - Key: e_archer_idle
@@ -25,6 +29,14 @@ MonoBehaviour:
     Path: Art/Sprites/Units/e_troll_attack
   - Key: e_troll_idle
     Path: Art/Sprites/Units/e_troll_idle
+  - Key: Flandre_Attack
+    Path: Art/Sprites/Units/Flandre_Attack
+  - Key: Flandre_Idle
+    Path: Art/Sprites/Units/Flandre_Idle
+  - Key: OrangeDog_Attack
+    Path: Art/Sprites/Units/OrangeDog_Attack
+  - Key: OrangeDog_Idle
+    Path: Art/Sprites/Units/OrangeDog_Idle
   - Key: p_mage_attack
     Path: Art/Sprites/Units/p_mage_attack
   - Key: p_mage_idle
@@ -37,6 +49,10 @@ MonoBehaviour:
     Path: Art/Sprites/Units/p_warrior_attack
   - Key: p_warrior_idle
     Path: Art/Sprites/Units/p_warrior_idle
+  - Key: Sans_Attack
+    Path: Art/Sprites/Units/Sans_Attack
+  - Key: Sans_Idle
+    Path: Art/Sprites/Units/Sans_Idle
   - Key: fx_arrow
     Path: Art/Sprites/Skills/fx_arrow
   - Key: fx_buff

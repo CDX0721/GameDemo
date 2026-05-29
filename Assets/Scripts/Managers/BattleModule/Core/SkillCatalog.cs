@@ -4,6 +4,9 @@ namespace GameDemo.Battle
 {
     public static class SkillCatalog
     {
+        /// <summary>AI 评估技能优先级时的当前施法者。评估前设置，评估后清除。</summary>
+        public static BattleUnitInstance? EvaluatingUnit { get; set; }
+
         private static readonly Dictionary<(string id, int level), Skill> _cache = new();
 
         private static bool _initialized;
@@ -88,6 +91,13 @@ namespace GameDemo.Battle
                     target.TakeDamage(caster.CurrentAttack * damageMultiplier);
             });
 
+            skill.Priority = target =>
+            {
+                if (!target.IsAlive || target.MaxHP <= 0f) return 0f;
+                float ratio = target.CurrentHP / target.MaxHP;
+                return 50f + (1f - ratio) * 30f;
+            };
+
             return skill;
         }
 
@@ -123,6 +133,16 @@ namespace GameDemo.Battle
                     target.Shield += target.MaxHP * shieldRatio;
             });
 
+            skill.Priority = target =>
+            {
+                if (!target.IsAlive || target.MaxHP <= 0f) return 0f;
+                float shieldNorm = target.Shield / target.MaxHP;
+                float hpRatio = target.CurrentHP / target.MaxHP;
+                float shieldNeed = 1f - System.MathF.Min(shieldNorm, 1f);
+                float hpNeed = 1f - hpRatio;
+                return shieldNeed * 50f + hpNeed * 30f;
+            };
+
             return skill;
         }
 
@@ -147,6 +167,16 @@ namespace GameDemo.Battle
                 caster.CurrentMana = System.MathF.Max(0f, caster.CurrentMana - deduction);
             });
 
+            skill.Priority = target =>
+            {
+                if (target.MaxHP <= 0f || target.MaxMana <= 0f) return 0f;
+                float mp = target.CurrentMana / target.MaxMana;
+                float hp = target.CurrentHP / target.MaxHP;
+                float diff = mp - hp;
+                if (diff <= 0f) return 5f;
+                return System.MathF.Min(diff * 85f, 80f);
+            };
+
             return skill;
         }
 
@@ -167,11 +197,25 @@ namespace GameDemo.Battle
                 caster.CurrentMana -= manaCost;
             });
 
-            skill.ApplyActions.Add((caster, target) =>
+            skill.ApplyActions.Add((caster, pickedTarget) =>
             {
-                if (target.IsAlive)
-                    target.TakeDamage(caster.CurrentAttack * 2.5f + target.MaxHP * 0.10f);
+                var bm = BattleManager.Instance;
+                if (bm == null) return;
+                var enemies = bm.IsPlayerUnit(caster) ? bm.EnemyFormation : bm.PlayerFormation;
+                foreach (var u in enemies.Units)
+                    if (u.IsAlive && u.Col == pickedTarget.Col)
+                        u.TakeDamage(caster.CurrentAttack * 2.5f + u.MaxHP * 0.10f);
             });
+
+            skill.Priority = target =>
+            {
+                int colCount = CountAliveEnemiesInColumn();
+                int enemyCount = CountAliveEnemies();
+                float bonus = enemyCount > 0 ? (float)colCount / enemyCount * 30f : 0f;
+                if (!target.IsAlive || target.MaxHP <= 0f) return 30f + bonus;
+                float ratio = target.CurrentHP / target.MaxHP;
+                return 30f + bonus + ratio * 25f;
+            };
 
             return skill;
         }
@@ -211,6 +255,14 @@ namespace GameDemo.Battle
                 }
             });
 
+            skill.Priority = target =>
+            {
+                if (!target.IsAlive || target.MaxHP <= 0f) return 5f;
+                float ratio = target.CurrentHP / target.MaxHP;
+                if (ratio >= 0.9f) return 5f;
+                return (1f - ratio) * 85f;
+            };
+
             return skill;
         }
 
@@ -231,11 +283,22 @@ namespace GameDemo.Battle
                 caster.CurrentMana -= manaCost;
             });
 
-            skill.ApplyActions.Add((caster, target) =>
+            skill.ApplyActions.Add((caster, _) =>
             {
-                if (target.IsAlive)
-                    target.TakeDamage(caster.CurrentAttack * 2.0f);
+                var bm = BattleManager.Instance;
+                if (bm == null) return;
+                var enemies = bm.IsPlayerUnit(caster) ? bm.EnemyFormation : bm.PlayerFormation;
+                foreach (var u in enemies.Units)
+                    if (u.IsAlive)
+                        u.TakeDamage(caster.CurrentAttack * 2.0f);
             });
+
+            skill.Priority = _ =>
+            {
+                int alive = CountAliveEnemies();
+                if (alive <= 1) return 20f;
+                return System.MathF.Min(alive * 22f, 85f);
+            };
 
             return skill;
         }
@@ -264,6 +327,14 @@ namespace GameDemo.Battle
                 target.RecalculateStats();
                 target.RemainingCost = 0f;
             });
+
+            skill.Priority = target =>
+            {
+                if (!target.IsAlive) return 0f;
+                int negCount = CountNegativeEffects(target);
+                if (negCount == 0) return 10f;
+                return System.MathF.Min(negCount * 25f, 80f);
+            };
 
             return skill;
         }
@@ -294,6 +365,15 @@ namespace GameDemo.Battle
                 caster.CurrentMana = System.MathF.Min(caster.CurrentMana + actualDrain, caster.MaxMana);
             });
 
+            skill.Priority = _ =>
+            {
+                var caster = EvaluatingUnit;
+                if (caster == null || caster.MaxMana <= 0f) return 0f;
+                float mpRatio = caster.CurrentMana / caster.MaxMana;
+                if (mpRatio >= 0.8f) return 15f;
+                return 15f + (1f - mpRatio) * 70f;
+            };
+
             return skill;
         }
 
@@ -316,6 +396,8 @@ namespace GameDemo.Battle
                     target.AddEffect(BattleEffectCatalog.Create("AtkMultUp", caster,
                         stackCount: 1, turns: 1, 200));
             });
+
+            skill.Priority = _ => 65f;
 
             return skill;
         }
@@ -354,6 +436,14 @@ namespace GameDemo.Battle
                     stackCount: 2, turns: 2, perStack));
             });
 
+            skill.Priority = target =>
+            {
+                if (!target.IsAlive || target.MaxHP <= 0f) return 0f;
+                float ratio = target.CurrentHP / target.MaxHP;
+                if (ratio < 0.3f) return 10f;
+                return 20f + ratio * 60f;
+            };
+
             return skill;
         }
 
@@ -374,14 +464,27 @@ namespace GameDemo.Battle
                 caster.CurrentMana -= manaCost;
             });
 
-            skill.ApplyActions.Add((caster, target) =>
+            skill.ApplyActions.Add((caster, _) =>
             {
-                if (!target.IsAlive) return;
-                target.AddEffect(BattleEffectCatalog.Create("DmgBonusUp", caster,
-                    stackCount: 1, turns: 3, 100));
-                target.AddEffect(BattleEffectCatalog.Create("DmgReductionDown", caster,
-                    stackCount: 1, turns: 3, 50));
+                var bm = BattleManager.Instance;
+                if (bm == null) return;
+                var allies = bm.IsPlayerUnit(caster) ? bm.PlayerFormation : bm.EnemyFormation;
+                foreach (var u in allies.Units)
+                {
+                    if (!u.IsAlive) continue;
+                    u.AddEffect(BattleEffectCatalog.Create("DmgBonusUp", caster,
+                        stackCount: 1, turns: 3, 100));
+                    u.AddEffect(BattleEffectCatalog.Create("DmgReductionDown", caster,
+                        stackCount: 1, turns: 3, 50));
+                }
             });
+
+            skill.Priority = _ =>
+            {
+                int allies = CountAliveAllies();
+                if (allies <= 1) return 15f;
+                return System.MathF.Min(allies * 20f, 80f);
+            };
 
             return skill;
         }
@@ -392,8 +495,16 @@ namespace GameDemo.Battle
 
             var skill = new Skill("Armageddon", "哈米吉多顿",
                 SkillType.AoE, TargetType.AllEnemies, level);
-            skill.Description = "消耗几乎所有的生命和法力值，对敌方全体造成特大伤害。";
-            skill.ExactAllyCount = 1;
+            skill.Description = "消耗几乎所有的生命和法力值，对敌方全体造成特大伤害。我方仅剩一个单位时可释放。";
+
+            skill.CanCastConditions.Add((caster, target) =>
+            {
+                var bm = BattleManager.Instance;
+                if (bm == null) return false;
+                int allyCount = bm.IsPlayerUnit(caster)
+                    ? bm.AliveCountPlayer : bm.AliveCountEnemy;
+                return allyCount == 1;
+            });
 
             skill.CastActions.Add(caster =>
             {
@@ -401,13 +512,67 @@ namespace GameDemo.Battle
                 caster.CurrentMana = 1f;
             });
 
-            skill.ApplyActions.Add((caster, target) =>
+            skill.ApplyActions.Add((caster, _) =>
             {
-                if (target.IsAlive)
-                    target.TakeDamage(target.MaxHP * 5f);
+                var bm = BattleManager.Instance;
+                if (bm == null) return;
+                var enemies = bm.IsPlayerUnit(caster) ? bm.EnemyFormation : bm.PlayerFormation;
+                foreach (var u in enemies.Units)
+                    if (u.IsAlive)
+                        u.TakeDamage(u.MaxHP * 5f);
             });
 
+            skill.Priority = _ => 95f;
+
             return skill;
+        }
+
+        // ================================================================
+        // AI Priority Helpers — 通过 BattleManager.Instance / EvaluatingUnit 访问战场上下文
+        // ================================================================
+
+        private static int CountAliveAllies()
+        {
+            var bm = BattleManager.Instance;
+            var caster = EvaluatingUnit;
+            if (bm == null || caster == null) return 0;
+            var allies = bm.IsPlayerUnit(caster) ? bm.PlayerFormation : bm.EnemyFormation;
+            int count = 0;
+            foreach (var u in allies.Units) if (u.IsAlive) count++;
+            return count;
+        }
+
+        private static int CountAliveEnemies()
+        {
+            var bm = BattleManager.Instance;
+            var caster = EvaluatingUnit;
+            if (bm == null || caster == null) return 0;
+            var enemies = bm.IsPlayerUnit(caster) ? bm.EnemyFormation : bm.PlayerFormation;
+            int count = 0;
+            foreach (var u in enemies.Units) if (u.IsAlive) count++;
+            return count;
+        }
+
+        private static int CountAliveEnemiesInColumn()
+        {
+            var bm = BattleManager.Instance;
+            var caster = EvaluatingUnit;
+            if (bm == null || caster == null) return 0;
+            var enemies = bm.IsPlayerUnit(caster) ? bm.EnemyFormation : bm.PlayerFormation;
+            int count = 0;
+            foreach (var u in enemies.Units)
+                if (u.IsAlive && u.Col == caster.Col)
+                    count++;
+            return count;
+        }
+
+        private static int CountNegativeEffects(BattleUnitInstance unit)
+        {
+            int count = 0;
+            foreach (var e in unit.Effects)
+                if (e.Template.EffectType == BattleEffectType.Negative)
+                    count++;
+            return count;
         }
     }
 }

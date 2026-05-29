@@ -29,10 +29,10 @@ public class SpriteAnimator : MonoBehaviour
     /// 播放动画。
     /// </summary>
     /// <param name="frames">帧序列</param>
-    /// <param name="totalDuration">动画总时长（秒），每帧时长 = totalDuration / frames.Length</param>
+    /// <param name="frameDuration">每帧持续时长（秒）</param>
     /// <param name="looping">是否循环</param>
     /// <param name="onComplete">播放完毕回调（仅非循环时触发）</param>
-    public void Play(Sprite[] frames, float totalDuration, bool looping, Action? onComplete = null)
+    public void Play(Sprite[] frames, float frameDuration, bool looping, Action? onComplete = null)
     {
         if (frames == null || frames.Length == 0)
         {
@@ -41,7 +41,7 @@ public class SpriteAnimator : MonoBehaviour
         }
 
         _frames = frames;
-        _frameDuration = totalDuration / frames.Length;
+        _frameDuration = frameDuration;
         _looping = looping;
         _onComplete = onComplete;
         _frameIndex = 0;
