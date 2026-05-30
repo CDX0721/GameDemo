@@ -271,7 +271,8 @@ namespace GameDemo.Battle
             for (int i = unit.Effects.Count - 1; i >= 0; i--)
             {
                 BattleEffectInstance effect = unit.Effects[i];
-                effect.RemainingTurns--;
+                if (effect.RemainingTurns > 0)
+                    effect.RemainingTurns--;
                 if (effect.IsExpired)
                 {
                     unit.Effects.RemoveAt(i);

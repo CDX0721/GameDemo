@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using GameDemo.Audio;
@@ -51,6 +52,8 @@ public class BattleDriver : MonoBehaviour
         Manager.OnSkillUsed += OnSkillUsed;
         Manager.OnUnitDamaged += OnUnitDamaged;
         Manager.OnUnitDied += OnUnitDied;
+        Manager.OnEffectApplied += OnEffect;
+        Manager.OnEffectExpired += OnEffect;
         Manager.StateMachine.OnStateChanged += OnBattleStateChanged;
 
         foreach (var p in fieldDef.PlayerUnits)
@@ -107,19 +110,23 @@ public class BattleDriver : MonoBehaviour
         StartCoroutine(AutoResolveDelay(0.8f, () =>
         {
             var skills = Manager.GetCastableSkills(unit);
-            if (skills.Count > 0)
+            if (skills.Count == 0)
             {
-                SkillCatalog.EvaluatingUnit = unit;
-                var best = skills[0];
-                float bestPrio = best.skill.Priority?.Invoke(best.target) ?? 0f;
-                for (int i = 1; i < skills.Count; i++)
-                {
-                    float prio = skills[i].skill.Priority?.Invoke(skills[i].target) ?? 0f;
-                    if (prio > bestPrio) { best = skills[i]; bestPrio = prio; }
-                }
-                SkillCatalog.EvaluatingUnit = null;
-                Manager.SubmitAutoAction(new List<(Skill, BattleUnitInstance)> { best });
+                Debug.Log($"[AutoAction] {unit.DisplayName} 无可用技能，跳过行动");
+                Manager.SubmitAutoAction(new List<(Skill, BattleUnitInstance)>());
+                return;
             }
+
+            SkillCatalog.EvaluatingUnit = unit;
+            var best = skills[0];
+            float bestPrio = best.skill.Priority?.Invoke(best.target) ?? 0f;
+            for (int i = 1; i < skills.Count; i++)
+            {
+                float prio = skills[i].skill.Priority?.Invoke(skills[i].target) ?? 0f;
+                if (prio > bestPrio) { best = skills[i]; bestPrio = prio; }
+            }
+            SkillCatalog.EvaluatingUnit = null;
+            Manager.SubmitAutoAction(new List<(Skill, BattleUnitInstance)> { best });
         }));
     }
 
@@ -127,6 +134,12 @@ public class BattleDriver : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         action();
+    }
+
+    private IEnumerator DelayedEffect(UnitView targetView, Sprite[] frames, float delaySec, Action onComplete)
+    {
+        yield return new WaitForSeconds(delaySec);
+        targetView.PlayEffect(frames, onComplete);
     }
 
     // ==================== Acting 协程（动画编排） ====================
@@ -159,10 +172,11 @@ public class BattleDriver : MonoBehaviour
 
             _bootstrapper.UnitViews.TryGetValue(pickedTarget, out var targetView);
 
-            // 1. 施法者播放攻击动画 + 目标播放技能特效
+            // 1. 施法者播放攻击动画；目标延迟 3 帧后播放技能特效
             bool casterDone = false;
             bool effectDone = false;
             var effectFrames = GetSkillFxFrames(skill);
+            const float frameDuration = 0.2f;
 
             if (casterView != null)
                 casterView.PlayAttack(() => casterDone = true);
@@ -170,13 +184,13 @@ public class BattleDriver : MonoBehaviour
                 casterDone = true;
 
             if (targetView != null)
-                targetView.PlayEffect(effectFrames, () => effectDone = true);
+                StartCoroutine(DelayedEffect(targetView, effectFrames, frameDuration * 3f, () => effectDone = true));
             else
                 effectDone = true;
 
-            // 2. 等待动画完成（兜底 1.2s）
+            // 2. 等待动画完成（兜底 1.5s）
             float timer = 0f;
-            while ((!casterDone || !effectDone) && timer < 1.2f)
+            while ((!casterDone || !effectDone) && timer < 1.5f)
             {
                 timer += Time.deltaTime;
                 yield return null;
@@ -242,6 +256,12 @@ public class BattleDriver : MonoBehaviour
         List<BattleUnitInstance> targets)
         => Debug.Log($"{caster.DisplayName} 使用了 [{skill.DisplayName}]");
 
+    private void OnEffect(BattleUnitInstance unit, BattleEffectInstance effect)
+    {
+        if (_bootstrapper.UnitViews.TryGetValue(unit, out var view))
+            view.SyncEffectLayers(id => _bootstrapper.GetEffectFrames(id));
+    }
+
     private void OnUnitDamaged(BattleUnitInstance unit, float damage, BattleUnitInstance? source)
     {
         Debug.Log($"{unit.DisplayName} 受到 {damage:F0} 伤害，HP: {unit.CurrentHP:F0}/{unit.MaxHP:F0}");
@@ -275,6 +295,8 @@ public class BattleDriver : MonoBehaviour
         Manager.OnSkillUsed -= OnSkillUsed;
         Manager.OnUnitDamaged -= OnUnitDamaged;
         Manager.OnUnitDied -= OnUnitDied;
+        Manager.OnEffectApplied -= OnEffect;
+        Manager.OnEffectExpired -= OnEffect;
         Manager.StateMachine.OnStateChanged -= OnBattleStateChanged;
     }
 

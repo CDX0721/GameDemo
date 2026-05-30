@@ -99,7 +99,8 @@ public static class BattleSceneSetup
     {
         string[] dirs = {
             "Assets/Resources/Art/Sprites/Units",
-            "Assets/Resources/Art/Sprites/Skills"
+            "Assets/Resources/Art/Sprites/Skills",
+            "Assets/Resources/Art/Sprites/Effects"
         };
         int count = 0;
 
@@ -168,7 +169,8 @@ public static class BattleSceneSetup
 
         string[] dirs = {
             "Assets/Resources/Art/Sprites/Units",
-            "Assets/Resources/Art/Sprites/Skills"
+            "Assets/Resources/Art/Sprites/Skills",
+            "Assets/Resources/Art/Sprites/Effects"
         };
 
         foreach (string dir in dirs)

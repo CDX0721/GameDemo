@@ -96,7 +96,8 @@ namespace GameDemo.Battle
             var effect = new BattleEffect(id, displayName, effectType,
                 BattleEffectStatusType.StatChange, maxStackCount: 3)
             {
-                Description = $"{displayName}{baseValue}%"
+                Description = $"{displayName}{baseValue}%",
+                IsDispellable = effectType == BattleEffectType.Negative
             };
 
             effect.ApplyActions.Add((_, unit, stackCount) =>
@@ -114,7 +115,8 @@ namespace GameDemo.Battle
                 BattleEffectType.Negative, BattleEffectStatusType.Damage,
                 maxStackCount: 5)
             {
-                Description = "回合开始时，受到持续伤害"
+                Description = "回合开始时，受到持续伤害",
+                IsDispellable = true
             };
 
             effect.ApplyActions.Add((_, unit, stackCount) =>
@@ -133,7 +135,8 @@ namespace GameDemo.Battle
             var effect = new BattleEffect(id, displayName, effectType,
                 BattleEffectStatusType.StatChange, maxStackCount: 3)
             {
-                Description = MakeStatDescription(id, baseValue)
+                Description = MakeStatDescription(id, baseValue),
+                IsDispellable = effectType == BattleEffectType.Negative
             };
 
             effect.ApplyActions.Add((_, unit, stackCount) =>

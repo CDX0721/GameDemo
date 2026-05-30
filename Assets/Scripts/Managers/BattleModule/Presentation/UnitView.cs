@@ -1,9 +1,10 @@
 using System;
+using System.Collections.Generic;
 using GameDemo.Battle;
 using UnityEngine;
 
 /// <summary>
-/// 单个战斗单位的视觉表现。包含身体动画（idle/attack）和技能特效叠加层。
+/// 单个战斗单位的视觉表现。包含身体动画（idle/attack）、技能特效叠加层、持续效果叠加层。
 /// </summary>
 public class UnitView : MonoBehaviour
 {
@@ -13,9 +14,14 @@ public class UnitView : MonoBehaviour
 
     public HPBar HPBarComponent => _hpBar;
 
+    private int _col;
+    private readonly Dictionary<string, SpriteAnimator> _effectLayers = new();
+    private readonly List<SpriteAnimator> _effectLayerOrder = new();
+
     /// <summary>按列号设置渲染层级，列号越大越靠前遮挡上方单位。</summary>
     public void SetSortingOrder(int col)
     {
+        _col = col;
         int baseOrder = col * 100;
         if (_bodyAnimator.Renderer != null)
             _bodyAnimator.Renderer.sortingOrder = baseOrder;
@@ -107,6 +113,62 @@ public class UnitView : MonoBehaviour
             _effectAnimator.SetVisible(false);
             OnOneDone();
         });
+    }
+
+    /// <summary>
+    /// 同步持续效果叠加层。特效列表越靠后渲染层级越高。
+    /// 相同 effectId 只播放一份动画，无动画的效果跳过。
+    /// </summary>
+    public void SyncEffectLayers(Func<string, Sprite[]> frameLoader)
+    {
+        if (Model == null) return;
+
+        var activeIds = new HashSet<string>();
+        int baseOrder = _col * 100 + 10;
+
+        for (int i = 0; i < Model.Effects.Count; i++)
+        {
+            string effectId = Model.Effects[i].Template.Id;
+            if (activeIds.Contains(effectId)) continue;
+            activeIds.Add(effectId);
+
+            if (!_effectLayers.TryGetValue(effectId, out var layer))
+            {
+                var frames = frameLoader(effectId + "_Play");
+                if (frames == null || frames.Length == 0) continue;
+
+                var go = new GameObject($"Fx_{effectId}");
+                go.transform.SetParent(transform, false);
+                go.transform.localPosition = new Vector3(0, -1.59f, 0);
+                go.transform.localScale = Vector3.one * 2f;
+                var sr = go.AddComponent<SpriteRenderer>();
+                sr.sortingOrder = baseOrder + i;
+                layer = go.AddComponent<SpriteAnimator>();
+                layer.Play(frames, 0.2f, looping: true);
+                _effectLayers[effectId] = layer;
+            }
+            else if (!layer.IsPlaying)
+            {
+                var frames = frameLoader(effectId + "_Play");
+                if (frames != null && frames.Length > 0)
+                    layer.Play(frames, 0.2f, looping: true);
+            }
+
+            if (layer.Renderer != null)
+                layer.Renderer.sortingOrder = baseOrder + i;
+            layer.SetVisible(true);
+        }
+
+        // 清理已移除的效果层
+        var toRemove = new List<string>();
+        foreach (var kv in _effectLayers)
+            if (!activeIds.Contains(kv.Key))
+                toRemove.Add(kv.Key);
+        foreach (var id in toRemove)
+        {
+            Destroy(_effectLayers[id].gameObject);
+            _effectLayers.Remove(id);
+        }
     }
 
     /// <summary>播放受击闪烁（简单实现：短暂关闭再开启 renderer）。</summary>

@@ -11,7 +11,7 @@ namespace GameDemo.Battle
         public BattleUnitInstance? Source { get; }
         public int CurrentStackCount { get; set; }
 
-        public bool IsExpired => RemainingTurns <= 0;
+        public bool IsExpired => RemainingTurns != -1 && RemainingTurns <= 0;
 
         public BattleEffectInstance(BattleEffect template, BattleUnitInstance? source)
         {

@@ -310,7 +310,7 @@ namespace GameDemo.Battle
 
             var skill = new Skill("FlashStrike", "闪击",
                 SkillType.Support, TargetType.SingleAlly, level);
-            skill.Description = "消耗10点法力，清除友方单体所有负面效果，重置其行动代价为0";
+            skill.Description = "消耗10点法力，驱散友方单体负面效果，重置其行动代价为0";
 
             skill.CanCastConditions.Add((caster, target) =>
                 target.IsAlive && caster.CurrentMana >= manaCost);
@@ -319,12 +319,7 @@ namespace GameDemo.Battle
             {
                 caster.CurrentMana -= manaCost;
                 if (!target.IsAlive) return;
-
-                for (int i = target.Effects.Count - 1; i >= 0; i--)
-                    if (target.Effects[i].Template.EffectType == BattleEffectType.Negative)
-                        target.Effects.RemoveAt(i);
-
-                target.RecalculateStats();
+                target.Dispel(BattleEffectType.Negative);
                 target.RemainingCost = 0f;
             });
 

@@ -20,6 +20,9 @@ namespace GameDemo.Battle
         /// <summary>最大叠加层数。</summary>
         public int MaxStackCount { get; set; }
 
+        /// <summary>是否可被驱散技能移除。</summary>
+        public bool IsDispellable { get; set; }
+
         /// <summary>
         /// 影响函数列表，签名为 (来源, 承受方)。
         /// </summary>

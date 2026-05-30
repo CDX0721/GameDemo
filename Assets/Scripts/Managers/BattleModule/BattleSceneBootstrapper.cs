@@ -146,6 +146,11 @@ public class BattleSceneBootstrapper : MonoBehaviour
         return LoadFramesDirect("Art/Sprites/Skills/" + fxId);
     }
 
+    public Sprite[] GetEffectFrames(string fxId)
+    {
+        return LoadFramesDirect("Art/Sprites/Effects/" + fxId);
+    }
+
     private Sprite[] LoadFramesDirect(string resourcePath)
     {
         string key = resourcePath;

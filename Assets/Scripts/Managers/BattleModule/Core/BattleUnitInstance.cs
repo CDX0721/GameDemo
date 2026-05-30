@@ -77,6 +77,21 @@ namespace GameDemo.Battle
         /// <summary>附加效果被施加时触发。</summary>
         public event Action<BattleEffectInstance>? OnEffectAdded;
 
+        /// <summary>
+        /// 驱散指定类型的效果。仅移除 IsDispellable == true 的效果。
+        /// 若 filter 为 null，驱散所有可驱散效果。
+        /// </summary>
+        public void Dispel(BattleEffectType? filter = null)
+        {
+            for (int i = Effects.Count - 1; i >= 0; i--)
+            {
+                if (Effects[i].Template.IsDispellable
+                    && (!filter.HasValue || Effects[i].Template.EffectType == filter.Value))
+                    Effects.RemoveAt(i);
+            }
+            RecalculateStats();
+        }
+
         // ==================== 控制状态 ====================
 
         /// <summary>是否可行动（可被技能/附加效果修改）。</summary>

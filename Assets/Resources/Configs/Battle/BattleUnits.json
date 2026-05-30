@@ -10,7 +10,9 @@
       "Speed": 100,
       
       "InnateSills": [
-        "NormalAttack"
+        "NormalAttack",
+        "Heal",
+        "Shield"
       ],
       
       "IdleAnimation": "OrangeDog_Idle.png",
@@ -29,7 +31,9 @@
       "Speed": 120,
 
       "InnateSills": [
-        "NormalAttack"
+        "NormalAttack",
+        "Heal",
+        "Shield"
       ],
 
       "IdleAnimation": "Cirno_Idle.png",
@@ -47,7 +51,7 @@
       "Speed": 200,
 
       "InnateSills": [
-        "NormalAttack"
+        "ThornsWrap"
       ],
 
       "IdleAnimation": "Flandre_Idle.png",
@@ -60,12 +64,11 @@
 
       "Attack": 1,
       "Defense": 1,
-      "HP": 2147483647,
-      "Mana": 2147483647,
+      "HP": 10000,
+      "Mana": 10000,
       "Speed": 100,
 
       "InnateSills": [
-        "NormalAttack",
         "Heal"
       ],
 

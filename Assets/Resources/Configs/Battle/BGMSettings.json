@@ -3,7 +3,7 @@
     "music": "緋色月下、狂咲ノ絶.mp3",
     "loop_in": "00:00:01:15",
     "loop_out": "00:06:32:00",
-    "volume_offset": "0",
+    "volume_offset": "-10",
     "frame_rate": 24
   }
 }
