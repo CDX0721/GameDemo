@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using GameDemo;
+using GameDemo.Audio;
 using GameDemo.Battle;
 using GameDemo.UI;
 using GameDemo.UI.Panels;
@@ -74,6 +75,9 @@ public class BattleSceneBootstrapper : MonoBehaviour
         BindInstancesToViews(_driver.Manager.PlayerFormation, isPlayer: true);
         BindInstancesToViews(_driver.Manager.EnemyFormation, isPlayer: false);
         _pendingViews.Clear();
+
+        CreateAudioManager();
+        LoadAndSetupBGM(fieldDef.BGM, _driver);
 
         InitializeUI();
     }
@@ -260,6 +264,61 @@ public class BattleSceneBootstrapper : MonoBehaviour
         float worldX = (pixelX / REF_WIDTH) * camW - camW / 2f;
         float worldY = (pixelY / REF_HEIGHT) * camH - camH / 2f;
         return new Vector2(worldX, worldY);
+    }
+
+    // ==================== 音频 ====================
+
+    private static void CreateAudioManager()
+    {
+        if (AudioManager.Instance != null) return;
+        var go = new GameObject("AudioManager");
+        go.AddComponent<AudioManager>();
+    }
+
+    private static void LoadAndSetupBGM(string bgmId, BattleDriver driver)
+    {
+        if (string.IsNullOrEmpty(bgmId)) return;
+
+        var json = Resources.Load<TextAsset>("Configs/Battle/BGMSettings");
+        if (json == null)
+        {
+            Debug.LogWarning("[Bootstrapper] BGMSettings.json not found.");
+            return;
+        }
+
+        // JSON: { "001": { settings } } — 动态 key
+        string text = json.text.Trim();
+        string keyPattern = $"\"{bgmId}\":";
+        int keyIdx = text.IndexOf(keyPattern, StringComparison.Ordinal);
+        if (keyIdx < 0)
+        {
+            Debug.LogWarning($"[Bootstrapper] BGM settings for '{bgmId}' not found.");
+            return;
+        }
+
+        int objStart = keyIdx + keyPattern.Length;
+        int objEnd = text.LastIndexOf('}');
+        string adapted = "{\"Entry\":" + text.Substring(objStart, objEnd - objStart) + "}";
+        var wrapper = JsonUtility.FromJson<BGMSettingsWrapper>(adapted);
+        var entry = wrapper.Entry;
+
+        int fps = entry.frame_rate > 0 ? entry.frame_rate : 24;
+        float loopIn = AudioManager.ParseTimecode(entry.loop_in, fps);
+        float loopOut = AudioManager.ParseTimecode(entry.loop_out, fps);
+        float.TryParse(entry.volume_offset, out float volDb);
+
+        string clipPath = "Audio/BGM/" + entry.music;
+        int dotIdx = clipPath.LastIndexOf('.');
+        if (dotIdx >= 0) clipPath = clipPath.Substring(0, dotIdx);
+
+        Debug.Log($"[Bootstrapper] BGM: {clipPath} loopIn={loopIn:F2}s loopOut={loopOut:F2}s fps={fps} vol={volDb:F1}dB");
+        driver.SetBGM(clipPath, loopIn, loopOut, volDb);
+    }
+
+    [Serializable]
+    private class BGMSettingsWrapper
+    {
+        public BGMSettingsEntry Entry;
     }
 
     // ==================== UnitView 构建 ====================

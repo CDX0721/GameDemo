@@ -34,8 +34,21 @@ namespace GameDemo.Battle
     public class BattleFieldDef
     {
         public string BackGround;
+        public string BGM;
         public List<UnitPlacementDef> PlayerUnits;
         public List<UnitPlacementDef> EnemyUnits;
+    }
+
+    // ==================== BGM 设置 ====================
+
+    [Serializable]
+    public class BGMSettingsEntry
+    {
+        public string music;
+        public string loop_in;
+        public string loop_out;
+        public string volume_offset;
+        public int frame_rate;
     }
 
     [Serializable]

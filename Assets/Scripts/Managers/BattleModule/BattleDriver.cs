@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using GameDemo.Audio;
 using GameDemo.Battle;
 using UnityEngine;
 
@@ -13,6 +14,11 @@ public class BattleDriver : MonoBehaviour
     private BattleSceneBootstrapper _bootstrapper = null!;
 
     private bool _isAnimating;
+
+    // BGM
+    private string _bgmClipPath = null!;
+    private float _bgmLoopIn, _bgmLoopOut, _bgmVolumeDb;
+    private bool _hasBgm;
 
     // ==================== Update ====================
 
@@ -45,6 +51,7 @@ public class BattleDriver : MonoBehaviour
         Manager.OnSkillUsed += OnSkillUsed;
         Manager.OnUnitDamaged += OnUnitDamaged;
         Manager.OnUnitDied += OnUnitDied;
+        Manager.StateMachine.OnStateChanged += OnBattleStateChanged;
 
         foreach (var p in fieldDef.PlayerUnits)
             if (unitDefs.TryGetValue(p.id, out var def))
@@ -56,9 +63,31 @@ public class BattleDriver : MonoBehaviour
         // StartBattle() must be called separately after UI is ready
     }
 
+    /// <summary>设置 BGM。Bootstrapper 在 Setup 后调用。</summary>
+    public void SetBGM(string clipPath, float loopIn, float loopOut, float volumeDb)
+    {
+        _bgmClipPath = clipPath;
+        _bgmLoopIn = loopIn;
+        _bgmLoopOut = loopOut;
+        _bgmVolumeDb = volumeDb;
+        _hasBgm = true;
+    }
+
+    private bool _bgmStarted;
+
     public void StartBattle()
     {
         Manager.StartBattle();
+    }
+
+    private void OnBattleStateChanged(BattleState prev, BattleState next)
+    {
+        if (!_bgmStarted && _hasBgm && next == BattleState.PreAction)
+        {
+            _bgmStarted = true;
+            if (AudioManager.Instance != null)
+                AudioManager.Instance.PlayBGM(_bgmClipPath, _bgmLoopIn, _bgmLoopOut, _bgmVolumeDb);
+        }
     }
 
     // ==================== 输入事件处理 ====================
@@ -246,6 +275,7 @@ public class BattleDriver : MonoBehaviour
         Manager.OnSkillUsed -= OnSkillUsed;
         Manager.OnUnitDamaged -= OnUnitDamaged;
         Manager.OnUnitDied -= OnUnitDied;
+        Manager.StateMachine.OnStateChanged -= OnBattleStateChanged;
     }
 
     // ==================== 辅助 ====================
