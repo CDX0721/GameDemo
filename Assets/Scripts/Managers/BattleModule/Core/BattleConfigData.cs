@@ -3,6 +3,27 @@ using System.Collections.Generic;
 
 namespace GameDemo.Battle
 {
+    // ==================== 背景布局设置（按背景ID索引） ====================
+
+    [Serializable]
+    public class BattleBackgroundSettingsEntry
+    {
+        public string img;
+        public PixelPoint PlayerCenterPixel;
+        public PixelPoint EnemyCenterPixel;
+        public float RowSpacingPixel;
+        public float ColSpacingPixel;
+    }
+
+    [Serializable]
+    public class PixelPoint
+    {
+        public float x;
+        public float y;
+    }
+
+    // ==================== 战斗字段配置 ====================
+
     [Serializable]
     public class BattleFieldsRoot
     {

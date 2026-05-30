@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using GameDemo;
 using GameDemo.Battle;
@@ -33,6 +34,22 @@ public class BattleSceneBootstrapper : MonoBehaviour
     private Dictionary<string, UnitView> _pendingViews = new();
     private BattleDriver _driver = null!;
     private Dictionary<string, BattleUnitDef> _unitDefs = null!;
+    private BattleBackgroundSettingsEntry _bgSettings = null!;
+    private Camera _cam = null!;
+
+    private const float REF_WIDTH = 1920f;
+    private const float REF_HEIGHT = 1080f;
+    private const float UNIT_SPRITE_SIZE = 1.28f;  // 128px at PPU=100
+    private const float UNIT_SCALE = 0.7f;
+
+    void Awake()
+    {
+        float targetAspect = 16f / 9f;
+        Screen.fullScreen = false;
+        int height = Screen.height;
+        int width = Mathf.RoundToInt(height * targetAspect);
+        Screen.SetResolution(width, height, false);
+    }
 
     void Start()
     {
@@ -46,6 +63,8 @@ public class BattleSceneBootstrapper : MonoBehaviour
         }
         _unitDefs = unitDefs;
 
+        _cam = Camera.main;
+        LoadBackgroundSettings(fieldDef.BackGround);
         if (!string.IsNullOrEmpty(fieldDef.BackGround))
             LoadBackground(fieldDef.BackGround);
         EnsureDamageCanvas();
@@ -118,10 +137,9 @@ public class BattleSceneBootstrapper : MonoBehaviour
         );
     }
 
-    /// <summary>技能特效帧（暂不接入）。</summary>
     public Sprite[] GetSkillEffectFrames(string fxId)
     {
-        return System.Array.Empty<Sprite>();
+        return LoadFramesDirect("Art/Sprites/Skills/" + fxId);
     }
 
     private Sprite[] LoadFramesDirect(string resourcePath)
@@ -163,13 +181,13 @@ public class BattleSceneBootstrapper : MonoBehaviour
 
     // ==================== 背景 ====================
 
-    private void LoadBackground(string fileName)
+    private void LoadBackground(string bgId)
     {
-        string pathNoExt = fileName;
-        int dotIdx = pathNoExt.LastIndexOf('.');
-        if (dotIdx >= 0) pathNoExt = pathNoExt.Substring(0, dotIdx);
-
-        string fullPath = "Art/Backgrounds/" + pathNoExt;
+        string fileName = (_bgSettings != null && !string.IsNullOrEmpty(_bgSettings.img))
+            ? _bgSettings.img : bgId + ".png";
+        string fullPath = "Art/Backgrounds/" + fileName;
+        int dotIdx = fullPath.LastIndexOf('.');
+        if (dotIdx >= 0) fullPath = fullPath.Substring(0, dotIdx);
         var bg = AssetManager.Instance.Load<Sprite>(fullPath);
         if (bg == null)
         {
@@ -186,23 +204,62 @@ public class BattleSceneBootstrapper : MonoBehaviour
 
         _backgroundRenderer.sprite = bg;
 
-        Camera cam = Camera.main;
-        if (cam != null && cam.orthographic)
+        if (_cam != null && _cam.orthographic)
         {
-            float camH = cam.orthographicSize * 2f;
-            float camW = camH * cam.aspect;
+            float camH = _cam.orthographicSize * 2f;
+            float camW = camH * _cam.aspect;
 
             float spriteW = bg.bounds.size.x;
             float spriteH = bg.bounds.size.y;
 
-            // 等比例缩放至铺满屏幕（取较大比例，无黑边）
-            float scale = Mathf.Max(camW / spriteW, camH / spriteH);
-            _backgroundRenderer.transform.localScale = new Vector3(scale, scale, 1f);
-
-            // 居中
+            _backgroundRenderer.transform.localScale = new Vector3(
+                camW / spriteW, camH / spriteH, 1f);
             _backgroundRenderer.transform.position =
-                cam.transform.position + Vector3.forward;
+                _cam.transform.position + Vector3.forward;
         }
+    }
+
+    private void LoadBackgroundSettings(string bgId)
+    {
+        var json = Resources.Load<TextAsset>("Configs/Battle/BackGroundSettings");
+        if (json == null)
+        {
+            Debug.LogWarning("[Bootstrapper] BackGroundSettings.json not found.");
+            return;
+        }
+
+        // JSON: { "bgId": { settings } } — 动态 key，适配 JsonUtility
+        string text = json.text.Trim();
+        string keyPattern = $"\"{bgId}\":";
+        int keyIdx = text.IndexOf(keyPattern, StringComparison.Ordinal);
+        if (keyIdx < 0)
+        {
+            Debug.LogWarning($"[Bootstrapper] BackGroundSettings for '{bgId}' not found.");
+            return;
+        }
+
+        int objStart = keyIdx + keyPattern.Length;
+        int objEnd = text.LastIndexOf('}');
+        string adapted = "{\"Entry\":" + text.Substring(objStart, objEnd - objStart) + "}";
+        var wrapper = JsonUtility.FromJson<BackgroundSettingsWrapper>(adapted);
+        _bgSettings = wrapper.Entry;
+    }
+
+    [Serializable]
+    private class BackgroundSettingsWrapper
+    {
+        public BattleBackgroundSettingsEntry Entry;
+    }
+
+    /// <summary>像素坐标（原点：屏幕左下角）→ 世界坐标。</summary>
+    private Vector2 PixelToWorld(float pixelX, float pixelY)
+    {
+        if (_cam == null || !_cam.orthographic) return Vector2.zero;
+        float camH = _cam.orthographicSize * 2f;
+        float camW = camH * _cam.aspect;
+        float worldX = (pixelX / REF_WIDTH) * camW - camW / 2f;
+        float worldY = (pixelY / REF_HEIGHT) * camH - camH / 2f;
+        return new Vector2(worldX, worldY);
     }
 
     // ==================== UnitView 构建 ====================
@@ -211,9 +268,27 @@ public class BattleSceneBootstrapper : MonoBehaviour
     {
         if (_unitParent == null)
         {
-            var go = new GameObject("BattleField");
-            _unitParent = go.transform;
+            _unitParent = new GameObject("BattleField").transform;
         }
+
+        // 从 JSON 配置读取阵形格点参数
+        if (_bgSettings == null)
+        {
+            Debug.LogError("[Bootstrapper] BackGroundSettings not loaded.");
+            return;
+        }
+
+        Vector2 center = isPlayer
+            ? PixelToWorld(_bgSettings.PlayerCenterPixel.x, _bgSettings.PlayerCenterPixel.y)
+            : PixelToWorld(_bgSettings.EnemyCenterPixel.x, _bgSettings.EnemyCenterPixel.y);
+
+        float pixelToWorld = (_cam != null && _cam.orthographic)
+            ? (_cam.orthographicSize * 2f) / REF_HEIGHT
+            : 10f / 1080f;
+
+        float rowSpacing = _bgSettings.RowSpacingPixel * pixelToWorld;
+        float colSpacing = _bgSettings.ColSpacingPixel * pixelToWorld;
+        float bottomOffset = UNIT_SPRITE_SIZE * UNIT_SCALE * 0.5f;
 
         foreach (var p in placements)
         {
@@ -225,10 +300,19 @@ public class BattleSceneBootstrapper : MonoBehaviour
             var unitView = go.GetComponent<UnitView>();
             if (unitView == null) unitView = go.AddComponent<UnitView>();
 
-            // 玩家在左侧，敌方在右侧
-            float x = isPlayer ? -4f + p.col * 1.5f : 4f - (3 - p.col) * 1.5f;
-            float y = 2f - p.row * 1.8f;
-            go.transform.position = new Vector3(x, y, 0);
+            // 数据 row → 屏幕 X：玩家 row1 靠近中，row3 远离中；敌方反之
+            float offsetX = isPlayer
+                ? (2 - p.row) * rowSpacing
+                : (p.row - 2) * rowSpacing;
+            // 数据 col → 屏幕 Y：col1 在上，col3 在下
+            float offsetY = (2 - p.col) * colSpacing;
+
+            Vector2 worldPos = center + new Vector2(offsetX, offsetY);
+            worldPos.y += bottomOffset;  // 底边中点对齐格点
+
+            go.transform.position = new Vector3(worldPos.x, worldPos.y, 0);
+            go.transform.localScale = Vector3.one * UNIT_SCALE;
+            unitView.SetSortingOrder(p.col);
 
             _pendingViews[p.id] = unitView;
         }

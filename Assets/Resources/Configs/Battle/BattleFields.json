@@ -28,6 +28,7 @@
         "initialCost": 10000
       }
     ],
-    "BackGround": "battle_grassland.png"
+    "BackGround": "gross_land",
+    "Music": 
   }
 }

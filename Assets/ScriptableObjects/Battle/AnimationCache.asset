@@ -17,18 +17,6 @@ MonoBehaviour:
     Path: Art/Sprites/Units/Cirno_Attack
   - Key: Cirno_Idle
     Path: Art/Sprites/Units/Cirno_Idle
-  - Key: e_archer_attack
-    Path: Art/Sprites/Units/e_archer_attack
-  - Key: e_archer_idle
-    Path: Art/Sprites/Units/e_archer_idle
-  - Key: e_goblin_attack
-    Path: Art/Sprites/Units/e_goblin_attack
-  - Key: e_goblin_idle
-    Path: Art/Sprites/Units/e_goblin_idle
-  - Key: e_troll_attack
-    Path: Art/Sprites/Units/e_troll_attack
-  - Key: e_troll_idle
-    Path: Art/Sprites/Units/e_troll_idle
   - Key: Flandre_Attack
     Path: Art/Sprites/Units/Flandre_Attack
   - Key: Flandre_Idle
@@ -37,35 +25,13 @@ MonoBehaviour:
     Path: Art/Sprites/Units/OrangeDog_Attack
   - Key: OrangeDog_Idle
     Path: Art/Sprites/Units/OrangeDog_Idle
-  - Key: p_mage_attack
-    Path: Art/Sprites/Units/p_mage_attack
-  - Key: p_mage_idle
-    Path: Art/Sprites/Units/p_mage_idle
-  - Key: p_priest_attack
-    Path: Art/Sprites/Units/p_priest_attack
-  - Key: p_priest_idle
-    Path: Art/Sprites/Units/p_priest_idle
-  - Key: p_warrior_attack
-    Path: Art/Sprites/Units/p_warrior_attack
-  - Key: p_warrior_idle
-    Path: Art/Sprites/Units/p_warrior_idle
   - Key: Sans_Attack
     Path: Art/Sprites/Units/Sans_Attack
   - Key: Sans_Idle
     Path: Art/Sprites/Units/Sans_Idle
-  - Key: fx_arrow
-    Path: Art/Sprites/Skills/fx_arrow
-  - Key: fx_buff
-    Path: Art/Sprites/Skills/fx_buff
-  - Key: fx_debuff
-    Path: Art/Sprites/Skills/fx_debuff
-  - Key: fx_heal
-    Path: Art/Sprites/Skills/fx_heal
-  - Key: fx_magic_blast
-    Path: Art/Sprites/Skills/fx_magic_blast
-  - Key: fx_poison
-    Path: Art/Sprites/Skills/fx_poison
-  - Key: fx_slash
-    Path: Art/Sprites/Skills/fx_slash
-  - Key: fx_stun
-    Path: Art/Sprites/Skills/fx_stun
+  - Key: Heal_Play
+    Path: Art/Sprites/Skills/Heal_Play
+  - Key: NormalAttack_Play
+    Path: Art/Sprites/Skills/NormalAttack_Play
+  - Key: Shield_Play
+    Path: Art/Sprites/Skills/Shield_Play

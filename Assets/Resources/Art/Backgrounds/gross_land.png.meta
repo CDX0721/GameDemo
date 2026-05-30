@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 1dea669590a867f41be33e75c9170bec
+guid: 3e5115ebac252b14b8a6a247b5c37700
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -231284439992255185
-    second: battle_grassland_0
+      213: -439733897880898700
+    second: gross_land_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: battle_grassland_0
+      name: gross_land_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 800
-        height: 600
+        width: 1920
+        height: 1080
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f2dbf28f6005accf0800000000000000
-      internalID: -231284439992255185
+      spriteID: 4737c158950c5e9f0800000000000000
+      internalID: -439733897880898700
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      battle_grassland_0: -231284439992255185
+      gross_land_0: -439733897880898700
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

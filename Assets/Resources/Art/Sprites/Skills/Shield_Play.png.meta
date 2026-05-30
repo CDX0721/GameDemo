@@ -1,31 +1,43 @@
 fileFormatVersion: 2
-guid: a138528412b9a8c44a16fe51e744dd6c
+guid: e9c9851e212353445826d57844c22853
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4279931790323503117
-    second: fx_debuff_0
+      213: 448437924350730945
+    second: Shield_Play_0
   - first:
-      213: -1450545583843933760
-    second: fx_debuff_1
+      213: -2361273833235504077
+    second: Shield_Play_1
   - first:
-      213: -8024467609441873771
-    second: fx_debuff_2
+      213: 5444012066269448425
+    second: Shield_Play_2
   - first:
-      213: 2164092352661542322
-    second: fx_debuff_3
+      213: -6514843317079302274
+    second: Shield_Play_3
   - first:
-      213: -2149452013845654145
-    second: fx_debuff_4
+      213: 2355983881817853579
+    second: Shield_Play_4
   - first:
-      213: -3562662443603016226
-    second: fx_debuff_5
+      213: -8022969904393629014
+    second: Shield_Play_5
   - first:
-      213: -13631303524845962
-    second: fx_debuff_6
+      213: -3631915243362521772
+    second: Shield_Play_6
   - first:
-      213: -2476598103496304386
-    second: fx_debuff_7
+      213: 6811290572681715229
+    second: Shield_Play_7
+  - first:
+      213: 317988585823915114
+    second: Shield_Play_8
+  - first:
+      213: 8859896986882558917
+    second: Shield_Play_9
+  - first:
+      213: -6967048229552173807
+    second: Shield_Play_10
+  - first:
+      213: -4203433459374824259
+    second: Shield_Play_11
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -121,13 +133,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: fx_debuff_0
+      name: Shield_Play_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 64
+        y: 128
         width: 128
-        height: 64
+        height: 128
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -136,20 +148,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3ffadd676b0aa94c0800000000000000
-      internalID: -4279931790323503117
+      spriteID: 1c22db09aeb293600800000000000000
+      internalID: 448437924350730945
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: fx_debuff_1
+      name: Shield_Play_1
       rect:
         serializedVersion: 2
         x: 128
-        y: 64
+        y: 128
         width: 128
-        height: 64
+        height: 128
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -158,20 +170,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0c188701a70aedbe0800000000000000
-      internalID: -1450545583843933760
+      spriteID: 334a29095f11b3fd0800000000000000
+      internalID: -2361273833235504077
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: fx_debuff_2
+      name: Shield_Play_2
       rect:
         serializedVersion: 2
         x: 256
-        y: 64
+        y: 128
         width: 128
-        height: 64
+        height: 128
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -180,20 +192,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 590d693893d53a090800000000000000
-      internalID: -8024467609441873771
+      spriteID: 9e84ee271240d8b40800000000000000
+      internalID: 5444012066269448425
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: fx_debuff_3
+      name: Shield_Play_3
       rect:
         serializedVersion: 2
         x: 384
-        y: 64
+        y: 128
         width: 128
-        height: 64
+        height: 128
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -202,20 +214,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 2b5d7856786680e10800000000000000
-      internalID: 2164092352661542322
+      spriteID: e7f192e2580a695a0800000000000000
+      internalID: -6514843317079302274
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: fx_debuff_4
+      name: Shield_Play_4
       rect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 128
-        height: 64
+        height: 128
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -224,20 +236,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f755bfc18cc9b22e0800000000000000
-      internalID: -2149452013845654145
+      spriteID: b8e8c44abd222b020800000000000000
+      internalID: 2355983881817853579
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: fx_debuff_5
+      name: Shield_Play_5
       rect:
         serializedVersion: 2
         x: 128
         y: 0
         width: 128
-        height: 64
+        height: 128
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -246,20 +258,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ed5ca622261ee8ec0800000000000000
-      internalID: -3562662443603016226
+      spriteID: aa2d7f4216fa8a090800000000000000
+      internalID: -8022969904393629014
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: fx_debuff_6
+      name: Shield_Play_6
       rect:
         serializedVersion: 2
         x: 256
         y: 0
         width: 128
-        height: 64
+        height: 128
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -268,20 +280,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6767393d6629fcff0800000000000000
-      internalID: -13631303524845962
+      spriteID: 45dec013458d89dc0800000000000000
+      internalID: -3631915243362521772
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: fx_debuff_7
+      name: Shield_Play_7
       rect:
         serializedVersion: 2
         x: 384
         y: 0
         width: 128
-        height: 64
+        height: 128
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -290,8 +302,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ef852bd752b51add0800000000000000
-      internalID: -2476598103496304386
+      spriteID: d1e19a620b0968e50800000000000000
+      internalID: 6811290572681715229
       vertices: []
       indices: 
       edges: []
@@ -310,14 +322,18 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      fx_debuff_0: -4279931790323503117
-      fx_debuff_1: -1450545583843933760
-      fx_debuff_2: -8024467609441873771
-      fx_debuff_3: 2164092352661542322
-      fx_debuff_4: -2149452013845654145
-      fx_debuff_5: -3562662443603016226
-      fx_debuff_6: -13631303524845962
-      fx_debuff_7: -2476598103496304386
+      Shield_Play_0: 448437924350730945
+      Shield_Play_1: -2361273833235504077
+      Shield_Play_10: -6967048229552173807
+      Shield_Play_11: -4203433459374824259
+      Shield_Play_2: 5444012066269448425
+      Shield_Play_3: -6514843317079302274
+      Shield_Play_4: 2355983881817853579
+      Shield_Play_5: -8022969904393629014
+      Shield_Play_6: -3631915243362521772
+      Shield_Play_7: 6811290572681715229
+      Shield_Play_8: 317988585823915114
+      Shield_Play_9: 8859896986882558917
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

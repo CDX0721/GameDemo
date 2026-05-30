@@ -128,22 +128,26 @@ public class BattleDriver : MonoBehaviour
             if (pickedTarget == null) continue;
             if (!skill.CanCast(caster, pickedTarget)) continue;
 
-            // 1. 播放攻击动画 + 技能特效
-            bool animationDone = false;
+            _bootstrapper.UnitViews.TryGetValue(pickedTarget, out var targetView);
+
+            // 1. 施法者播放攻击动画 + 目标播放技能特效
+            bool casterDone = false;
+            bool effectDone = false;
             var effectFrames = GetSkillFxFrames(skill);
 
             if (casterView != null)
-            {
-                casterView.PlayAttackWithEffect(effectFrames, () => animationDone = true);
-            }
+                casterView.PlayAttack(() => casterDone = true);
             else
-            {
-                animationDone = true;
-            }
+                casterDone = true;
+
+            if (targetView != null)
+                targetView.PlayEffect(effectFrames, () => effectDone = true);
+            else
+                effectDone = true;
 
             // 2. 等待动画完成（兜底 1.2s）
             float timer = 0f;
-            while (!animationDone && timer < 1.2f)
+            while ((!casterDone || !effectDone) && timer < 1.2f)
             {
                 timer += Time.deltaTime;
                 yield return null;
@@ -197,8 +201,7 @@ public class BattleDriver : MonoBehaviour
 
     private Sprite[] GetSkillFxFrames(Skill skill)
     {
-        // 技能/效果动画暂不接入
-        return System.Array.Empty<Sprite>();
+        return _bootstrapper.GetSkillEffectFrames(skill.Id + "_Play");
     }
 
     // ==================== 事件响应 ====================

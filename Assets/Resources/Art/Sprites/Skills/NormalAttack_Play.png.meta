@@ -1,31 +1,106 @@
 fileFormatVersion: 2
-guid: 77b9f90317444d2418612012f03cbfd0
+guid: 551368b799b7acb49957f18b4adb3c58
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1275225395507623370
-    second: e_goblin_idle_0
+      213: 5061384889643726145
+    second: NormalAttack_Play_0
   - first:
-      213: 6093380693799437069
-    second: e_goblin_idle_1
+      213: -902348066832198553
+    second: NormalAttack_Play_1
   - first:
-      213: -6871000362361598587
-    second: e_goblin_idle_2
+      213: 250075666422582557
+    second: NormalAttack_Play_2
   - first:
-      213: -8765219438201313494
-    second: e_goblin_idle_3
+      213: 7332828956310604754
+    second: NormalAttack_Play_3
   - first:
-      213: -4687424046664375365
-    second: e_goblin_idle_4
+      213: 3781984364632421220
+    second: NormalAttack_Play_4
   - first:
-      213: -106338200381732285
-    second: e_goblin_idle_5
+      213: 5325759952779017587
+    second: NormalAttack_Play_5
   - first:
-      213: 6165556165348076498
-    second: e_goblin_idle_6
+      213: -5958535876446816487
+    second: NormalAttack_Play_6
   - first:
-      213: 8898388370554123307
-    second: e_goblin_idle_7
+      213: 5161357178351643968
+    second: NormalAttack_Play_7
+  - first:
+      213: -3689880469771923515
+    second: NormalAttack_Play_8
+  - first:
+      213: -6573941916140512238
+    second: NormalAttack_Play_9
+  - first:
+      213: -2150773817370130713
+    second: NormalAttack_Play_10
+  - first:
+      213: 5063739107012369567
+    second: NormalAttack_Play_11
+  - first:
+      213: -6020411639515024764
+    second: NormalAttack_Play_12
+  - first:
+      213: -3816536553008054934
+    second: NormalAttack_Play_13
+  - first:
+      213: 4924946306127262437
+    second: NormalAttack_Play_14
+  - first:
+      213: -8588994843098853840
+    second: NormalAttack_Play_15
+  - first:
+      213: 4006147719333501654
+    second: NormalAttack_Play_16
+  - first:
+      213: 6349677927208072869
+    second: NormalAttack_Play_17
+  - first:
+      213: -1111954662567573651
+    second: NormalAttack_Play_18
+  - first:
+      213: 8328397972237351941
+    second: NormalAttack_Play_19
+  - first:
+      213: -6866048303982918113
+    second: NormalAttack_Play_20
+  - first:
+      213: -1417737197987026383
+    second: NormalAttack_Play_21
+  - first:
+      213: -1175910827069160496
+    second: NormalAttack_Play_22
+  - first:
+      213: -8794151739809279593
+    second: NormalAttack_Play_23
+  - first:
+      213: -6511111599258420191
+    second: NormalAttack_Play_24
+  - first:
+      213: 1876205528774851584
+    second: NormalAttack_Play_25
+  - first:
+      213: 7822624336977017234
+    second: NormalAttack_Play_26
+  - first:
+      213: -8196918085912843439
+    second: NormalAttack_Play_27
+  - first:
+      213: 8247381994374653542
+    second: NormalAttack_Play_28
+  - first:
+      213: -7346565072039036255
+    second: NormalAttack_Play_29
+  - first:
+      213: 3582775686037967536
+    second: NormalAttack_Play_30
+  - first:
+      213: -2487470489938602183
+    second: NormalAttack_Play_31
+  - first:
+      213: 2153042396562761337
+    second: NormalAttack_Play_32
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -121,13 +196,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: e_goblin_idle_0
+      name: NormalAttack_Play_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 64
+        y: 128
         width: 128
-        height: 64
+        height: 128
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -136,20 +211,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ac5f9c3adb282b110800000000000000
-      internalID: 1275225395507623370
+      spriteID: 1457eb2adb6ad3640800000000000000
+      internalID: 5061384889643726145
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: e_goblin_idle_1
+      name: NormalAttack_Play_1
       rect:
         serializedVersion: 2
         x: 128
-        y: 64
+        y: 128
         width: 128
-        height: 64
+        height: 128
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -158,20 +233,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d038327f479009450800000000000000
-      internalID: 6093380693799437069
+      spriteID: 764d4bcc6373a73f0800000000000000
+      internalID: -902348066832198553
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: e_goblin_idle_2
+      name: NormalAttack_Play_2
       rect:
         serializedVersion: 2
         x: 256
-        y: 64
+        y: 128
         width: 128
-        height: 64
+        height: 128
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -180,20 +255,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 58d4bd5139d45a0a0800000000000000
-      internalID: -6871000362361598587
+      spriteID: d1d46106e72787300800000000000000
+      internalID: 250075666422582557
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: e_goblin_idle_3
+      name: NormalAttack_Play_3
       rect:
         serializedVersion: 2
         x: 384
-        y: 64
+        y: 128
         width: 128
-        height: 64
+        height: 128
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -202,20 +277,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a2769af6c5fab5680800000000000000
-      internalID: -8765219438201313494
+      spriteID: 2db8793b51173c560800000000000000
+      internalID: 7332828956310604754
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: e_goblin_idle_4
+      name: NormalAttack_Play_4
       rect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 128
-        height: 64
+        height: 128
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -224,20 +299,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: bb322f22aace2feb0800000000000000
-      internalID: -4687424046664375365
+      spriteID: 4633ff7edbe4c7430800000000000000
+      internalID: 3781984364632421220
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: e_goblin_idle_5
+      name: NormalAttack_Play_5
       rect:
         serializedVersion: 2
         x: 128
         y: 0
         width: 128
-        height: 64
+        height: 128
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -246,20 +321,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 34a413c58f5368ef0800000000000000
-      internalID: -106338200381732285
+      spriteID: 37df460c576e8e940800000000000000
+      internalID: 5325759952779017587
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: e_goblin_idle_6
+      name: NormalAttack_Play_6
       rect:
         serializedVersion: 2
         x: 256
         y: 0
         width: 128
-        height: 64
+        height: 128
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -268,20 +343,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 2dbaa467aa4709550800000000000000
-      internalID: 6165556165348076498
+      spriteID: 91777f6a0370f4da0800000000000000
+      internalID: -5958535876446816487
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: e_goblin_idle_7
+      name: NormalAttack_Play_7
       rect:
         serializedVersion: 2
         x: 384
         y: 0
         width: 128
-        height: 64
+        height: 128
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -290,8 +365,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b24785cc31d6d7b70800000000000000
-      internalID: 8898388370554123307
+      spriteID: 04def86f103d0a740800000000000000
+      internalID: 5161357178351643968
       vertices: []
       indices: 
       edges: []
@@ -310,14 +385,39 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      e_goblin_idle_0: 1275225395507623370
-      e_goblin_idle_1: 6093380693799437069
-      e_goblin_idle_2: -6871000362361598587
-      e_goblin_idle_3: -8765219438201313494
-      e_goblin_idle_4: -4687424046664375365
-      e_goblin_idle_5: -106338200381732285
-      e_goblin_idle_6: 6165556165348076498
-      e_goblin_idle_7: 8898388370554123307
+      NormalAttack_Play_0: 5061384889643726145
+      NormalAttack_Play_1: -902348066832198553
+      NormalAttack_Play_10: -2150773817370130713
+      NormalAttack_Play_11: 5063739107012369567
+      NormalAttack_Play_12: -6020411639515024764
+      NormalAttack_Play_13: -3816536553008054934
+      NormalAttack_Play_14: 4924946306127262437
+      NormalAttack_Play_15: -8588994843098853840
+      NormalAttack_Play_16: 4006147719333501654
+      NormalAttack_Play_17: 6349677927208072869
+      NormalAttack_Play_18: -1111954662567573651
+      NormalAttack_Play_19: 8328397972237351941
+      NormalAttack_Play_2: 250075666422582557
+      NormalAttack_Play_20: -6866048303982918113
+      NormalAttack_Play_21: -1417737197987026383
+      NormalAttack_Play_22: -1175910827069160496
+      NormalAttack_Play_23: -8794151739809279593
+      NormalAttack_Play_24: -6511111599258420191
+      NormalAttack_Play_25: 1876205528774851584
+      NormalAttack_Play_26: 7822624336977017234
+      NormalAttack_Play_27: -8196918085912843439
+      NormalAttack_Play_28: 8247381994374653542
+      NormalAttack_Play_29: -7346565072039036255
+      NormalAttack_Play_3: 7332828956310604754
+      NormalAttack_Play_30: 3582775686037967536
+      NormalAttack_Play_31: -2487470489938602183
+      NormalAttack_Play_32: 2153042396562761337
+      NormalAttack_Play_4: 3781984364632421220
+      NormalAttack_Play_5: 5325759952779017587
+      NormalAttack_Play_6: -5958535876446816487
+      NormalAttack_Play_7: 5161357178351643968
+      NormalAttack_Play_8: -3689880469771923515
+      NormalAttack_Play_9: -6573941916140512238
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

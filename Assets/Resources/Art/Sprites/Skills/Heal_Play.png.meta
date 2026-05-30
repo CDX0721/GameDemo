@@ -1,37 +1,58 @@
 fileFormatVersion: 2
-guid: bad09d2e01e4dd14f81cde1f51a999fe
+guid: cd5b669551f0e5f4593a323d0ee498c1
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7090828237543586186
-    second: fx_heal_0
+      213: 7271939089349011566
+    second: Heal_Play_0
   - first:
-      213: -6197953874161282261
-    second: fx_heal_1
+      213: -6293231969509618556
+    second: Heal_Play_1
   - first:
-      213: 4496372798870217593
-    second: fx_heal_2
+      213: -2853205269711919237
+    second: Heal_Play_2
   - first:
-      213: 4687358871424655916
-    second: fx_heal_3
+      213: -3484491162162667320
+    second: Heal_Play_3
   - first:
-      213: -374753244718592466
-    second: fx_heal_4
+      213: 3507990381168704102
+    second: Heal_Play_4
   - first:
-      213: 5993397079021626972
-    second: fx_heal_5
+      213: 6192071999141739696
+    second: Heal_Play_5
   - first:
-      213: -2529764015592470243
-    second: fx_heal_6
+      213: -6552696010149844345
+    second: Heal_Play_6
   - first:
-      213: 665722690740923285
-    second: fx_heal_7
+      213: -6074815097758212356
+    second: Heal_Play_7
   - first:
-      213: -5837642647586180689
-    second: fx_heal_8
+      213: 8508322481360273952
+    second: Heal_Play_8
   - first:
-      213: -8600240127369735886
-    second: fx_heal_9
+      213: -5415810625251281862
+    second: Heal_Play_9
+  - first:
+      213: -3713663257559469736
+    second: Heal_Play_10
+  - first:
+      213: 6915271623453240437
+    second: Heal_Play_11
+  - first:
+      213: 1346114958781046654
+    second: Heal_Play_12
+  - first:
+      213: -4371443254528747672
+    second: Heal_Play_13
+  - first:
+      213: -2070404357988856340
+    second: Heal_Play_14
+  - first:
+      213: -8705683941686684724
+    second: Heal_Play_15
+  - first:
+      213: 6210348881925330742
+    second: Heal_Play_16
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -127,13 +148,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: fx_heal_0
+      name: Heal_Play_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 64
+        y: 128
         width: 128
-        height: 64
+        height: 128
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -142,20 +163,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 676c7e96941589d90800000000000000
-      internalID: -7090828237543586186
+      spriteID: e68ece8c21e1be460800000000000000
+      internalID: 7271939089349011566
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: fx_heal_1
+      name: Heal_Play_1
       rect:
         serializedVersion: 2
         x: 128
-        y: 64
+        y: 128
         width: 128
-        height: 64
+        height: 128
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -164,20 +185,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b235c542ac17cf9a0800000000000000
-      internalID: -6197953874161282261
+      spriteID: 48c4f30edd2f9a8a0800000000000000
+      internalID: -6293231969509618556
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: fx_heal_2
+      name: Heal_Play_2
       rect:
         serializedVersion: 2
         x: 256
-        y: 64
+        y: 128
         width: 128
-        height: 64
+        height: 128
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -186,20 +207,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 973636edc33566e30800000000000000
-      internalID: 4496372798870217593
+      spriteID: b776c839ce06768d0800000000000000
+      internalID: -2853205269711919237
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: fx_heal_3
+      name: Heal_Play_3
       rect:
         serializedVersion: 2
         x: 384
-        y: 64
+        y: 128
         width: 128
-        height: 64
+        height: 128
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -208,20 +229,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c22ea021f08dc0140800000000000000
-      internalID: 4687358871424655916
+      spriteID: 8c06e48efb994afc0800000000000000
+      internalID: -3484491162162667320
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: fx_heal_4
+      name: Heal_Play_4
       rect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 128
-        height: 64
+        height: 128
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -230,20 +251,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e2e8f12d8eb9ccaf0800000000000000
-      internalID: -374753244718592466
+      spriteID: 66a3c016aa2eea030800000000000000
+      internalID: 3507990381168704102
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: fx_heal_5
+      name: Heal_Play_5
       rect:
         serializedVersion: 2
         x: 128
         y: 0
         width: 128
-        height: 64
+        height: 128
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -252,20 +273,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c56a2f493e2dc2350800000000000000
-      internalID: 5993397079021626972
+      spriteID: 0bc7c7c1da8aee550800000000000000
+      internalID: 6192071999141739696
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: fx_heal_6
+      name: Heal_Play_6
       rect:
         serializedVersion: 2
         x: 256
         y: 0
         width: 128
-        height: 64
+        height: 128
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -274,20 +295,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d198b05f70974ecd0800000000000000
-      internalID: -2529764015592470243
+      spriteID: 78a26e942b52015a0800000000000000
+      internalID: -6552696010149844345
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: fx_heal_7
+      name: Heal_Play_7
       rect:
         serializedVersion: 2
         x: 384
         y: 0
         width: 128
-        height: 64
+        height: 128
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -296,8 +317,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 59ba784924f1d3900800000000000000
-      internalID: 665722690740923285
+      spriteID: cfe11f5badbe1bba0800000000000000
+      internalID: -6074815097758212356
       vertices: []
       indices: 
       edges: []
@@ -316,16 +337,23 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      fx_heal_0: -7090828237543586186
-      fx_heal_1: -6197953874161282261
-      fx_heal_2: 4496372798870217593
-      fx_heal_3: 4687358871424655916
-      fx_heal_4: -374753244718592466
-      fx_heal_5: 5993397079021626972
-      fx_heal_6: -2529764015592470243
-      fx_heal_7: 665722690740923285
-      fx_heal_8: -5837642647586180689
-      fx_heal_9: -8600240127369735886
+      Heal_Play_0: 7271939089349011566
+      Heal_Play_1: -6293231969509618556
+      Heal_Play_10: -3713663257559469736
+      Heal_Play_11: 6915271623453240437
+      Heal_Play_12: 1346114958781046654
+      Heal_Play_13: -4371443254528747672
+      Heal_Play_14: -2070404357988856340
+      Heal_Play_15: -8705683941686684724
+      Heal_Play_16: 6210348881925330742
+      Heal_Play_2: -2853205269711919237
+      Heal_Play_3: -3484491162162667320
+      Heal_Play_4: 3507990381168704102
+      Heal_Play_5: 6192071999141739696
+      Heal_Play_6: -6552696010149844345
+      Heal_Play_7: -6074815097758212356
+      Heal_Play_8: 8508322481360273952
+      Heal_Play_9: -5415810625251281862
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
