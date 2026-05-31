@@ -18,13 +18,18 @@ namespace GameDemo.UI.Panels
         [Header("Unit prefab (separate)")]
         [SerializeField] private GameObject _unitPrefab;
 
+        [Header("Skill prefabs")]
+        [SerializeField] private GameObject _skillEntryPrefab;
+
         [Header("Bottom: Unit Status")]
         [SerializeField] private Transform _unitStatusContainer;
 
         [Header("Bottom: Skill Bar")]
-        [SerializeField] private Transform _skillBarContainer;
-        [SerializeField] private Button _skillButtonPrefab;
+        [SerializeField] private Transform _skillListContainer;
+        [SerializeField] private TextMeshProUGUI _skillInfoName;
+        [SerializeField] private TextMeshProUGUI _skillInfoDescription;
         [SerializeField] private Button _confirmSkillButton;
+        [SerializeField] private GameObject _skillInfoPadding;
 
         [Header("Bottom: Action Queue")]
         [SerializeField] private Transform _actionQueueContainer;
@@ -38,6 +43,12 @@ namespace GameDemo.UI.Panels
         [Header("Quit")]
         [SerializeField] private Button _quitBattleButton;
 
+        // Sprites
+        private Sprite _skillNormal;
+        private Sprite _skillPressed;
+        private Sprite _confirmNormal;
+        private Sprite _confirmPressed;
+
         // Runtime
         private BattleManager _battleManager;
         private PlayableUnitInstance _currentPlayableUnit;
@@ -47,6 +58,12 @@ namespace GameDemo.UI.Panels
         private readonly List<GameObject> _skillBtns = new();
         private readonly List<TextMeshProUGUI> _queueEntries = new();
         private readonly Dictionary<string, UnitWidget> _widgets = new();
+
+        // Targeting
+        public event System.Action<BattleUnitInstance> OnTargetChanged;
+        private bool _isTargeting;
+        private List<BattleUnitInstance> _candidateTargets = new();
+        private int _targetIndex;
 
         private class UnitWidget
         {
@@ -68,16 +85,64 @@ namespace GameDemo.UI.Panels
 
         private void FindRefs()
         {
-            _unitStatusContainer = Find("BottomBar/UnitStatus");
-            _skillBarContainer    = Find("BottomBar/SkillBar");
-            _actionQueueContainer = Find("BottomBar/ActionQueue");
-            _confirmSkillButton   = FindBtn("BottomBar/SkillBar/ConfirmBtn");
-            if (_confirmSkillButton) _confirmSkillButton.gameObject.SetActive(false);
+            _unitStatusContainer  = FindOrDie("BottomBar/UnitStatus/Padding", "_unitStatusContainer");
+            _actionQueueContainer = FindOrDie("BottomBar/ActionQueue/Padding", "_actionQueueContainer");
             _quitBattleButton     = FindBtn("QuitBtn");
             _resultOverlay        = Find("ResultOverlay")?.gameObject;
             if (_resultOverlay) _resultOverlay.SetActive(false);
             _resultText           = FindTxt("ResultOverlay/ResultText");
             _resultBackButton     = FindBtn("ResultOverlay/ResultBackBtn");
+
+            // SkillBar: load Skill prefab into existing container
+            var skillBar = FindOrDie("BottomBar/SkillBar", "SkillBar");
+            var skillPrefab = Resources.Load<GameObject>("UI/Skill");
+            if (skillPrefab == null) { Debug.LogError("[BP] UI/Skill.prefab not found in Resources"); return; }
+            var skillGO = Instantiate(skillPrefab, skillBar);
+            skillGO.name = "Skill";
+            var skillRoot = skillGO.transform;
+
+            _skillListContainer = FindOrDie(skillRoot, "SkillList/Padding", "_skillListContainer");
+            _skillInfoPadding   = FindOrDie(skillRoot, "SkillInfo/Padding", "_skillInfoPadding").gameObject;
+            _skillInfoPadding.SetActive(false);
+            _skillInfoName        = FindOrDieTxt(skillRoot, "SkillInfo/Padding/Name", "_skillInfoName");
+            _skillInfoDescription = FindOrDieTxt(skillRoot, "SkillInfo/Padding/Description", "_skillInfoDescription");
+            _confirmSkillButton   = FindOrDieBtn(skillRoot, "SkillInfo/Padding/ConfirmContainer/Confirm", "_confirmSkillButton");
+            if (_confirmSkillButton) _confirmSkillButton.gameObject.SetActive(false);
+
+            LoadSprites();
+        }
+
+        private Transform FindOrDie(string path, string name)
+        {
+            var t = transform.Find(path);
+            if (t == null) Debug.LogError($"[BP] {name} not found at '{path}'");
+            return t;
+        }
+        private Transform FindOrDie(Transform parent, string path, string name)
+        {
+            var t = parent.Find(path);
+            if (t == null) Debug.LogError($"[BP] {name} not found at '{path}' under '{parent.name}'");
+            return t;
+        }
+        private TextMeshProUGUI FindOrDieTxt(Transform parent, string path, string name)
+        {
+            var t = parent.Find(path);
+            if (t == null) { Debug.LogError($"[BP] {name} not found at '{path}' under '{parent.name}'"); return null; }
+            return t.GetComponent<TextMeshProUGUI>();
+        }
+        private Button FindOrDieBtn(Transform parent, string path, string name)
+        {
+            var t = parent.Find(path);
+            if (t == null) { Debug.LogError($"[BP] {name} not found at '{path}' under '{parent.name}'"); return null; }
+            return t.GetComponent<Button>();
+        }
+
+        private void LoadSprites()
+        {
+            _skillNormal   = Resources.Load<Sprite>("Art/UI/SkillBar/SkillEntryNormal");
+            _skillPressed  = Resources.Load<Sprite>("Art/UI/SkillBar/SkillEntryPressed");
+            _confirmNormal = Resources.Load<Sprite>("Art/UI/General/Button/ButtonNormal_200_30");
+            _confirmPressed = Resources.Load<Sprite>("Art/UI/General/Button/ButtonPressed_200_30");
         }
 
         private Transform Find(string path) => transform.Find(path);
@@ -100,6 +165,15 @@ namespace GameDemo.UI.Panels
         }
         protected override void OnClose() { Unbind(); }
 
+        void Update()
+        {
+            if (!_isTargeting || _candidateTargets.Count == 0) return;
+
+            if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
+                CycleTarget(-1);
+            else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
+                CycleTarget(1);
+        }
 
         // ============================================================
         // BattleManager binding
@@ -130,7 +204,7 @@ namespace GameDemo.UI.Panels
         // ============================================================
         // Events
         // ============================================================
-        private void OnPlayerTurn(PlayableUnitInstance u) { _currentPlayableUnit = u; _selectedSkill = null; _selectedTarget = null; BuildSkills(u); RefreshUnits(); }
+        private void OnPlayerTurn(PlayableUnitInstance u) { _currentPlayableUnit = u; _selectedSkill = null; _selectedTarget = null; if (_isTargeting) ExitTargeting(); BuildSkills(u); RefreshUnits(); }
         private void OnBattleEnd(bool won) { ClearSkills(); if (_resultOverlay) { _resultOverlay.SetActive(true); if (_resultText) _resultText.text = won ? "Victory!" : "Defeat..."; } }
 
         // ============================================================
@@ -146,7 +220,7 @@ namespace GameDemo.UI.Panels
                 if (!_widgets.TryGetValue(u.Id, out var w)) { w = MakeWidget(); _widgets[u.Id] = w; }
                 bool act = u == _battleManager.SelectedUnit;
                 w.Name.text = (act ? "> " : "  ") + u.DisplayName;
-                w.Name.color = u.IsAlive ? (act ? Color.yellow : Color.white) : Color.gray;
+                w.Name.color = u.IsAlive ? (act ? new Color(0.8f, 0.15f, 0.05f) : Color.black) : new Color(0.45f, 0.45f, 0.45f);
                 SetBar(w.HpFill, u.MaxHP > 0 ? u.CurrentHP / u.MaxHP : 0);
                 w.HpVal.text = string.Format("{0:F0}/{1:F0}", u.CurrentHP, u.MaxHP);
                 SetBar(w.MpFill, u.MaxMana > 0 ? u.CurrentMana / u.MaxMana : 0);
@@ -157,9 +231,9 @@ namespace GameDemo.UI.Panels
                 if (u.DamageBonus != 0) sb.AppendFormat(" +{0:P0}", u.DamageBonus);
                 if (u.DamageReduction != 0) sb.AppendFormat(" -{0:P0}", u.DamageReduction);
                 sb.AppendFormat(" AV{0,4:F1}", u.ActionValue);
-                if (u.Effects.Count > 0) { 
+                if (u.Effects.Count > 0) {
                     sb.Append(" | ");
-                    foreach (var e in u.Effects) sb.AppendFormat("{0}{1}({2}) ", e.Template.DisplayName ?? e.Template.Id, e.CurrentStackCount > 1 ? "x" + e.CurrentStackCount : "", e.RemainingTurns); 
+                    foreach (var e in u.Effects) sb.AppendFormat("{0}{1}({2}) ", e.Template.DisplayName ?? e.Template.Id, e.CurrentStackCount > 1 ? "x" + e.CurrentStackCount : "", e.RemainingTurns);
                 }
                 w.Info.text = sb.ToString();
             }
@@ -176,6 +250,7 @@ namespace GameDemo.UI.Panels
         private UnitWidget MakeWidget()
         {
             if (_unitPrefab == null) _unitPrefab = Resources.Load<GameObject>("UI/Unit");
+            if (_unitStatusContainer == null) { Debug.LogError("[BP] _unitStatusContainer is null, cannot parent Unit prefab"); return null; }
             var clone = Instantiate(_unitPrefab, _unitStatusContainer);
             clone.SetActive(true);
 
@@ -247,47 +322,178 @@ namespace GameDemo.UI.Panels
                 tmp.font.fallbackFontAssetTable.Add(cjk);
         }
 
+        // ============================================================
+        // Skill Bar
+        // ============================================================
         private void BuildSkills(PlayableUnitInstance unit)
         {
             ClearSkills();
+            if (_skillListContainer == null) return;
+
+            var skills = _battleManager.GetCastableSkills(unit);
+            var seen = new HashSet<string>();
             int idx = 0;
-            foreach (var (s, t) in _battleManager.GetCastableSkills(unit))
+            foreach (var (s, t) in skills)
             {
-                Button btn;
+                if (!seen.Add(s.Id)) continue; // one entry per unique skill
+
+                GameObject entry;
                 if (idx < _skillBtns.Count)
                 {
-                    var go = _skillBtns[idx];
-                    go.SetActive(true);
-                    btn = go.GetComponent<Button>();
-                    btn.onClick.RemoveAllListeners();
+                    entry = _skillBtns[idx];
+                    entry.SetActive(true);
                 }
                 else
                 {
-                    btn = _skillButtonPrefab ? Instantiate(_skillButtonPrefab, _skillBarContainer) : DefaultSkillBtn();
-                    _skillBtns.Add(btn.gameObject);
+                    if (_skillEntryPrefab == null) _skillEntryPrefab = Resources.Load<GameObject>("UI/SkillEntry");
+                    entry = Instantiate(_skillEntryPrefab, _skillListContainer);
+                    _skillBtns.Add(entry);
                 }
-                var lbl = btn.GetComponentInChildren<TextMeshProUGUI>(); if (lbl) lbl.text = $"{s.DisplayName} → {t.DisplayName}";
-                var sk = s; var tg = t;
-                btn.onClick.AddListener(() => { _selectedSkill = sk; _selectedTarget = tg; });
+
+                // Sprite on Padding/Image
+                var imgT = entry.transform.Find("Padding/Image");
+                if (imgT != null)
+                {
+                    var img = imgT.GetComponent<Image>();
+                    if (img != null) img.sprite = GetSkillIcon(s.Id) ?? _skillNormal;
+                }
+
+                // Label on Padding/Name
+                var nameT = entry.transform.Find("Padding/Name");
+                if (nameT != null)
+                {
+                    var lbl = nameT.GetComponent<TextMeshProUGUI>();
+                    if (lbl != null) { lbl.font = GetTMPFontAsset(); lbl.text = SkillLabel(s); }
+                }
+
+                var btn = entry.GetComponent<Button>();
+                btn.onClick.RemoveAllListeners();
+                var sk = s;
+                btn.onClick.AddListener(() => SelectSkill(entry, sk));
                 idx++;
             }
             for (int i = idx; i < _skillBtns.Count; i++) _skillBtns[i].SetActive(false);
-            if (_confirmSkillButton) _confirmSkillButton.gameObject.SetActive(true);
-        }
-        private void OnConfirm() { if (_currentPlayableUnit == null || _selectedSkill == null || _selectedTarget == null) return; _battleManager.SubmitPlayerAction(_selectedSkill, _selectedTarget); ClearSkills(); if (_confirmSkillButton) _confirmSkillButton.gameObject.SetActive(false); }
-        private void ClearSkills() { foreach (var g in _skillBtns) { var b = g.GetComponent<Button>(); if (b) b.onClick.RemoveAllListeners(); g.SetActive(false); } _currentPlayableUnit = null; _selectedSkill = null; _selectedTarget = null; }
-        private Button DefaultSkillBtn()
-        {
-            var go = new GameObject("SkillBtn", typeof(RectTransform));
-            go.transform.SetParent(_skillBarContainer, false);
-            go.AddComponent<Image>().color = new Color(0.2f, 0.25f, 0.35f, 1f);
-            var rt = go.GetComponent<RectTransform>(); rt.sizeDelta = new Vector2(160, 80);
-            var lg = new GameObject("Label", typeof(RectTransform)); lg.transform.SetParent(go.transform, false);
-            var t = lg.AddComponent<TextMeshProUGUI>(); t.font = GetTMPFontAsset(); t.fontSize = 24; t.color = Color.white; t.alignment = TextAlignmentOptions.Center;
-            Stretch(lg.GetComponent<RectTransform>());
-            return go.AddComponent<Button>();
         }
 
+        private void SelectSkill(GameObject entry, Skill skill)
+        {
+            _selectedSkill = skill;
+
+            foreach (var e in _skillBtns)
+            {
+                if (!e.activeSelf) continue;
+                var img = e.GetComponent<Image>();
+                if (img != null && _skillNormal != null && _skillPressed != null)
+                    img.sprite = (e == entry) ? _skillPressed : _skillNormal;
+            }
+
+            ShowSkillInfo(skill.DisplayName, skill.Description);
+            if (_confirmSkillButton != null) _confirmSkillButton.gameObject.SetActive(true);
+        }
+
+        private void EnterTargeting()
+        {
+            if (_selectedSkill == null) return;
+
+            var skills = _battleManager.GetCastableSkills(_currentPlayableUnit);
+            _candidateTargets.Clear();
+            foreach (var (s, t) in skills)
+                if (s.Id == _selectedSkill.Id)
+                    _candidateTargets.Add(t);
+            _targetIndex = 0;
+            _selectedTarget = _candidateTargets.Count > 0 ? _candidateTargets[0] : null;
+
+            _isTargeting = true;
+
+            // Disable skill entries
+            foreach (var g in _skillBtns) { var b = g.GetComponent<Button>(); if (b) b.interactable = false; }
+            // Switch to target selection UI
+            if (_skillInfoName != null) _skillInfoName.text = "选择目标";
+            if (_skillInfoDescription != null) _skillInfoDescription.text = "";
+            OnTargetChanged?.Invoke(_selectedTarget);
+        }
+
+        private void ExitTargeting()
+        {
+            _isTargeting = false;
+            _candidateTargets.Clear();
+            foreach (var g in _skillBtns) { var b = g.GetComponent<Button>(); if (b) b.interactable = true; }
+            OnTargetChanged?.Invoke(null);
+        }
+
+        private void CycleTarget(int direction)
+        {
+            if (_candidateTargets.Count <= 1) return;
+            _targetIndex = (_targetIndex + direction + _candidateTargets.Count) % _candidateTargets.Count;
+            _selectedTarget = _candidateTargets[_targetIndex];
+            OnTargetChanged?.Invoke(_selectedTarget);
+        }
+
+        private void ShowSkillInfo(string name, string desc)
+        {
+            if (_skillInfoPadding != null) _skillInfoPadding.SetActive(true);
+            if (_skillInfoName != null) _skillInfoName.text = name;
+            if (_skillInfoDescription != null) _skillInfoDescription.text = desc;
+        }
+
+        private void OnConfirm()
+        {
+            if (_currentPlayableUnit == null || _selectedSkill == null) return;
+
+            bool isAoE = _selectedSkill.TargetType is TargetType.AllEnemies or TargetType.AllAllies or TargetType.AllBoth
+                      || _selectedSkill.TargetType is TargetType.SingleSelf;
+
+            if (!_isTargeting && !isAoE)
+            {
+                // First confirm: enter target selection for single-target skills
+                EnterTargeting();
+                return;
+            }
+
+            // Second confirm (or AoE): submit
+            if (_selectedTarget == null && isAoE)
+            {
+                // Grab first candidate for AoE
+                var skills = _battleManager.GetCastableSkills(_currentPlayableUnit);
+                foreach (var (s, t) in skills)
+                    if (s.Id == _selectedSkill.Id) { _selectedTarget = t; break; }
+            }
+
+            if (_selectedTarget == null) return;
+            _battleManager.SubmitPlayerAction(_selectedSkill, _selectedTarget);
+            ClearSkills();
+            _currentPlayableUnit = null;
+            if (_confirmSkillButton) _confirmSkillButton.gameObject.SetActive(false);
+        }
+
+        private static Sprite GetSkillIcon(string skillId)
+            => Resources.Load<Sprite>($"Art/Sprites/UI/Icons/{skillId}_icon");
+
+        private static string SkillLabel(Skill s)
+        {
+            return s.TargetType switch
+            {
+                TargetType.AllEnemies or TargetType.AllAllies or TargetType.AllBoth => $"{s.DisplayName} [全体]",
+                TargetType.SingleSelf => $"{s.DisplayName} [自身]",
+                _ => s.DisplayName,
+            };
+        }
+
+        private void ClearSkills()
+        {
+            if (_isTargeting) ExitTargeting();
+            foreach (var g in _skillBtns) g.SetActive(false);
+            _selectedSkill = null;
+            _selectedTarget = null;
+            _candidateTargets.Clear();
+            if (_skillInfoPadding != null) _skillInfoPadding.SetActive(false);
+            if (_skillInfoName != null) _skillInfoName.text = "";
+            if (_skillInfoDescription != null) _skillInfoDescription.text = "";
+        }
+
+        // ============================================================
+        // Action Queue
+        // ============================================================
         private void RefreshQueue()
         {
             if (_actionQueueContainer == null || _battleManager == null) return;
@@ -308,7 +514,7 @@ namespace GameDemo.UI.Panels
                 }
                 bool first = u == _battleManager.ActionQueue.Current;
                 e.text = first ? "[" + u.DisplayName + "]" : u.DisplayName;
-                e.color = first ? Color.yellow : Color.white;
+                e.color = first ? new Color(0.8f, 0.15f, 0.05f) : Color.black;
                 idx++;
             }
             for (int i = idx; i < _queueEntries.Count; i++) _queueEntries[i].gameObject.SetActive(false);
@@ -316,12 +522,12 @@ namespace GameDemo.UI.Panels
 
         private TextMeshProUGUI QueueEntry()
         {
-            var g = new GameObject("Q", typeof(RectTransform)); 
-            g.transform.SetParent(_actionQueueContainer, false); 
-            var t = g.AddComponent<TextMeshProUGUI>(); 
-            t.font = GetTMPFontAsset(); 
-            t.fontSize = 22; 
-            t.color = Color.white; 
+            var g = new GameObject("Q", typeof(RectTransform));
+            g.transform.SetParent(_actionQueueContainer, false);
+            var t = g.AddComponent<TextMeshProUGUI>();
+            t.font = GetTMPFontAsset();
+            t.fontSize = 22;
+            t.color = Color.black;
             t.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 22);
             return t;
         }

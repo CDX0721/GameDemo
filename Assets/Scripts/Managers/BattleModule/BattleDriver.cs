@@ -33,7 +33,7 @@ public class BattleDriver : MonoBehaviour
         {
             case BattleState.BattleStart:   break;
             case BattleState.PreAction:     Manager.EnterPreAction(); break;
-            case BattleState.WaitingAction: Manager.EnterWaitingAction(); break;
+            case BattleState.WaitingAction: break; // event fires once from EnterPreAction; wait for submit
             case BattleState.Acting:        StartCoroutine(DoActingWithAnimations()); break;
             case BattleState.PostAction:    Manager.EnterPostAction(); break;
         }
@@ -97,12 +97,8 @@ public class BattleDriver : MonoBehaviour
 
     private void OnWaitingForPlayerInputEvent(PlayableUnitInstance unit)
     {
-        StartCoroutine(AutoResolveDelay(0.5f, () =>
-        {
-            var skills = Manager.GetCastableSkills(unit);
-            if (skills.Count > 0)
-                Manager.SubmitPlayerAction(skills[0].skill, skills[0].target);
-        }));
+        // Player input is handled by BattlePanel UI (BuildSkills → SelectSkill → OnConfirm).
+        // Do NOT auto-submit here.
     }
 
     private void OnWaitingForAutoActionEvent(AutoUnitInstance unit)
@@ -319,7 +315,9 @@ public class BattleDriver : MonoBehaviour
         foreach (var skillId in def.InnateSills)
             template.InnateSkills.Add(SkillCatalog.Get(skillId));
 
-        var unit = new AutoUnitInstance(template, placement.initialCost);
+        BattleUnitInstance unit = def.ControlType == "Player"
+            ? new PlayableUnitInstance(template, placement.initialCost)
+            : new AutoUnitInstance(template, placement.initialCost);
         formation.PlaceUnit(unit, new BattleSlot(placement.row - 1, placement.col - 1));
     }
 

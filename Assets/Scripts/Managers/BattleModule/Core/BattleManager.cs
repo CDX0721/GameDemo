@@ -193,6 +193,7 @@ namespace GameDemo.Battle
 
                 // Step 6: 进入等待行动
                 StateMachine.SetState(BattleState.WaitingAction);
+                EnterWaitingAction();
                 return;
             }
         }

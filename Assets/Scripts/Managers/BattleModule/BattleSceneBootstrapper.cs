@@ -115,6 +115,19 @@ public class BattleSceneBootstrapper : MonoBehaviour
             var bp = bpGO.GetComponent<BattlePanel>();
             if (bp == null) bp = bpGO.AddComponent<BattlePanel>();
             bp.BindBattleManager(_driver.Manager);
+            bp.OnTargetChanged += (target) =>
+            {
+                foreach (var (unit, view) in UnitViews)
+                {
+                    var hl = view.GetComponentInChildren<TargetHighlight>(includeInactive: true);
+                    if (hl != null) hl.Hide();
+                }
+                if (target != null && UnitViews.TryGetValue(target, out var targetView))
+                {
+                    var hl = targetView.GetComponentInChildren<TargetHighlight>(includeInactive: true);
+                    if (hl != null) hl.Show();
+                }
+            };
         }
 
         UIManager.Instance.Show<MainMenuPanel>();
@@ -361,6 +374,14 @@ public class BattleSceneBootstrapper : MonoBehaviour
                 : CreateDefaultUnitViewGo(p.id);
             go.name = $"UnitView_{p.id}";
 
+            // Ensure TargetHighlight exists
+            if (go.GetComponentInChildren<TargetHighlight>() == null)
+            {
+                var hlGo = new GameObject("TargetHighlight");
+                hlGo.transform.SetParent(go.transform, false);
+                hlGo.AddComponent<TargetHighlight>();
+            }
+
             var unitView = go.GetComponent<UnitView>();
             if (unitView == null) unitView = go.AddComponent<UnitView>();
 
@@ -400,6 +421,8 @@ public class BattleSceneBootstrapper : MonoBehaviour
             var hpBar = view.GetComponentInChildren<HPBar>();
             if (hpBar != null)
             {
+                hpBar.Setup(instance.MaxHP);
+                HPBars[instance] = hpBar;
                 hpBar.gameObject.SetActive(false);
             }
         }
