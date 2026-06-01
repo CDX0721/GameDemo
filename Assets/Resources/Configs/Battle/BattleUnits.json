@@ -18,7 +18,7 @@
       "IdleAnimation": "OrangeDog_Idle.png",
       "AttackAnimation": "OrangeDog_Attack.png",
       
-      "ControlType": "Auto"
+      "ControlType": "Player"
       
     },
     "Cirno": {
@@ -39,7 +39,7 @@
       "IdleAnimation": "Cirno_Idle.png",
       "AttackAnimation": "Cirno_Attack.png",
 
-      "ControlType": "Auto"
+      "ControlType": "Player"
     },
     "Flandre": {
       "DisplayName" : "芙兰朵露",
@@ -57,7 +57,7 @@
       "IdleAnimation": "Flandre_Idle.png",
       "AttackAnimation": "Flandre_Attack.png",
 
-      "ControlType": "Auto"
+      "ControlType": "Player"
     },
     "Sans": {
       "DisplayName" : "杉斯",

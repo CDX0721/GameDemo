@@ -114,7 +114,6 @@ public class BattleSceneBootstrapper : MonoBehaviour
             bpGO.name = "BattlePanel";
             var bp = bpGO.GetComponent<BattlePanel>();
             if (bp == null) bp = bpGO.AddComponent<BattlePanel>();
-            bp.BindBattleManager(_driver.Manager);
             bp.OnTargetChanged += (target) =>
             {
                 foreach (var (unit, view) in UnitViews)
@@ -128,6 +127,7 @@ public class BattleSceneBootstrapper : MonoBehaviour
                     if (hl != null) hl.Show();
                 }
             };
+            bp.BindBattleManager(_driver.Manager);
         }
 
         UIManager.Instance.Show<MainMenuPanel>();

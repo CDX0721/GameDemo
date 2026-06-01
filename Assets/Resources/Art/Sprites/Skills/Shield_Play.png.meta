@@ -26,18 +26,6 @@ TextureImporter:
   - first:
       213: 6811290572681715229
     second: Shield_Play_7
-  - first:
-      213: 317988585823915114
-    second: Shield_Play_8
-  - first:
-      213: 8859896986882558917
-    second: Shield_Play_9
-  - first:
-      213: -6967048229552173807
-    second: Shield_Play_10
-  - first:
-      213: -4203433459374824259
-    second: Shield_Play_11
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -324,16 +312,12 @@ TextureImporter:
     nameFileIdTable:
       Shield_Play_0: 448437924350730945
       Shield_Play_1: -2361273833235504077
-      Shield_Play_10: -6967048229552173807
-      Shield_Play_11: -4203433459374824259
       Shield_Play_2: 5444012066269448425
       Shield_Play_3: -6514843317079302274
       Shield_Play_4: 2355983881817853579
       Shield_Play_5: -8022969904393629014
       Shield_Play_6: -3631915243362521772
       Shield_Play_7: 6811290572681715229
-      Shield_Play_8: 317988585823915114
-      Shield_Play_9: 8859896986882558917
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -35,72 +35,6 @@ TextureImporter:
   - first:
       213: -2150773817370130713
     second: NormalAttack_Play_10
-  - first:
-      213: 5063739107012369567
-    second: NormalAttack_Play_11
-  - first:
-      213: -6020411639515024764
-    second: NormalAttack_Play_12
-  - first:
-      213: -3816536553008054934
-    second: NormalAttack_Play_13
-  - first:
-      213: 4924946306127262437
-    second: NormalAttack_Play_14
-  - first:
-      213: -8588994843098853840
-    second: NormalAttack_Play_15
-  - first:
-      213: 4006147719333501654
-    second: NormalAttack_Play_16
-  - first:
-      213: 6349677927208072869
-    second: NormalAttack_Play_17
-  - first:
-      213: -1111954662567573651
-    second: NormalAttack_Play_18
-  - first:
-      213: 8328397972237351941
-    second: NormalAttack_Play_19
-  - first:
-      213: -6866048303982918113
-    second: NormalAttack_Play_20
-  - first:
-      213: -1417737197987026383
-    second: NormalAttack_Play_21
-  - first:
-      213: -1175910827069160496
-    second: NormalAttack_Play_22
-  - first:
-      213: -8794151739809279593
-    second: NormalAttack_Play_23
-  - first:
-      213: -6511111599258420191
-    second: NormalAttack_Play_24
-  - first:
-      213: 1876205528774851584
-    second: NormalAttack_Play_25
-  - first:
-      213: 7822624336977017234
-    second: NormalAttack_Play_26
-  - first:
-      213: -8196918085912843439
-    second: NormalAttack_Play_27
-  - first:
-      213: 8247381994374653542
-    second: NormalAttack_Play_28
-  - first:
-      213: -7346565072039036255
-    second: NormalAttack_Play_29
-  - first:
-      213: 3582775686037967536
-    second: NormalAttack_Play_30
-  - first:
-      213: -2487470489938602183
-    second: NormalAttack_Play_31
-  - first:
-      213: 2153042396562761337
-    second: NormalAttack_Play_32
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -388,30 +322,8 @@ TextureImporter:
       NormalAttack_Play_0: 5061384889643726145
       NormalAttack_Play_1: -902348066832198553
       NormalAttack_Play_10: -2150773817370130713
-      NormalAttack_Play_11: 5063739107012369567
-      NormalAttack_Play_12: -6020411639515024764
-      NormalAttack_Play_13: -3816536553008054934
-      NormalAttack_Play_14: 4924946306127262437
-      NormalAttack_Play_15: -8588994843098853840
-      NormalAttack_Play_16: 4006147719333501654
-      NormalAttack_Play_17: 6349677927208072869
-      NormalAttack_Play_18: -1111954662567573651
-      NormalAttack_Play_19: 8328397972237351941
       NormalAttack_Play_2: 250075666422582557
-      NormalAttack_Play_20: -6866048303982918113
-      NormalAttack_Play_21: -1417737197987026383
-      NormalAttack_Play_22: -1175910827069160496
-      NormalAttack_Play_23: -8794151739809279593
-      NormalAttack_Play_24: -6511111599258420191
-      NormalAttack_Play_25: 1876205528774851584
-      NormalAttack_Play_26: 7822624336977017234
-      NormalAttack_Play_27: -8196918085912843439
-      NormalAttack_Play_28: 8247381994374653542
-      NormalAttack_Play_29: -7346565072039036255
       NormalAttack_Play_3: 7332828956310604754
-      NormalAttack_Play_30: 3582775686037967536
-      NormalAttack_Play_31: -2487470489938602183
-      NormalAttack_Play_32: 2153042396562761337
       NormalAttack_Play_4: 3781984364632421220
       NormalAttack_Play_5: 5325759952779017587
       NormalAttack_Play_6: -5958535876446816487

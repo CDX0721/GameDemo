@@ -38,9 +38,6 @@ TextureImporter:
   - first:
       213: -36721907929319071
     second: OrangeDog_Idle_11
-  - first:
-      213: 4597705680460080979
-    second: OrangeDog_Idle_12
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -329,7 +326,6 @@ TextureImporter:
       OrangeDog_Idle_1: 8693817228418363869
       OrangeDog_Idle_10: 3820514293030853682
       OrangeDog_Idle_11: -36721907929319071
-      OrangeDog_Idle_12: 4597705680460080979
       OrangeDog_Idle_2: -5841573829187973918
       OrangeDog_Idle_3: 3801944138820576721
       OrangeDog_Idle_4: 4821196110798827641

@@ -1,2 +1,26 @@
 fileFormatVersion: 2
 guid: 1e827959f8d57944d9058481b125b6ad
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - _panelPrefab: {instanceID: 0}
+  - _unitPrefab: {fileID: 4990748089216194532, guid: a1ff60a7d62968745901ab39be9841c4, type: 3}
+  - _skillEntryPrefab: {fileID: 791891091897006788, guid: 7ca0d170978f15d41ba340759885421b, type: 3}
+  - _unitStatusContainer: {instanceID: 0}
+  - _skillListContainer: {instanceID: 0}
+  - _skillInfoName: {instanceID: 0}
+  - _skillInfoDescription: {instanceID: 0}
+  - _confirmSkillButton: {instanceID: 0}
+  - _skillInfoPadding: {instanceID: 0}
+  - _actionQueueContainer: {instanceID: 0}
+  - _actionQueueEntryPrefab: {instanceID: 0}
+  - _resultOverlay: {instanceID: 0}
+  - _resultText: {instanceID: 0}
+  - _resultBackButton: {instanceID: 0}
+  - _quitBattleButton: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

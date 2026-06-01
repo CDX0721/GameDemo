@@ -26,6 +26,102 @@ TextureImporter:
   - first:
       213: -2981555574411227330
     second: AtkStrongUp_Play_7
+  - first:
+      213: 1719433809121753407
+    second: AtkStrongUp_Play_8
+  - first:
+      213: -7963889720838700563
+    second: AtkStrongUp_Play_9
+  - first:
+      213: -1322078181334846214
+    second: AtkStrongUp_Play_10
+  - first:
+      213: -9008482932171271424
+    second: AtkStrongUp_Play_11
+  - first:
+      213: -4841208868367212312
+    second: AtkStrongUp_Play_12
+  - first:
+      213: 5768460391165021881
+    second: AtkStrongUp_Play_13
+  - first:
+      213: -558464732521272927
+    second: AtkStrongUp_Play_14
+  - first:
+      213: 6065022920830744570
+    second: AtkStrongUp_Play_15
+  - first:
+      213: -6734634649223733149
+    second: AtkStrongUp_Play_16
+  - first:
+      213: -2415561652469181449
+    second: AtkStrongUp_Play_17
+  - first:
+      213: -7517162978049157602
+    second: AtkStrongUp_Play_18
+  - first:
+      213: 1497197060371329215
+    second: AtkStrongUp_Play_19
+  - first:
+      213: -1410249087137041268
+    second: AtkStrongUp_Play_20
+  - first:
+      213: -6274224375718684250
+    second: AtkStrongUp_Play_21
+  - first:
+      213: -4400487620993319038
+    second: AtkStrongUp_Play_22
+  - first:
+      213: -1951439869021296407
+    second: AtkStrongUp_Play_23
+  - first:
+      213: 2147122830242611035
+    second: AtkStrongUp_Play_24
+  - first:
+      213: -6823912305904023671
+    second: AtkStrongUp_Play_25
+  - first:
+      213: 4852055338149838047
+    second: AtkStrongUp_Play_26
+  - first:
+      213: -3034989175255525392
+    second: AtkStrongUp_Play_27
+  - first:
+      213: -7767151310622643908
+    second: AtkStrongUp_Play_28
+  - first:
+      213: 1993184113915229863
+    second: AtkStrongUp_Play_29
+  - first:
+      213: -534761272540242090
+    second: AtkStrongUp_Play_30
+  - first:
+      213: 4392680605987534914
+    second: AtkStrongUp_Play_31
+  - first:
+      213: 5400301158954746733
+    second: AtkStrongUp_Play_32
+  - first:
+      213: 5383579811642272741
+    second: AtkStrongUp_Play_33
+  - first:
+      213: 6452252654019111595
+    second: AtkStrongUp_Play_34
+  - first:
+      213: -3859750653702825134
+    second: AtkStrongUp_Play_35
+  - first:
+      213: -351487389319786217
+    second: AtkStrongUp_Play_36
+  - first:
+      213: -3243961879934371918
+    second: AtkStrongUp_Play_37
+  - first:
+      213: 6262798548769299120
+    second: AtkStrongUp_Play_38
+  - first:
+      213: 7235737279830664200
+    second: AtkStrongUp_Play_39
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -312,12 +408,44 @@ TextureImporter:
     nameFileIdTable:
       AtkStrongUp_Play_0: -8527122078032212317
       AtkStrongUp_Play_1: -3602554266166413574
+      AtkStrongUp_Play_10: -1322078181334846214
+      AtkStrongUp_Play_11: -9008482932171271424
+      AtkStrongUp_Play_12: -4841208868367212312
+      AtkStrongUp_Play_13: 5768460391165021881
+      AtkStrongUp_Play_14: -558464732521272927
+      AtkStrongUp_Play_15: 6065022920830744570
+      AtkStrongUp_Play_16: -6734634649223733149
+      AtkStrongUp_Play_17: -2415561652469181449
+      AtkStrongUp_Play_18: -7517162978049157602
+      AtkStrongUp_Play_19: 1497197060371329215
       AtkStrongUp_Play_2: 647875956491804109
+      AtkStrongUp_Play_20: -1410249087137041268
+      AtkStrongUp_Play_21: -6274224375718684250
+      AtkStrongUp_Play_22: -4400487620993319038
+      AtkStrongUp_Play_23: -1951439869021296407
+      AtkStrongUp_Play_24: 2147122830242611035
+      AtkStrongUp_Play_25: -6823912305904023671
+      AtkStrongUp_Play_26: 4852055338149838047
+      AtkStrongUp_Play_27: -3034989175255525392
+      AtkStrongUp_Play_28: -7767151310622643908
+      AtkStrongUp_Play_29: 1993184113915229863
       AtkStrongUp_Play_3: 6372489546279567308
+      AtkStrongUp_Play_30: -534761272540242090
+      AtkStrongUp_Play_31: 4392680605987534914
+      AtkStrongUp_Play_32: 5400301158954746733
+      AtkStrongUp_Play_33: 5383579811642272741
+      AtkStrongUp_Play_34: 6452252654019111595
+      AtkStrongUp_Play_35: -3859750653702825134
+      AtkStrongUp_Play_36: -351487389319786217
+      AtkStrongUp_Play_37: -3243961879934371918
+      AtkStrongUp_Play_38: 6262798548769299120
+      AtkStrongUp_Play_39: 7235737279830664200
       AtkStrongUp_Play_4: -3057090362616286919
       AtkStrongUp_Play_5: -7007115908327664779
       AtkStrongUp_Play_6: -5937549431425657476
       AtkStrongUp_Play_7: -2981555574411227330
+      AtkStrongUp_Play_8: 1719433809121753407
+      AtkStrongUp_Play_9: -7963889720838700563
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

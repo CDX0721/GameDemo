@@ -26,6 +26,15 @@ TextureImporter:
   - first:
       213: -8549411771715781869
     second: Cirno_Idle_7
+  - first:
+      213: -1816395976093913651
+    second: Cirno_Idle_8
+  - first:
+      213: -7121183525187234114
+    second: Cirno_Idle_9
+  - first:
+      213: 5214503903239868259
+    second: Cirno_Idle_10
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -312,12 +321,15 @@ TextureImporter:
     nameFileIdTable:
       Cirno_Idle_0: 7447135090171490318
       Cirno_Idle_1: -459502118486731614
+      Cirno_Idle_10: 5214503903239868259
       Cirno_Idle_2: -6359584736118504852
       Cirno_Idle_3: -8254018324351189168
       Cirno_Idle_4: 6489176325313255546
       Cirno_Idle_5: -2368236736113460276
       Cirno_Idle_6: -8517591064881743389
       Cirno_Idle_7: -8549411771715781869
+      Cirno_Idle_8: -1816395976093913651
+      Cirno_Idle_9: -7121183525187234114
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -53,6 +53,33 @@ TextureImporter:
   - first:
       213: 6210348881925330742
     second: Heal_Play_16
+  - first:
+      213: 2765630274357433278
+    second: Heal_Play_17
+  - first:
+      213: -3804936913822055222
+    second: Heal_Play_18
+  - first:
+      213: 4007098768622225180
+    second: Heal_Play_19
+  - first:
+      213: -6348275132615122213
+    second: Heal_Play_20
+  - first:
+      213: 1256786941971425387
+    second: Heal_Play_21
+  - first:
+      213: -8617709752753458186
+    second: Heal_Play_22
+  - first:
+      213: 3928441123310556366
+    second: Heal_Play_23
+  - first:
+      213: -2746379517866665827
+    second: Heal_Play_24
+  - first:
+      213: -1231328630511693686
+    second: Heal_Play_25
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -346,7 +373,16 @@ TextureImporter:
       Heal_Play_14: -2070404357988856340
       Heal_Play_15: -8705683941686684724
       Heal_Play_16: 6210348881925330742
+      Heal_Play_17: 2765630274357433278
+      Heal_Play_18: -3804936913822055222
+      Heal_Play_19: 4007098768622225180
       Heal_Play_2: -2853205269711919237
+      Heal_Play_20: -6348275132615122213
+      Heal_Play_21: 1256786941971425387
+      Heal_Play_22: -8617709752753458186
+      Heal_Play_23: 3928441123310556366
+      Heal_Play_24: -2746379517866665827
+      Heal_Play_25: -1231328630511693686
       Heal_Play_3: -3484491162162667320
       Heal_Play_4: 3507990381168704102
       Heal_Play_5: 6192071999141739696
