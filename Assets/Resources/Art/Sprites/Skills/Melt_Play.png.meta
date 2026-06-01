@@ -1,0 +1,373 @@
+fileFormatVersion: 2
+guid: 4d3f7ab7d592f174f9f1bf25a0997a47
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -8616687786129893266
+    second: Melt_Play_0
+  - first:
+      213: 4162598651688958057
+    second: Melt_Play_1
+  - first:
+      213: -4373279944894620526
+    second: Melt_Play_2
+  - first:
+      213: -6840550997312302682
+    second: Melt_Play_3
+  - first:
+      213: 1056099453194280344
+    second: Melt_Play_4
+  - first:
+      213: -1922024316595592713
+    second: Melt_Play_5
+  - first:
+      213: 7393047784019917557
+    second: Melt_Play_6
+  - first:
+      213: 1712894884428668681
+    second: Melt_Play_7
+  - first:
+      213: 3861544682869696772
+    second: Melt_Play_8
+  - first:
+      213: -9098253831923616108
+    second: Melt_Play_9
+  - first:
+      213: 2037810104274164463
+    second: Melt_Play_10
+  - first:
+      213: -1828955913725868604
+    second: Melt_Play_11
+  - first:
+      213: -7169003865430354623
+    second: Melt_Play_12
+  - first:
+      213: -8932099301428591845
+    second: Melt_Play_13
+  - first:
+      213: -4894386406334242437
+    second: Melt_Play_14
+  - first:
+      213: 1480820339923898466
+    second: Melt_Play_15
+  - first:
+      213: 5899086435929533923
+    second: Melt_Play_16
+  - first:
+      213: 6742764485821765210
+    second: Melt_Play_17
+  - first:
+      213: -3828414350390985334
+    second: Melt_Play_18
+  - first:
+      213: -1538457017351659990
+    second: Melt_Play_19
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Melt_Play_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 128
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e68d7479c106b6880800000000000000
+      internalID: -8616687786129893266
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Melt_Play_1
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 128
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 968b0785b6584c930800000000000000
+      internalID: 4162598651688958057
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Melt_Play_2
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 128
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 29c573d8f0dfe43c0800000000000000
+      internalID: -4373279944894620526
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Melt_Play_3
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 128
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6a191495c1b7111a0800000000000000
+      internalID: -6840550997312302682
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Melt_Play_4
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 89d11237bd408ae00800000000000000
+      internalID: 1056099453194280344
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Melt_Play_5
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f128af31199355e0800000000000000
+      internalID: -1922024316595592713
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Melt_Play_6
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5fafefd1ac1699660800000000000000
+      internalID: 7393047784019917557
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Melt_Play_7
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 0
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 90f54f372dc65c710800000000000000
+      internalID: 1712894884428668681
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Melt_Play_0: -8616687786129893266
+      Melt_Play_1: 4162598651688958057
+      Melt_Play_10: 2037810104274164463
+      Melt_Play_11: -1828955913725868604
+      Melt_Play_12: -7169003865430354623
+      Melt_Play_13: -8932099301428591845
+      Melt_Play_14: -4894386406334242437
+      Melt_Play_15: 1480820339923898466
+      Melt_Play_16: 5899086435929533923
+      Melt_Play_17: 6742764485821765210
+      Melt_Play_18: -3828414350390985334
+      Melt_Play_19: -1538457017351659990
+      Melt_Play_2: -4373279944894620526
+      Melt_Play_3: -6840550997312302682
+      Melt_Play_4: 1056099453194280344
+      Melt_Play_5: -1922024316595592713
+      Melt_Play_6: 7393047784019917557
+      Melt_Play_7: 1712894884428668681
+      Melt_Play_8: 3861544682869696772
+      Melt_Play_9: -9098253831923616108
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

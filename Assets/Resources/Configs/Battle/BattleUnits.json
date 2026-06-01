@@ -6,7 +6,7 @@
       "Attack": 200,
       "Defense": 200,
       "HP": 1000,
-      "Mana": 100,
+      "Mana": 200,
       "Speed": 100,
       
       "InnateSills": [
@@ -18,7 +18,7 @@
       "IdleAnimation": "OrangeDog_Idle.png",
       "AttackAnimation": "OrangeDog_Attack.png",
       
-      "ControlType": "Player"
+      "ControlType": "Auto"
       
     },
     "Cirno": {
@@ -27,7 +27,7 @@
       "Attack": 500,
       "Defense": 500,
       "HP": 1000,
-      "Mana": 10,
+      "Mana": 100,
       "Speed": 120,
 
       "InnateSills": [
@@ -39,7 +39,7 @@
       "IdleAnimation": "Cirno_Idle.png",
       "AttackAnimation": "Cirno_Attack.png",
 
-      "ControlType": "Player"
+      "ControlType": "Auto"
     },
     "Flandre": {
       "DisplayName" : "芙兰朵露",
@@ -51,13 +51,13 @@
       "Speed": 200,
 
       "InnateSills": [
-        "ThornsWrap"
+        "NormalAttack"
       ],
 
       "IdleAnimation": "Flandre_Idle.png",
       "AttackAnimation": "Flandre_Attack.png",
 
-      "ControlType": "Player"
+      "ControlType": "Auto"
     },
     "Sans": {
       "DisplayName" : "杉斯",

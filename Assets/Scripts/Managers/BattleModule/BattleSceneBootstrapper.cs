@@ -56,8 +56,8 @@ public class BattleSceneBootstrapper : MonoBehaviour
     {
         _driver = GetComponent<BattleDriver>();
 
-        var (fieldDef, unitDefs) = BattleConfigLoader.Load("TestBattleFiled");
-        if (fieldDef == null || unitDefs == null)
+        var (fieldDef, playerUnits, unitDefs) = BattleConfigLoader.Load("TestBattleFiled");
+        if (fieldDef == null || unitDefs == null || playerUnits == null)
         {
             Debug.LogError("[Bootstrapper] Failed to load battle configs.");
             return;
@@ -69,9 +69,9 @@ public class BattleSceneBootstrapper : MonoBehaviour
         if (!string.IsNullOrEmpty(fieldDef.BackGround))
             LoadBackground(fieldDef.BackGround);
         EnsureDamageCanvas();
-        BuildUnitViews(fieldDef.PlayerUnits, isPlayer: true);
+        BuildUnitViews(playerUnits, isPlayer: true);
         BuildUnitViews(fieldDef.EnemyUnits, isPlayer: false);
-        _driver.Setup(fieldDef, unitDefs, this);
+        _driver.Setup(fieldDef, playerUnits, unitDefs, this);
         BindInstancesToViews(_driver.Manager.PlayerFormation, isPlayer: true);
         BindInstancesToViews(_driver.Manager.EnemyFormation, isPlayer: false);
         _pendingViews.Clear();
@@ -372,7 +372,7 @@ public class BattleSceneBootstrapper : MonoBehaviour
             GameObject go = (_unitViewPrefab != null)
                 ? Instantiate(_unitViewPrefab, _unitParent)
                 : CreateDefaultUnitViewGo(p.id);
-            go.name = $"UnitView_{p.id}";
+            go.name = $"UnitView_{p.id}_{p.row}_{p.col}";
 
             // Ensure TargetHighlight exists
             if (go.GetComponentInChildren<TargetHighlight>() == null)
@@ -399,7 +399,7 @@ public class BattleSceneBootstrapper : MonoBehaviour
             go.transform.localScale = Vector3.one * UNIT_SCALE;
             unitView.SetSortingOrder(p.col);
 
-            _pendingViews[p.id] = unitView;
+            _pendingViews[$"{(isPlayer ? "P" : "E")}_{p.row}_{p.col}"] = unitView;
         }
     }
 
@@ -407,9 +407,10 @@ public class BattleSceneBootstrapper : MonoBehaviour
     {
         foreach (var instance in formation.Units)
         {
-            if (!_pendingViews.TryGetValue(instance.Id, out var view))
+            var posKey = $"{(isPlayer ? "P" : "E")}_{instance.Row + 1}_{instance.Col + 1}";
+            if (!_pendingViews.TryGetValue(posKey, out var view))
             {
-                Debug.LogWarning($"View for {instance.Id} not found");
+                Debug.LogWarning($"View for {instance.Id} at ({instance.Row},{instance.Col}) not found");
                 continue;
             }
 

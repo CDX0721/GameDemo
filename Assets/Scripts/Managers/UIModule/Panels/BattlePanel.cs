@@ -57,7 +57,7 @@ namespace GameDemo.UI.Panels
         private Transform _bottomBar;
         private readonly List<GameObject> _skillBtns = new();
         private readonly List<TextMeshProUGUI> _queueEntries = new();
-        private readonly Dictionary<string, UnitWidget> _widgets = new();
+        private readonly Dictionary<BattleUnitInstance, UnitWidget> _widgets = new();
 
         // Targeting
         public event System.Action<BattleUnitInstance> OnTargetChanged;
@@ -184,7 +184,8 @@ namespace GameDemo.UI.Panels
             _battleManager = bm;
             bm.OnWaitingForPlayerInput += OnPlayerTurn;
             bm.OnSkillUsed += (c, s, t) => RefreshUnits();
-            bm.OnUnitDamaged += (u, d, s) => RefreshUnits();
+            bm.OnUnitDamaged += (u, d, s, td) => RefreshUnits();
+            bm.OnUnitHealed += (u, h, s) => RefreshUnits();
             bm.OnUnitDied += u => RefreshUnits();
             bm.OnEffectApplied += (u, e) => RefreshUnits();
             bm.OnEffectExpired += (u, e) => RefreshUnits();
@@ -213,11 +214,11 @@ namespace GameDemo.UI.Panels
         private void RefreshUnits()
         {
             if (_unitStatusContainer == null || _battleManager == null) return;
-            var seen = new HashSet<string>();
+            var seen = new HashSet<BattleUnitInstance>();
             foreach (var u in _battleManager.PlayerFormation.Units)
             {
-                seen.Add(u.Id);
-                if (!_widgets.TryGetValue(u.Id, out var w)) { w = MakeWidget(); _widgets[u.Id] = w; }
+                seen.Add(u);
+                if (!_widgets.TryGetValue(u, out var w)) { w = MakeWidget(); _widgets[u] = w; }
                 bool act = u == _battleManager.SelectedUnit;
                 w.Name.text = (act ? "> " : "  ") + u.DisplayName;
                 w.Name.color = u.IsAlive ? (act ? new Color(0.8f, 0.15f, 0.05f) : Color.black) : new Color(0.45f, 0.45f, 0.45f);
@@ -467,7 +468,7 @@ namespace GameDemo.UI.Panels
         }
 
         private static Sprite GetSkillIcon(string skillId)
-            => Resources.Load<Sprite>($"Art/Sprites/UI/Icons/{skillId}_icon");
+            => Resources.Load<Sprite>($"Art/Sprites/UI/Icons/skills/{skillId}_icon");
 
         private static string SkillLabel(Skill s)
         {

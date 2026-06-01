@@ -54,6 +54,9 @@ public class SpriteAnimator : MonoBehaviour
     {
         _playing = false;
         _frames = Array.Empty<Sprite>();
+        var cb = _onComplete;
+        _onComplete = null;
+        cb?.Invoke();
     }
 
     public void SetVisible(bool visible)

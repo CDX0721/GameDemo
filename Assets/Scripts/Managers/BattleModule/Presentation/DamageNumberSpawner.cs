@@ -11,8 +11,16 @@ public class DamageNumberSpawner : MonoBehaviour
     [SerializeField] private float _riseSpeed = 1.2f;
     [SerializeField] private float _lifetime = 0.8f;
 
+    private static readonly Color TrueDamageColor = new Color(0f, 1f, 1f, 1f);  // #00FFFF
+
     /// <summary>在指定世界坐标显示伤害数字。</summary>
     public void SpawnDamage(Vector3 worldPosition, int damage)
+    {
+        SpawnDamage(worldPosition, damage, null);
+    }
+
+    /// <summary>在指定世界坐标显示伤害数字（可指定颜色）。</summary>
+    public void SpawnDamage(Vector3 worldPosition, int damage, Color? color)
     {
         if (_damageNumberPrefab == null) return;
 
@@ -21,7 +29,26 @@ public class DamageNumberSpawner : MonoBehaviour
 
         var dn = go.GetComponent<DamageNumber>();
         if (dn != null)
-            dn.Play(damage, _riseSpeed, _lifetime);
+            dn.Play(damage, _riseSpeed, _lifetime, color);
+    }
+
+    /// <summary>在指定世界坐标显示真实伤害数字（#00FFFF 青色）。</summary>
+    public void SpawnTrueDamage(Vector3 worldPosition, int damage)
+        => SpawnDamage(worldPosition, damage, TrueDamageColor);
+
+    private static readonly Color HealColor = new Color(0.2f, 1f, 0.3f, 1f);
+
+    /// <summary>在指定世界坐标显示治疗数字（绿色 +xxx）。</summary>
+    public void SpawnHeal(Vector3 worldPosition, int amount)
+    {
+        if (_damageNumberPrefab == null) return;
+
+        var go = Instantiate(_damageNumberPrefab, transform);
+        go.transform.position = worldPosition;
+
+        var dn = go.GetComponent<DamageNumber>();
+        if (dn != null)
+            dn.PlayHeal(amount, _riseSpeed, _lifetime);
     }
 }
 
@@ -38,10 +65,23 @@ public class DamageNumber : MonoBehaviour
             _text = GetComponent<TMPro.TextMeshPro>();
     }
 
-    public void Play(int damage, float riseSpeed, float lifetime)
+    public void Play(int damage, float riseSpeed, float lifetime, Color? color = null)
     {
         if (_text != null)
+        {
             _text.text = $"-{damage}";
+            if (color.HasValue) _text.color = color.Value;
+        }
+        StartCoroutine(FloatAndFade(riseSpeed, lifetime));
+    }
+
+    public void PlayHeal(int amount, float riseSpeed, float lifetime)
+    {
+        if (_text != null)
+        {
+            _text.text = $"+{amount}";
+            _text.color = new Color(0.2f, 1f, 0.3f, 1f);
+        }
         StartCoroutine(FloatAndFade(riseSpeed, lifetime));
     }
 

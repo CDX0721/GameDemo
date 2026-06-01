@@ -1,0 +1,25 @@
+﻿{
+  "PlayerUnits": [
+    {
+      "id": "Cirno",
+      "row": 2,
+      "col": 3,
+      "initialCost": 10000
+    },
+    {
+      "id": "OrangeDog",
+      "row": 2,
+      "col": 1,
+      "initialCost": 10000,
+      "attachSkills" : ["Melt"]
+      
+    },
+    {
+      "id": "Flandre",
+      "row": 1,
+      "col": 2,
+      "initialCost": 10000,
+      "attachSkills": [ "DiamondDust"]
+    }
+  ]
+}

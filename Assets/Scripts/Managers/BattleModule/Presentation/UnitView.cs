@@ -60,6 +60,11 @@ public class UnitView : MonoBehaviour
     /// <summary>仅播放攻击动画（无特效），完成后回调。</summary>
     public void PlayAttack(Action? onComplete)
     {
+        if (_bodyAnimator == null)
+        {
+            onComplete?.Invoke();
+            return;
+        }
         _bodyAnimator.Play(_attackFrames, frameDuration: 0.2f, looping: false, onComplete: () =>
         {
             PlayIdle();
@@ -67,14 +72,18 @@ public class UnitView : MonoBehaviour
         });
     }
 
-    /// <summary>仅在目标身上播放技能特效动画，完成后回调并隐藏特效层。</summary>
+    /// <summary>仅在目标身上播放技能特效动画，完成后回调并隐藏特效层。若已有动画在播放，先结算旧回调再开始新的。</summary>
     public void PlayEffect(Sprite[] effectFrames, Action? onComplete)
     {
-        if (effectFrames == null || effectFrames.Length == 0)
+        if (effectFrames == null || effectFrames.Length == 0 || _effectAnimator == null)
         {
             onComplete?.Invoke();
             return;
         }
+        // 结算旧动画的回调，防止 animRunning 泄漏
+        if (_effectAnimator.IsPlaying)
+            _effectAnimator.Stop();
+
         _effectAnimator.transform.localScale = Vector3.one * 2f;
         _effectAnimator.SetVisible(true);
         _effectAnimator.Play(effectFrames, frameDuration: 0.2f, looping: false, onComplete: () =>
@@ -135,7 +144,11 @@ public class UnitView : MonoBehaviour
             if (!_effectLayers.TryGetValue(effectId, out var layer))
             {
                 var frames = frameLoader(effectId + "_Play");
-                if (frames == null || frames.Length == 0) continue;
+                if (frames == null || frames.Length == 0)
+                {
+                    Debug.LogWarning($"[UnitView] 无动画帧: {effectId}_Play.png，跳过效果层创建");
+                    continue;
+                }
 
                 var go = new GameObject($"Fx_{effectId}");
                 go.transform.SetParent(transform, false);

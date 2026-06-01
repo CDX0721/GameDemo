@@ -214,6 +214,9 @@ namespace GameDemo.Battle
 
         private const float DefenseK = 1000f;
 
+        /// <summary>单位受到伤害时触发（单位, 实际伤害值, 是否真实伤害, 伤害来源）。</summary>
+        public event Action<BattleUnitInstance, float, bool, BattleUnitInstance?>? OnDamaged;
+
         /// <summary>
         /// 防御减伤比例。DEF&gt;=0 时为 1-e^(-DEF/K)，DEF&lt;0 时为 max(-4, -0.5*(DEF/K)^2+DEF/K)。
         /// 返回值可能为负数，表示受伤增加。
@@ -227,7 +230,10 @@ namespace GameDemo.Battle
             return MathF.Max(-4f, -0.5f * x * x + x);
         }
 
-        public float TakeDamage(float rawDamage)
+        /// <summary>
+        /// 受到伤害：扣减护盾 → 防御减伤 → DamageReduction → 扣减 HP。
+        /// </summary>
+        public float TakeDamage(float rawDamage, BattleUnitInstance? source = null)
         {
             if (!IsAlive) return 0f;
 
@@ -240,6 +246,7 @@ namespace GameDemo.Battle
                 if (Shield >= reduced)
                 {
                     Shield -= reduced;
+                    OnDamaged?.Invoke(this, reduced, false, source);
                     return reduced;
                 }
                 actualDamage = reduced - Shield;
@@ -249,7 +256,43 @@ namespace GameDemo.Battle
             if (actualDamage < 0f) actualDamage = 0f;
             CurrentHP -= actualDamage;
             if (CurrentHP < 0f) CurrentHP = 0f;
+            OnDamaged?.Invoke(this, actualDamage, false, source);
             return actualDamage;
+        }
+
+        /// <summary>
+        /// 真实伤害：无视护盾、防御减伤和伤害减少，直接扣减HP。
+        /// </summary>
+        public float TakeTrueDamage(float rawDamage, BattleUnitInstance? source = null)
+        {
+            if (!IsAlive) return 0f;
+
+            float actualDamage = MathF.Max(rawDamage, 0f);
+            if (actualDamage > CurrentHP) actualDamage = CurrentHP;
+            CurrentHP -= actualDamage;
+            if (CurrentHP < 0f) CurrentHP = 0f;
+            OnDamaged?.Invoke(this, actualDamage, true, source);
+            return actualDamage;
+        }
+
+        // ==================== 治疗 ====================
+
+        /// <summary>单位受到治疗时触发（单位, 实际治疗量, 治疗来源）。</summary>
+        public event Action<BattleUnitInstance, float, BattleUnitInstance?>? OnHealed;
+
+        /// <summary>
+        /// 受到治疗：回复 HP，不超过 MaxHP。
+        /// </summary>
+        public float TakeHeal(float amount, BattleUnitInstance? source = null)
+        {
+            if (!IsAlive) return 0f;
+
+            float actualHeal = MathF.Min(amount, MaxHP - CurrentHP);
+            if (actualHeal <= 0f) return 0f;
+
+            CurrentHP += actualHeal;
+            OnHealed?.Invoke(this, actualHeal, source);
+            return actualHeal;
         }
     }
 }

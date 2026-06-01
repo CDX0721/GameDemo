@@ -47,7 +47,8 @@ namespace GameDemo.Battle
 
         // ==================== 外部事件（UI / 输入系统订阅）====================
 
-        public event Action<BattleUnitInstance, float, BattleUnitInstance?>? OnUnitDamaged;
+        public event Action<BattleUnitInstance, float, BattleUnitInstance?, bool>? OnUnitDamaged;
+        public event Action<BattleUnitInstance, float, BattleUnitInstance?>? OnUnitHealed;
         public event Action<BattleUnitInstance>? OnUnitDied;
         public event Action<BattleUnitInstance, BattleEffectInstance>? OnEffectApplied;
         public event Action<BattleUnitInstance, BattleEffectInstance>? OnEffectExpired;
@@ -58,10 +59,6 @@ namespace GameDemo.Battle
         /// <summary>供表现层在协程中手动触发技能使用事件。</summary>
         public void RaiseSkillUsed(BattleUnitInstance caster, Skill skill, List<BattleUnitInstance> targets)
             => OnSkillUsed?.Invoke(caster, skill, targets);
-
-        /// <summary>供表现层在技能造成伤害后触发伤害事件。</summary>
-        public void RaiseUnitDamaged(BattleUnitInstance unit, float damage, BattleUnitInstance? source)
-            => OnUnitDamaged?.Invoke(unit, damage, source);
 
         // ==================== 外部查询 ====================
 
@@ -123,11 +120,15 @@ namespace GameDemo.Battle
             {
                 var captured = unit;
                 unit.OnEffectAdded += e => OnEffectApplied?.Invoke(captured, e);
+                unit.OnDamaged += (u, dmg, isTrue, src) => OnUnitDamaged?.Invoke(u, dmg, src, isTrue);
+                unit.OnHealed += (u, heal, src) => OnUnitHealed?.Invoke(u, heal, src);
             }
             foreach (BattleUnitInstance unit in EnemyFormation.Units)
             {
                 var captured = unit;
                 unit.OnEffectAdded += e => OnEffectApplied?.Invoke(captured, e);
+                unit.OnDamaged += (u, dmg, isTrue, src) => OnUnitDamaged?.Invoke(u, dmg, src, isTrue);
+                unit.OnHealed += (u, heal, src) => OnUnitHealed?.Invoke(u, heal, src);
             }
         }
 
@@ -150,16 +151,12 @@ namespace GameDemo.Battle
                 // Step 1: 刷新非持续伤害效果
                 RefreshPersistentEffects(SelectedUnit);
 
-                // Step 2: 单独应用持续伤害类效果
+                // Step 2: 单独应用持续伤害类效果（伤害事件由 TakeDamage 内部触发）
                 foreach (BattleEffectInstance effect in SelectedUnit.Effects)
                 {
                     if (!SelectedUnit.IsAlive) break;
                     if (effect.Template.StatusType != BattleEffectStatusType.Damage) continue;
-                    float hpBefore = SelectedUnit.CurrentHP;
                     effect.ApplyTo(SelectedUnit);
-                    float damage = hpBefore - SelectedUnit.CurrentHP;
-                    if (damage > 0f)
-                        OnUnitDamaged?.Invoke(SelectedUnit, damage, effect.Source);
                 }
 
                 // Step 3: 重算运行时属性，清理死亡单位

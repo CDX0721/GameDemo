@@ -1,31 +1,25 @@
 ﻿{
   "TestBattleFiled": {
-    "PlayerUnits": [
+    
+    "EnemyUnits": [
       {
-        "id": "Cirno",
-        "row": 1,
-        "col": 2,
-        "initialCost": 10000
-      },
-      {
-        "id": "OrangeDog",
+        "id": "Sans",
         "row": 2,
         "col": 1,
         "initialCost": 10000
       },
       {
-        "id": "Flandre",
-        "row": 2,
-        "col": 3,
-        "initialCost": 10000
-      }
-    ],
-    "EnemyUnits": [
-      {
         "id": "Sans",
         "row": 2,
         "col": 2,
-        "initialCost": 10000
+        "initialCost": 11000,
+        "attachSkills": ["LightningChain"]
+      },
+      {
+        "id": "Sans",
+        "row": 2,
+        "col": 3,
+        "initialCost": 12000
       }
     ],
     "BackGround": "gross_land",

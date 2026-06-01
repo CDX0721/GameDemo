@@ -31,8 +31,12 @@ MonoBehaviour:
     Path: Art/Sprites/Units/Sans_Idle
   - Key: Heal_Play
     Path: Art/Sprites/Skills/Heal_Play
+  - Key: LightningChain_Play
+    Path: Art/Sprites/Skills/LightningChain_Play
   - Key: NormalAttack_Play
     Path: Art/Sprites/Skills/NormalAttack_Play
+  - Key: PenetrateArrow_Play
+    Path: Art/Sprites/Skills/PenetrateArrow_Play
   - Key: Shield_Play
     Path: Art/Sprites/Skills/Shield_Play
   - Key: ThornsWrap_Play

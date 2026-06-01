@@ -87,6 +87,8 @@ namespace GameDemo.Battle
                                             (u, val) => u.DamageReduction -= val),
 
             "Thorns" => BuildThorns(v[0]),
+            "Poison" => BuildPoison(),
+            "Freeze" => BuildFreeze(),
             _ => throw new KeyNotFoundException($"未知效果 ID: {id}")
         };
 
@@ -94,7 +96,7 @@ namespace GameDemo.Battle
             int baseValue, Action<BattleUnitInstance, float> modifier)
         {
             var effect = new BattleEffect(id, displayName, effectType,
-                BattleEffectStatusType.StatChange, maxStackCount: 3)
+                BattleEffectStatusType.StatChange, maxStackCount: 1)
             {
                 Description = $"{displayName}{baseValue}%",
                 IsDispellable = effectType == BattleEffectType.Negative
@@ -119,9 +121,45 @@ namespace GameDemo.Battle
                 IsDispellable = true
             };
 
-            effect.ApplyActions.Add((_, unit, stackCount) =>
+            effect.ApplyActions.Add((source, unit, stackCount) =>
             {
-                unit.TakeDamage(damagePerStack * stackCount);
+                unit.TakeDamage(damagePerStack * stackCount, source);
+            });
+
+            return effect;
+        }
+
+        private static BattleEffect BuildFreeze()
+        {
+            var effect = new BattleEffect("Freeze", "冰冻",
+                BattleEffectType.Negative, BattleEffectStatusType.Control,
+                maxStackCount: 1)
+            {
+                Description = "无法行动",
+                IsDispellable = true
+            };
+
+            effect.ApplyActions.Add((_, unit, _) =>
+            {
+                unit.CanAct = false;
+            });
+
+            return effect;
+        }
+
+        private static BattleEffect BuildPoison()
+        {
+            var effect = new BattleEffect("Poison", "中毒",
+                BattleEffectType.Negative, BattleEffectStatusType.Damage,
+                maxStackCount: 5)
+            {
+                Description = "回合开始时，受到2.5%最大生命值×层数的真实伤害",
+                IsDispellable = true
+            };
+
+            effect.ApplyActions.Add((source, unit, stackCount) =>
+            {
+                unit.TakeTrueDamage(unit.MaxHP * 0.025f * stackCount, source);
             });
 
             return effect;
@@ -133,7 +171,7 @@ namespace GameDemo.Battle
             bool isMult = id.Contains("Mult");
 
             var effect = new BattleEffect(id, displayName, effectType,
-                BattleEffectStatusType.StatChange, maxStackCount: 3)
+                BattleEffectStatusType.StatChange, maxStackCount: 1)
             {
                 Description = MakeStatDescription(id, baseValue),
                 IsDispellable = effectType == BattleEffectType.Negative

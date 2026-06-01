@@ -16,6 +16,9 @@ public class BattleDriver : MonoBehaviour
 
     private bool _isAnimating;
 
+    /// <summary>设为 true 时所有单位自动战斗（包括 Player 单位）。</summary>
+    public bool ForceAutoAll { get; set; }
+
     // BGM
     private string _bgmClipPath = null!;
     private float _bgmLoopIn, _bgmLoopOut, _bgmVolumeDb;
@@ -40,8 +43,8 @@ public class BattleDriver : MonoBehaviour
     }
 
     /// <summary>带表现层的战斗初始化。仅创建实例+布阵，不绑定 UnitView。</summary>
-    public void Setup(BattleFieldDef fieldDef, Dictionary<string, BattleUnitDef> unitDefs,
-        BattleSceneBootstrapper bootstrapper)
+    public void Setup(BattleFieldDef fieldDef, List<UnitPlacementDef> playerUnits,
+        Dictionary<string, BattleUnitDef> unitDefs, BattleSceneBootstrapper bootstrapper)
     {
         _bootstrapper = bootstrapper;
 
@@ -51,12 +54,13 @@ public class BattleDriver : MonoBehaviour
         Manager.OnBattleEnded += OnBattleEnded;
         Manager.OnSkillUsed += OnSkillUsed;
         Manager.OnUnitDamaged += OnUnitDamaged;
+        Manager.OnUnitHealed += OnUnitHealed;
         Manager.OnUnitDied += OnUnitDied;
         Manager.OnEffectApplied += OnEffect;
         Manager.OnEffectExpired += OnEffect;
         Manager.StateMachine.OnStateChanged += OnBattleStateChanged;
 
-        foreach (var p in fieldDef.PlayerUnits)
+        foreach (var p in playerUnits)
             if (unitDefs.TryGetValue(p.id, out var def))
                 PlaceUnit(def, p, Manager.PlayerFormation);
         foreach (var p in fieldDef.EnemyUnits)
@@ -132,12 +136,6 @@ public class BattleDriver : MonoBehaviour
         action();
     }
 
-    private IEnumerator DelayedEffect(UnitView targetView, Sprite[] frames, float delaySec, Action onComplete)
-    {
-        yield return new WaitForSeconds(delaySec);
-        targetView.PlayEffect(frames, onComplete);
-    }
-
     // ==================== Acting 协程（动画编排） ====================
 
     private IEnumerator DoActingWithAnimations()
@@ -145,18 +143,10 @@ public class BattleDriver : MonoBehaviour
         _isAnimating = true;
 
         var pending = Manager.PendingActions;
-        if (pending == null || pending.Count == 0)
-        {
-            FinishActing();
-            yield break;
-        }
+        if (pending == null || pending.Count == 0) { FinishActing(); yield break; }
 
         var caster = Manager.SelectedUnit;
-        if (caster == null)
-        {
-            FinishActing();
-            yield break;
-        }
+        if (caster == null) { FinishActing(); yield break; }
 
         _bootstrapper.UnitViews.TryGetValue(caster, out var casterView);
 
@@ -166,37 +156,22 @@ public class BattleDriver : MonoBehaviour
             if (pickedTarget == null) continue;
             if (!skill.CanCast(caster, pickedTarget)) continue;
 
-            _bootstrapper.UnitViews.TryGetValue(pickedTarget, out var targetView);
-
-            // 1. 施法者播放攻击动画；目标延迟 3 帧后播放技能特效
-            bool casterDone = false;
-            bool effectDone = false;
+            int animRunning = 0;
             var effectFrames = GetSkillFxFrames(skill);
-            const float frameDuration = 0.2f;
 
+            // 1. 施法者播放攻击动画
             if (casterView != null)
-                casterView.PlayAttack(() => casterDone = true);
-            else
-                casterDone = true;
-
-            if (targetView != null)
-                StartCoroutine(DelayedEffect(targetView, effectFrames, frameDuration * 3f, () => effectDone = true));
-            else
-                effectDone = true;
-
-            // 2. 等待动画完成（兜底 1.5s）
-            float timer = 0f;
-            while ((!casterDone || !effectDone) && timer < 1.5f)
             {
-                timer += Time.deltaTime;
-                yield return null;
+                animRunning++;
+                casterView.PlayAttack(() => animRunning--);
             }
 
-            // 3. 执行技能效果（Apply 内部处理目标展开）
+            // 2. 攻击动画 0.6s 后执行技能效果
+            yield return new WaitForSeconds(0.6f);
+
+            BattleSkillContext.PendingSkillAnimations = null;
             Manager.SelectedSkill = skill;
             var allUnits = GetAllLivingUnits();
-            var hpBefore = new Dictionary<BattleUnitInstance, float>();
-            foreach (var u in allUnits) hpBefore[u] = u.CurrentHP;
 
             skill.Cast(caster);
             skill.Apply(caster, pickedTarget);
@@ -205,18 +180,47 @@ public class BattleDriver : MonoBehaviour
             Manager.RefreshAllUnits();
             Manager.CleanupDeadUnits();
 
-            // 逐单位触发伤害事件（驱动血条更新 + 伤害数字）
-            foreach (var u in allUnits)
+            // 3. 播放技能特效动画（按 ApplyActions 注册的目标和延迟）
+            var entries = BattleSkillContext.PendingSkillAnimations;
+            if (entries != null && entries.Count > 0)
             {
-                float damage = hpBefore.TryGetValue(u, out float before) ? before - u.CurrentHP : 0f;
-                if (damage > 0f)
-                    Manager.RaiseUnitDamaged(u, damage, caster);
-                if (_bootstrapper.UnitViews.TryGetValue(u, out var view))
+                entries.Sort((a, b) => a.Delay.CompareTo(b.Delay));
+                float elapsed = 0f;
+                foreach (var e in entries)
                 {
-                    if (damage > 0f || !u.IsAlive)
-                        view.PlayHitFlash();
+                    float stepDelay = e.Delay - elapsed;
+                    if (stepDelay > 0f) yield return new WaitForSeconds(stepDelay);
+                    elapsed = e.Delay;
+
+                    _bootstrapper.UnitViews.TryGetValue(e.Target, out var tv);
+                    if (tv != null && effectFrames.Length > 0)
+                    {
+                        animRunning++;
+                        tv.PlayEffect(effectFrames, () => animRunning--);
+                    }
                 }
             }
+            // 未注册动画目标时回退到 pickedTarget（单体技能兼容）
+            else if (pickedTarget.IsAlive)
+            {
+                _bootstrapper.UnitViews.TryGetValue(pickedTarget, out var tv);
+                if (tv != null && effectFrames.Length > 0)
+                {
+                    animRunning++;
+                    tv.PlayEffect(effectFrames, () => animRunning--);
+                }
+            }
+
+            // 4. 等待所有动画完成才能进入 PostAction（超时兜底 5s）
+            float waitTimeout = 5f;
+            while (animRunning > 0 && waitTimeout > 0f)
+            {
+                waitTimeout -= Time.deltaTime;
+                yield return null;
+            }
+            if (animRunning > 0)
+                Debug.LogWarning($"[BattleDriver] 动画等待超时 ({skill.DisplayName})，强制进入 PostAction");
+
             yield return new WaitForSeconds(0.3f);
 
             // 5. 死亡单位隐藏
@@ -246,7 +250,11 @@ public class BattleDriver : MonoBehaviour
     // ==================== 事件响应 ====================
 
     private void OnBattleEnded(bool playerWin)
-        => Debug.Log($"战斗结束，玩家{(playerWin ? "胜利" : "败北")}");
+    {
+        Debug.Log($"战斗结束，玩家{(playerWin ? "胜利" : "败北")}");
+        if (playerWin && AudioManager.Instance != null)
+            AudioManager.Instance.StopBGM();
+    }
 
     private void OnSkillUsed(BattleUnitInstance caster, Skill skill,
         List<BattleUnitInstance> targets)
@@ -258,20 +266,61 @@ public class BattleDriver : MonoBehaviour
             view.SyncEffectLayers(id => _bootstrapper.GetEffectFrames(id));
     }
 
-    private void OnUnitDamaged(BattleUnitInstance unit, float damage, BattleUnitInstance? source)
+    private void OnUnitDamaged(BattleUnitInstance unit, float damage, BattleUnitInstance? source, bool isTrueDamage)
     {
         Debug.Log($"{unit.DisplayName} 受到 {damage:F0} 伤害，HP: {unit.CurrentHP:F0}/{unit.MaxHP:F0}");
 
-        // 刷新血条
+        // 刷新血条（立即）
         if (_bootstrapper.HPBars.TryGetValue(unit, out var hpBar))
             hpBar.SetHP(unit.CurrentHP, unit.MaxHP);
 
-        // 弹出伤害数字（不阻塞，独立协程）
-        if (_bootstrapper.UnitViews.TryGetValue(unit, out var view) && _bootstrapper.DamageSpawner != null)
+        // 受击闪烁 + 伤害数字延迟 0.9s
+        _bootstrapper.UnitViews.TryGetValue(unit, out var view);
+        StartCoroutine(DelayedDamageVisual(0.9f, () =>
         {
-            Vector3 pos = view.transform.position + Vector3.up * 0.5f;
-            _bootstrapper.DamageSpawner.SpawnDamage(pos, Mathf.RoundToInt(damage));
-        }
+            if (view != null) view.PlayHitFlash();
+            if (_bootstrapper.DamageSpawner != null && view != null)
+            {
+                Vector3 pos = view.transform.position + Vector3.up * 0.5f;
+                int dmg = Mathf.RoundToInt(damage);
+                if (isTrueDamage)
+                    _bootstrapper.DamageSpawner.SpawnTrueDamage(pos, dmg);
+                else
+                    _bootstrapper.DamageSpawner.SpawnDamage(pos, dmg);
+            }
+        }));
+    }
+
+    private void OnUnitHealed(BattleUnitInstance unit, float amount, BattleUnitInstance? source)
+    {
+        Debug.Log($"{unit.DisplayName} 回复 {amount:F0} HP，HP: {unit.CurrentHP:F0}/{unit.MaxHP:F0}");
+
+        // 刷新血条（立即）
+        if (_bootstrapper.HPBars.TryGetValue(unit, out var hpBar))
+            hpBar.SetHP(unit.CurrentHP, unit.MaxHP);
+
+        // 治疗数字延迟 0.9s
+        _bootstrapper.UnitViews.TryGetValue(unit, out var view);
+        StartCoroutine(DelayedHealVisual(0.9f, () =>
+        {
+            if (_bootstrapper.DamageSpawner != null && view != null)
+            {
+                Vector3 pos = view.transform.position + Vector3.up * 0.5f;
+                _bootstrapper.DamageSpawner.SpawnHeal(pos, Mathf.RoundToInt(amount));
+            }
+        }));
+    }
+
+    private IEnumerator DelayedDamageVisual(float delay, Action action)
+    {
+        yield return new WaitForSeconds(delay);
+        action();
+    }
+
+    private IEnumerator DelayedHealVisual(float delay, Action action)
+    {
+        yield return new WaitForSeconds(delay);
+        action();
     }
 
     private void OnUnitDied(BattleUnitInstance unit)
@@ -290,6 +339,7 @@ public class BattleDriver : MonoBehaviour
         Manager.OnBattleEnded -= OnBattleEnded;
         Manager.OnSkillUsed -= OnSkillUsed;
         Manager.OnUnitDamaged -= OnUnitDamaged;
+        Manager.OnUnitHealed -= OnUnitHealed;
         Manager.OnUnitDied -= OnUnitDied;
         Manager.OnEffectApplied -= OnEffect;
         Manager.OnEffectExpired -= OnEffect;
@@ -314,6 +364,14 @@ public class BattleDriver : MonoBehaviour
             def.Attack, def.Defense, def.HP, def.Speed, def.Mana);
         foreach (var skillId in def.InnateSills)
             template.InnateSkills.Add(SkillCatalog.Get(skillId));
+        if (placement.attachSkills != null)
+        {
+            foreach (var skillId in placement.attachSkills)
+            {
+                if (!string.IsNullOrEmpty(skillId))
+                    template.InnateSkills.Add(SkillCatalog.Get(skillId));
+            }
+        }
 
         BattleUnitInstance unit = def.ControlType == "Player"
             ? new PlayableUnitInstance(template, placement.initialCost)

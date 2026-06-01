@@ -1,0 +1,413 @@
+fileFormatVersion: 2
+guid: 25e034fb9d16ccb4a873d09b672661db
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 3912258465286055096
+    second: ManaDrain_Play_0
+  - first:
+      213: -5736908469593423930
+    second: ManaDrain_Play_1
+  - first:
+      213: 8411159472079394426
+    second: ManaDrain_Play_2
+  - first:
+      213: -1316533917291056010
+    second: ManaDrain_Play_3
+  - first:
+      213: 7844695163442513038
+    second: ManaDrain_Play_4
+  - first:
+      213: -3095724363396470949
+    second: ManaDrain_Play_5
+  - first:
+      213: -3256141503743615088
+    second: ManaDrain_Play_6
+  - first:
+      213: -4711988176130870442
+    second: ManaDrain_Play_7
+  - first:
+      213: 9145364299673075196
+    second: ManaDrain_Play_8
+  - first:
+      213: 2115671223307030753
+    second: ManaDrain_Play_9
+  - first:
+      213: 8732484271804144815
+    second: ManaDrain_Play_10
+  - first:
+      213: 8470250783162381649
+    second: ManaDrain_Play_11
+  - first:
+      213: -7520990336743077473
+    second: ManaDrain_Play_12
+  - first:
+      213: 1183771748888814137
+    second: ManaDrain_Play_13
+  - first:
+      213: -7732698026918726648
+    second: ManaDrain_Play_14
+  - first:
+      213: 2733972636308209665
+    second: ManaDrain_Play_15
+  - first:
+      213: -3663249478249083309
+    second: ManaDrain_Play_16
+  - first:
+      213: -1924360494681651029
+    second: ManaDrain_Play_17
+  - first:
+      213: 5184691467272464226
+    second: ManaDrain_Play_18
+  - first:
+      213: -7119613030689269552
+    second: ManaDrain_Play_19
+  - first:
+      213: 3201089364030138174
+    second: ManaDrain_Play_20
+  - first:
+      213: -844226951106525960
+    second: ManaDrain_Play_21
+  - first:
+      213: -2223413757259174814
+    second: ManaDrain_Play_22
+  - first:
+      213: -1368287459167109699
+    second: ManaDrain_Play_23
+  - first:
+      213: -8143003975451159081
+    second: ManaDrain_Play_24
+  - first:
+      213: -9200263454539113276
+    second: ManaDrain_Play_25
+  - first:
+      213: 8091729788722773773
+    second: ManaDrain_Play_26
+  - first:
+      213: 1031121264539232019
+    second: ManaDrain_Play_27
+  - first:
+      213: 1962525677692234618
+    second: ManaDrain_Play_28
+  - first:
+      213: -3043552379577753332
+    second: ManaDrain_Play_29
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: ManaDrain_Play_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 128
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8b4e3ec98522b4630800000000000000
+      internalID: 3912258465286055096
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManaDrain_Play_1
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 128
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6cf34f074286260b0800000000000000
+      internalID: -5736908469593423930
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManaDrain_Play_2
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 128
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a765472c9f07ab470800000000000000
+      internalID: 8411159472079394426
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManaDrain_Play_3
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 128
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 674fc15a06bbabde0800000000000000
+      internalID: -1316533917291056010
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManaDrain_Play_4
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e84473c20b4fddc60800000000000000
+      internalID: 7844695163442513038
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManaDrain_Play_5
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b572b35e717c905d0800000000000000
+      internalID: -3095724363396470949
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManaDrain_Play_6
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 09f94fadd8cdfc2d0800000000000000
+      internalID: -3256141503743615088
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManaDrain_Play_7
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 0
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 653f0ef08b7ab9eb0800000000000000
+      internalID: -4711988176130870442
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      ManaDrain_Play_0: 3912258465286055096
+      ManaDrain_Play_1: -5736908469593423930
+      ManaDrain_Play_10: 8732484271804144815
+      ManaDrain_Play_11: 8470250783162381649
+      ManaDrain_Play_12: -7520990336743077473
+      ManaDrain_Play_13: 1183771748888814137
+      ManaDrain_Play_14: -7732698026918726648
+      ManaDrain_Play_15: 2733972636308209665
+      ManaDrain_Play_16: -3663249478249083309
+      ManaDrain_Play_17: -1924360494681651029
+      ManaDrain_Play_18: 5184691467272464226
+      ManaDrain_Play_19: -7119613030689269552
+      ManaDrain_Play_2: 8411159472079394426
+      ManaDrain_Play_20: 3201089364030138174
+      ManaDrain_Play_21: -844226951106525960
+      ManaDrain_Play_22: -2223413757259174814
+      ManaDrain_Play_23: -1368287459167109699
+      ManaDrain_Play_24: -8143003975451159081
+      ManaDrain_Play_25: -9200263454539113276
+      ManaDrain_Play_26: 8091729788722773773
+      ManaDrain_Play_27: 1031121264539232019
+      ManaDrain_Play_28: 1962525677692234618
+      ManaDrain_Play_29: -3043552379577753332
+      ManaDrain_Play_3: -1316533917291056010
+      ManaDrain_Play_4: 7844695163442513038
+      ManaDrain_Play_5: -3095724363396470949
+      ManaDrain_Play_6: -3256141503743615088
+      ManaDrain_Play_7: -4711988176130870442
+      ManaDrain_Play_8: 9145364299673075196
+      ManaDrain_Play_9: 2115671223307030753
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

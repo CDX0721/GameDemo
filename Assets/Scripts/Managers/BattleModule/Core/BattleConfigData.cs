@@ -35,8 +35,13 @@ namespace GameDemo.Battle
     {
         public string BackGround;
         public string BGM;
-        public List<UnitPlacementDef> PlayerUnits;
         public List<UnitPlacementDef> EnemyUnits;
+    }
+
+    [Serializable]
+    public class PlayerFormationRoot
+    {
+        public List<UnitPlacementDef> PlayerUnits;
     }
 
     // ==================== BGM 设置 ====================
@@ -58,6 +63,7 @@ namespace GameDemo.Battle
         public int row;
         public int col;
         public float initialCost;
+        public List<string> attachSkills;
     }
 
     [Serializable]

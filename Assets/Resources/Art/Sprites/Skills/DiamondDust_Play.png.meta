@@ -1,0 +1,589 @@
+fileFormatVersion: 2
+guid: 1266b6e98a9e58b4b832a29ac484c151
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 574244533002018972
+    second: DiamondDust_Play_0
+  - first:
+      213: 2360135911037324269
+    second: DiamondDust_Play_1
+  - first:
+      213: 2153876563339319155
+    second: DiamondDust_Play_2
+  - first:
+      213: 2067271879463424468
+    second: DiamondDust_Play_3
+  - first:
+      213: -1828817929785378730
+    second: DiamondDust_Play_4
+  - first:
+      213: 8271050532164395295
+    second: DiamondDust_Play_5
+  - first:
+      213: -3194069094691499473
+    second: DiamondDust_Play_6
+  - first:
+      213: -6475969292103445648
+    second: DiamondDust_Play_7
+  - first:
+      213: 7019836499467582338
+    second: DiamondDust_Play_8
+  - first:
+      213: 6101507021940461885
+    second: DiamondDust_Play_9
+  - first:
+      213: -6823834566598074571
+    second: DiamondDust_Play_10
+  - first:
+      213: 2000927269072963186
+    second: DiamondDust_Play_11
+  - first:
+      213: 3812869352465683193
+    second: DiamondDust_Play_12
+  - first:
+      213: -5035024168667041835
+    second: DiamondDust_Play_13
+  - first:
+      213: 3221974834506533746
+    second: DiamondDust_Play_14
+  - first:
+      213: 7041720298689031490
+    second: DiamondDust_Play_15
+  - first:
+      213: -6269592016090887568
+    second: DiamondDust_Play_16
+  - first:
+      213: 8673000187724145500
+    second: DiamondDust_Play_17
+  - first:
+      213: -5230975794592029313
+    second: DiamondDust_Play_18
+  - first:
+      213: -4596147647773838828
+    second: DiamondDust_Play_19
+  - first:
+      213: -8543470674805426659
+    second: DiamondDust_Play_20
+  - first:
+      213: 4696816257940112711
+    second: DiamondDust_Play_21
+  - first:
+      213: -2692476191968896162
+    second: DiamondDust_Play_22
+  - first:
+      213: 6495029029242983876
+    second: DiamondDust_Play_23
+  - first:
+      213: -2578534923932415797
+    second: DiamondDust_Play_24
+  - first:
+      213: -2288145486061923144
+    second: DiamondDust_Play_25
+  - first:
+      213: -6258538252328180996
+    second: DiamondDust_Play_26
+  - first:
+      213: 3617933132741245229
+    second: DiamondDust_Play_27
+  - first:
+      213: 2052150355148670728
+    second: DiamondDust_Play_28
+  - first:
+      213: -1456006748208732811
+    second: DiamondDust_Play_29
+  - first:
+      213: 8603265383284814763
+    second: DiamondDust_Play_30
+  - first:
+      213: -3739720812757475826
+    second: DiamondDust_Play_31
+  - first:
+      213: -8420094759882726451
+    second: DiamondDust_Play_32
+  - first:
+      213: -9007131790168377739
+    second: DiamondDust_Play_33
+  - first:
+      213: 9043662938298497604
+    second: DiamondDust_Play_34
+  - first:
+      213: -3671777085787693365
+    second: DiamondDust_Play_35
+  - first:
+      213: 4891255288637743391
+    second: DiamondDust_Play_36
+  - first:
+      213: 8984494187734418217
+    second: DiamondDust_Play_37
+  - first:
+      213: 7690078273709937698
+    second: DiamondDust_Play_38
+  - first:
+      213: -8512750683368333978
+    second: DiamondDust_Play_39
+  - first:
+      213: 8979813141792240179
+    second: DiamondDust_Play_40
+  - first:
+      213: -6461523084854281417
+    second: DiamondDust_Play_41
+  - first:
+      213: 5810579074549928888
+    second: DiamondDust_Play_42
+  - first:
+      213: 7440925601132454933
+    second: DiamondDust_Play_43
+  - first:
+      213: 6090992255472909031
+    second: DiamondDust_Play_44
+  - first:
+      213: 2928719494522910223
+    second: DiamondDust_Play_45
+  - first:
+      213: -3912020364431522595
+    second: DiamondDust_Play_46
+  - first:
+      213: 3365119072676297471
+    second: DiamondDust_Play_47
+  - first:
+      213: 2908364222317879534
+    second: DiamondDust_Play_48
+  - first:
+      213: -7234265870039028921
+    second: DiamondDust_Play_49
+  - first:
+      213: 5229625419711922845
+    second: DiamondDust_Play_50
+  - first:
+      213: 3826603044143987732
+    second: DiamondDust_Play_51
+  - first:
+      213: -4828355414301659584
+    second: DiamondDust_Play_52
+  - first:
+      213: -8460123722952595538
+    second: DiamondDust_Play_53
+  - first:
+      213: 4663236730166724215
+    second: DiamondDust_Play_54
+  - first:
+      213: -8313999284887906750
+    second: DiamondDust_Play_55
+  - first:
+      213: 3401987042612682377
+    second: DiamondDust_Play_56
+  - first:
+      213: -5851647809026739670
+    second: DiamondDust_Play_57
+  - first:
+      213: 4193574828031557763
+    second: DiamondDust_Play_58
+  - first:
+      213: -3873316323176513335
+    second: DiamondDust_Play_59
+  - first:
+      213: 6165154261872204676
+    second: DiamondDust_Play_60
+  - first:
+      213: -2269404345890997730
+    second: DiamondDust_Play_61
+  - first:
+      213: 3955880604565914646
+    second: DiamondDust_Play_62
+  - first:
+      213: 5535698737888812814
+    second: DiamondDust_Play_63
+  - first:
+      213: -5421784818900500083
+    second: DiamondDust_Play_64
+  - first:
+      213: -4814927853822677257
+    second: DiamondDust_Play_65
+  - first:
+      213: 6430329893201206694
+    second: DiamondDust_Play_66
+  - first:
+      213: 6852645331645101281
+    second: DiamondDust_Play_67
+  - first:
+      213: -6440585619491984244
+    second: DiamondDust_Play_68
+  - first:
+      213: 7378710929849914287
+    second: DiamondDust_Play_69
+  - first:
+      213: 1208049836613676583
+    second: DiamondDust_Play_70
+  - first:
+      213: 1091033178172926250
+    second: DiamondDust_Play_71
+  - first:
+      213: -9037179301238893869
+    second: DiamondDust_Play_72
+  - first:
+      213: -3733449290198575223
+    second: DiamondDust_Play_73
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: DiamondDust_Play_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 128
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c90abcb3c5028f700800000000000000
+      internalID: 574244533002018972
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DiamondDust_Play_1
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 128
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: debc5074b13e0c020800000000000000
+      internalID: 2360135911037324269
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DiamondDust_Play_2
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 128
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 37711e7925b14ed10800000000000000
+      internalID: 2153876563339319155
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DiamondDust_Play_3
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 128
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4d1529d42dc60bc10800000000000000
+      internalID: 2067271879463424468
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DiamondDust_Play_4
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 658f64848cbbe96e0800000000000000
+      internalID: -1828817929785378730
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DiamondDust_Play_5
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f11e6f813aca8c270800000000000000
+      internalID: 8271050532164395295
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DiamondDust_Play_6
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f221cdec4136ca3d0800000000000000
+      internalID: -3194069094691499473
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DiamondDust_Play_7
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 0
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 07316df6d3cb026a0800000000000000
+      internalID: -6475969292103445648
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      DiamondDust_Play_0: 574244533002018972
+      DiamondDust_Play_1: 2360135911037324269
+      DiamondDust_Play_10: -6823834566598074571
+      DiamondDust_Play_11: 2000927269072963186
+      DiamondDust_Play_12: 3812869352465683193
+      DiamondDust_Play_13: -5035024168667041835
+      DiamondDust_Play_14: 3221974834506533746
+      DiamondDust_Play_15: 7041720298689031490
+      DiamondDust_Play_16: -6269592016090887568
+      DiamondDust_Play_17: 8673000187724145500
+      DiamondDust_Play_18: -5230975794592029313
+      DiamondDust_Play_19: -4596147647773838828
+      DiamondDust_Play_2: 2153876563339319155
+      DiamondDust_Play_20: -8543470674805426659
+      DiamondDust_Play_21: 4696816257940112711
+      DiamondDust_Play_22: -2692476191968896162
+      DiamondDust_Play_23: 6495029029242983876
+      DiamondDust_Play_24: -2578534923932415797
+      DiamondDust_Play_25: -2288145486061923144
+      DiamondDust_Play_26: -6258538252328180996
+      DiamondDust_Play_27: 3617933132741245229
+      DiamondDust_Play_28: 2052150355148670728
+      DiamondDust_Play_29: -1456006748208732811
+      DiamondDust_Play_3: 2067271879463424468
+      DiamondDust_Play_30: 8603265383284814763
+      DiamondDust_Play_31: -3739720812757475826
+      DiamondDust_Play_32: -8420094759882726451
+      DiamondDust_Play_33: -9007131790168377739
+      DiamondDust_Play_34: 9043662938298497604
+      DiamondDust_Play_35: -3671777085787693365
+      DiamondDust_Play_36: 4891255288637743391
+      DiamondDust_Play_37: 8984494187734418217
+      DiamondDust_Play_38: 7690078273709937698
+      DiamondDust_Play_39: -8512750683368333978
+      DiamondDust_Play_4: -1828817929785378730
+      DiamondDust_Play_40: 8979813141792240179
+      DiamondDust_Play_41: -6461523084854281417
+      DiamondDust_Play_42: 5810579074549928888
+      DiamondDust_Play_43: 7440925601132454933
+      DiamondDust_Play_44: 6090992255472909031
+      DiamondDust_Play_45: 2928719494522910223
+      DiamondDust_Play_46: -3912020364431522595
+      DiamondDust_Play_47: 3365119072676297471
+      DiamondDust_Play_48: 2908364222317879534
+      DiamondDust_Play_49: -7234265870039028921
+      DiamondDust_Play_5: 8271050532164395295
+      DiamondDust_Play_50: 5229625419711922845
+      DiamondDust_Play_51: 3826603044143987732
+      DiamondDust_Play_52: -4828355414301659584
+      DiamondDust_Play_53: -8460123722952595538
+      DiamondDust_Play_54: 4663236730166724215
+      DiamondDust_Play_55: -8313999284887906750
+      DiamondDust_Play_56: 3401987042612682377
+      DiamondDust_Play_57: -5851647809026739670
+      DiamondDust_Play_58: 4193574828031557763
+      DiamondDust_Play_59: -3873316323176513335
+      DiamondDust_Play_6: -3194069094691499473
+      DiamondDust_Play_60: 6165154261872204676
+      DiamondDust_Play_61: -2269404345890997730
+      DiamondDust_Play_62: 3955880604565914646
+      DiamondDust_Play_63: 5535698737888812814
+      DiamondDust_Play_64: -5421784818900500083
+      DiamondDust_Play_65: -4814927853822677257
+      DiamondDust_Play_66: 6430329893201206694
+      DiamondDust_Play_67: 6852645331645101281
+      DiamondDust_Play_68: -6440585619491984244
+      DiamondDust_Play_69: 7378710929849914287
+      DiamondDust_Play_7: -6475969292103445648
+      DiamondDust_Play_70: 1208049836613676583
+      DiamondDust_Play_71: 1091033178172926250
+      DiamondDust_Play_72: -9037179301238893869
+      DiamondDust_Play_73: -3733449290198575223
+      DiamondDust_Play_8: 7019836499467582338
+      DiamondDust_Play_9: 6101507021940461885
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

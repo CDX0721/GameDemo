@@ -47,6 +47,24 @@ namespace GameDemo.Battle
             Get("ThornsWrap", 1);
             Get("ThornsWrap", 2);
             Get("ThornsWrap", 3);
+            Get("DefenseBreak", 1);
+            Get("DefenseBreak", 2);
+            Get("DefenseBreak", 3);
+            Get("Terminate", 1);
+            Get("Terminate", 2);
+            Get("Terminate", 3);
+            Get("DarkCurse", 1);
+            Get("DarkCurse", 2);
+            Get("DarkCurse", 3);
+            Get("Swamp", 1);
+            Get("Swamp", 2);
+            Get("Swamp", 3);
+            Get("LightningChain", 1);
+            Get("LightningChain", 2);
+            Get("LightningChain", 3);
+            Get("LightningChain", 4);
+            Get("DiamondDust", 1);
+            Get("Melt", 1);
             Get("TheLastStand", 1);
             Get("Armageddon", 1);
         }
@@ -63,6 +81,13 @@ namespace GameDemo.Battle
             "ManaDrain"          => BuildManaDrain(level),
             "AtkStrongUp"        => BuildAtkStrongUp(),
             "ThornsWrap"         => BuildThornsWrap(level),
+            "DefenseBreak"       => BuildDefenseBreak(level),
+            "Terminate"          => BuildTerminate(level),
+            "DarkCurse"          => BuildDarkCurse(level),
+            "Swamp"              => BuildSwamp(level),
+            "LightningChain"     => BuildLightningChain(level),
+            "DiamondDust"        => BuildDiamondDust(level),
+            "Melt"               => BuildMelt(level),
             "TheLastStand"       => BuildTheLastStand(),
             "Armageddon"         => BuildArmageddon(),
             _ => throw new KeyNotFoundException($"未知技能 ID: {id}")
@@ -202,9 +227,19 @@ namespace GameDemo.Battle
                 var bm = BattleManager.Instance;
                 if (bm == null) return;
                 var enemies = bm.IsPlayerUnit(caster) ? bm.EnemyFormation : bm.PlayerFormation;
+                var columnTargets = new List<BattleUnitInstance>();
                 foreach (var u in enemies.Units)
                     if (u.IsAlive && u.Col == pickedTarget.Col)
-                        u.TakeDamage(caster.CurrentAttack * 2.5f + u.MaxHP * 0.10f);
+                        columnTargets.Add(u);
+                columnTargets.Sort((a, b) => a.Row.CompareTo(b.Row));
+
+                float delay = 0f;
+                foreach (var u in columnTargets)
+                {
+                    u.TakeDamage(caster.CurrentAttack * 2.5f + u.MaxHP * 0.10f);
+                    BattleSkillContext.RegisterAnimTarget(u, delay);
+                    delay += 0.2f;
+                }
             });
 
             skill.Priority = target =>
@@ -251,7 +286,7 @@ namespace GameDemo.Battle
                 if (target.IsAlive)
                 {
                     float amount = target.MaxHP * healRatio;
-                    target.CurrentHP = System.MathF.Min(target.CurrentHP + amount, target.MaxHP);
+                    target.TakeHeal(amount, caster);
                 }
             });
 
@@ -290,7 +325,10 @@ namespace GameDemo.Battle
                 var enemies = bm.IsPlayerUnit(caster) ? bm.EnemyFormation : bm.PlayerFormation;
                 foreach (var u in enemies.Units)
                     if (u.IsAlive)
+                    {
                         u.TakeDamage(caster.CurrentAttack * 2.0f);
+                        BattleSkillContext.RegisterAnimTarget(u);
+                    }
             });
 
             skill.Priority = _ =>
@@ -397,6 +435,223 @@ namespace GameDemo.Battle
             return skill;
         }
 
+        private static Skill BuildDefenseBreak(int level)
+        {
+            int manaCost = level switch { 1 => 12, 2 => 16, 3 => 20, _ => 12 };
+            int defReduce = level switch { 1 => 400, 2 => 600, 3 => 800, _ => 400 };
+
+            var skill = new Skill("DefenseBreak", "这就破防了？",
+                SkillType.Support, TargetType.SingleEnemy, level);
+            skill.Description = $"消耗{manaCost}点法力，使敌方单体防御力降低{defReduce}点，持续2回合";
+
+            skill.CanCastConditions.Add((caster, target) =>
+                target.IsAlive && caster.CurrentMana >= manaCost);
+
+            skill.ApplyActions.Add((caster, target) =>
+            {
+                caster.CurrentMana -= manaCost;
+                if (target.IsAlive)
+                    target.AddEffect(BattleEffectCatalog.Create("DefBonusDown", caster,
+                        stackCount: 1, turns: 2, defReduce));
+            });
+
+            skill.Priority = target =>
+            {
+                if (!target.IsAlive) return 0f;
+                float defNorm = target.CurrentDefense / System.MathF.Max(target.CurrentDefense, 200f);
+                return 20f + defNorm * 50f;
+            };
+
+            return skill;
+        }
+
+        private static Skill BuildTerminate(int level)
+        {
+            float hpThreshold = level switch { 1 => 0.10f, 2 => 0.13f, 3 => 0.16f, _ => 0.10f };
+
+            var skill = new Skill("Terminate", "终结",
+                SkillType.SingleAttack, TargetType.SingleEnemy, level);
+            skill.Description = $"对敌方单体造成目标100%最大生命值的真实伤害。仅当目标生命值低于{hpThreshold * 100:F0}%时可释放。";
+
+            skill.CanCastConditions.Add((caster, target) =>
+                target.IsAlive && target.CurrentHP / target.MaxHP < hpThreshold);
+
+            skill.ApplyActions.Add((caster, target) =>
+            {
+                if (target.IsAlive)
+                    target.TakeTrueDamage(target.MaxHP, caster);
+            });
+
+            skill.Priority = target =>
+            {
+                if (!target.IsAlive || target.MaxHP <= 0f) return 0f;
+                float ratio = target.CurrentHP / target.MaxHP;
+                if (ratio >= hpThreshold) return 0f;
+                return 60f + target.MaxHP / 1000f * 20f;
+            };
+
+            return skill;
+        }
+
+        private static Skill BuildDarkCurse(int level)
+        {
+            int manaCost = level switch { 1 => 7, 2 => 9, 3 => 11, _ => 7 };
+
+            var skill = new Skill("DarkCurse", "黑暗诅咒",
+                SkillType.SingleAttack, TargetType.SingleEnemy, level);
+            skill.Description = $"消耗{manaCost}点法力，为目标施加2层中毒效果（每回合受到2.5%最大生命值的真实伤害），持续2回合";
+
+            skill.CanCastConditions.Add((caster, target) =>
+                target.IsAlive && caster.CurrentMana >= manaCost);
+
+            skill.ApplyActions.Add((caster, target) =>
+            {
+                caster.CurrentMana -= manaCost;
+                if (!target.IsAlive) return;
+                target.AddEffect(BattleEffectCatalog.Create("Poison", caster,
+                    stackCount: 2, turns: 2));
+            });
+
+            skill.Priority = target =>
+            {
+                if (!target.IsAlive || target.MaxHP <= 0f) return 0f;
+                float ratio = target.CurrentHP / target.MaxHP;
+                if (ratio < 0.3f) return 10f;
+                return 20f + ratio * 50f + target.MaxHP / 1000f * 10f;
+            };
+
+            return skill;
+        }
+
+        private static Skill BuildSwamp(int level)
+        {
+            int manaCost = level switch { 1 => 15, 2 => 20, 3 => 25, _ => 15 };
+            int speedReduce = level switch { 1 => 15, 2 => 20, 3 => 25, _ => 15 };
+            float delayRatio = level switch { 1 => 0.50f, 2 => 0.75f, 3 => 1.00f, _ => 0.50f };
+
+            var skill = new Skill("Swamp", "沼泽",
+                SkillType.Support, TargetType.AllEnemies, level);
+            skill.Description = $"消耗{manaCost}点法力，使敌方全体速度降低{speedReduce}%持续2回合，行动延后{delayRatio * 100:F0}%";
+
+            skill.CanCastConditions.Add((caster, target) =>
+                caster.CurrentMana >= manaCost);
+
+            skill.CastActions.Add(caster =>
+            {
+                caster.CurrentMana -= manaCost;
+            });
+
+            skill.ApplyActions.Add((caster, _) =>
+            {
+                var bm = BattleManager.Instance;
+                if (bm == null) return;
+                var enemies = bm.IsPlayerUnit(caster) ? bm.EnemyFormation : bm.PlayerFormation;
+                foreach (var u in enemies.Units)
+                {
+                    if (!u.IsAlive) continue;
+                    u.AddEffect(BattleEffectCatalog.Create("SpdMultDown", caster,
+                        stackCount: 1, turns: 2, speedReduce));
+                    u.RemainingCost += u.InitialCost * delayRatio;
+                    BattleSkillContext.RegisterAnimTarget(u);
+                }
+            });
+
+            skill.Priority = _ =>
+            {
+                int alive = CountAliveEnemies();
+                if (alive <= 1) return 25f;
+                return System.MathF.Min(alive * 25f, 80f);
+            };
+
+            return skill;
+        }
+
+        private static Skill BuildLightningChain(int level)
+        {
+            int manaCost = level switch { 1 => 5, 2 => 6, 3 => 7, 4 => 8, _ => 5 };
+            int bounceCount = level switch { 1 => 3, 2 => 4, 3 => 5, 4 => 6, _ => 3 };
+            const float damageRatio = 1.50f;
+
+            var skill = new Skill("LightningChain", "闪电链",
+                SkillType.Spread, TargetType.SingleEnemy, level);
+            skill.Description = $"消耗{manaCost}点法力，对目标造成{damageRatio * 100:F0}%攻击力伤害，并在周围3×3范围内的敌方间弹射{bounceCount}次";
+
+            skill.CanCastConditions.Add((caster, target) =>
+                target.IsAlive && caster.CurrentMana >= manaCost);
+
+            skill.CastActions.Add(caster =>
+            {
+                caster.CurrentMana -= manaCost;
+            });
+
+            skill.ApplyActions.Add((caster, pickedTarget) =>
+            {
+                var bm = BattleManager.Instance;
+                if (bm == null) return;
+                var enemies = bm.IsPlayerUnit(caster) ? bm.EnemyFormation : bm.PlayerFormation;
+
+                var current = pickedTarget;
+                if (!current.IsAlive) return;
+
+                float delay = 0f;
+                const float bounceInterval = 0.2f;
+
+                current.TakeDamage(caster.CurrentAttack * damageRatio, caster);
+                BattleSkillContext.RegisterAnimTarget(current, delay);
+
+                for (int i = 0; i < bounceCount; i++)
+                {
+                    var next = PickAdjacentEnemy(current, enemies);
+                    if (next == null) break;
+                    current = next;
+                    delay += bounceInterval;
+                    current.TakeDamage(caster.CurrentAttack * damageRatio, caster);
+                    BattleSkillContext.RegisterAnimTarget(current, delay);
+                }
+            });
+
+            skill.Priority = target =>
+            {
+                if (!target.IsAlive) return 0f;
+                int nearby = CountAdjacentEnemies(target);
+                float nearbyBonus = System.MathF.Min(nearby * 15f, 45f);
+                return 30f + nearbyBonus + bounceCount * 3f;
+            };
+
+            return skill;
+        }
+
+        /// <summary>在3×3范围内随机选择一个存活的敌方（排除自身）。</summary>
+        private static BattleUnitInstance? PickAdjacentEnemy(BattleUnitInstance current, Formation enemies)
+        {
+            var candidates = new List<BattleUnitInstance>();
+            foreach (var u in enemies.Units)
+            {
+                if (!u.IsAlive || u == current) continue;
+                if (System.MathF.Abs(u.Row - current.Row) <= 1
+                    && System.MathF.Abs(u.Col - current.Col) <= 1)
+                    candidates.Add(u);
+            }
+            return candidates.Count > 0 ? candidates[UnityEngine.Random.Range(0, candidates.Count)] : null;
+        }
+
+        /// <summary>统计当前目标3×3范围内存活的敌方数量（排除自身）。</summary>
+        private static int CountAdjacentEnemies(BattleUnitInstance current)
+        {
+            var bm = BattleManager.Instance;
+            if (bm == null) return 0;
+            var enemies = bm.IsPlayerUnit(current) ? bm.EnemyFormation : bm.PlayerFormation;
+            int count = 0;
+            foreach (var u in enemies.Units)
+            {
+                if (!u.IsAlive || u == current) continue;
+                if (System.MathF.Abs(u.Row - current.Row) <= 1
+                    && System.MathF.Abs(u.Col - current.Col) <= 1)
+                    count++;
+            }
+            return count;
+        }
+
         private static Skill BuildThornsWrap(int level)
         {
             int manaCost = level switch
@@ -442,6 +697,107 @@ namespace GameDemo.Battle
             return skill;
         }
 
+        private static Skill BuildDiamondDust(int level)
+        {
+            const int manaCost = 15;
+
+            var skill = new Skill("DiamondDust", "钻石星辰",
+                SkillType.Spread, TargetType.SingleEnemy, level);
+            skill.Description = $"消耗{manaCost}点法力，使目标所在排的所有敌方单位陷入冰冻状态2回合";
+
+            skill.CanCastConditions.Add((caster, target) =>
+                target.IsAlive && caster.CurrentMana >= manaCost);
+
+            skill.CastActions.Add(caster =>
+            {
+                caster.CurrentMana -= manaCost;
+            });
+
+            skill.ApplyActions.Add((caster, pickedTarget) =>
+            {
+                var bm = BattleManager.Instance;
+                if (bm == null) return;
+                var enemies = bm.IsPlayerUnit(caster) ? bm.EnemyFormation : bm.PlayerFormation;
+                foreach (var u in enemies.Units)
+                {
+                    if (u.IsAlive && u.Row == pickedTarget.Row)
+                    {
+                        u.AddEffect(BattleEffectCatalog.Create("Freeze", caster,
+                            stackCount: 1, turns: 2));
+                        BattleSkillContext.RegisterAnimTarget(u);
+                    }
+                }
+            });
+
+            skill.Priority = target =>
+            {
+                if (!target.IsAlive) return 0f;
+                int rowCount = CountAliveEnemiesInRowOf(target);
+                return 20f + System.MathF.Min(rowCount * 25f, 70f);
+            };
+
+            return skill;
+        }
+
+        /// <summary>统计与指定单位同排的存活的敌方数量。</summary>
+        private static int CountAliveEnemiesInRowOf(BattleUnitInstance unit)
+        {
+            var bm = BattleManager.Instance;
+            if (bm == null) return 0;
+            var enemies = bm.IsPlayerUnit(unit) ? bm.EnemyFormation : bm.PlayerFormation;
+            int count = 0;
+            foreach (var u in enemies.Units)
+                if (u.IsAlive && u.Row == unit.Row)
+                    count++;
+            return count;
+        }
+
+        private static Skill BuildMelt(int level)
+        {
+            const int manaCost = 15;
+            const float hpRatio = 0.20f;
+            const float atkMultiplier = 5.00f;
+
+            var skill = new Skill("Melt", "熔化",
+                SkillType.SingleAttack, TargetType.SingleEnemy, level);
+            skill.Description = $"消耗{manaCost}点法力，对冰冻目标造成{hpRatio * 100:F0}%最大生命值+{atkMultiplier * 100:F0}%攻击力的真实伤害，并解除冰冻";
+
+            skill.CanCastConditions.Add((caster, target) =>
+                target.IsAlive && caster.CurrentMana >= manaCost && HasFreeze(target));
+
+            skill.ApplyActions.Add((caster, target) =>
+            {
+                caster.CurrentMana -= manaCost;
+                if (!target.IsAlive) return;
+
+                float damage = target.MaxHP * hpRatio + caster.CurrentAttack * atkMultiplier;
+                target.TakeTrueDamage(damage, caster);
+
+                // 移除冰冻效果
+                for (int i = target.Effects.Count - 1; i >= 0; i--)
+                    if (target.Effects[i].Template.Id == "Freeze")
+                        target.Effects.RemoveAt(i);
+            });
+
+            skill.Priority = target =>
+            {
+                if (!target.IsAlive) return 0f;
+                if (!HasFreeze(target)) return 0f;
+                float hpRatioTarget = target.CurrentHP / target.MaxHP;
+                return 50f + (1f - hpRatioTarget) * 35f;
+            };
+
+            return skill;
+        }
+
+        private static bool HasFreeze(BattleUnitInstance unit)
+        {
+            foreach (var e in unit.Effects)
+                if (e.Template.Id == "Freeze")
+                    return true;
+            return false;
+        }
+
         private static Skill BuildTheLastStand()
         {
             const int level = 1;
@@ -471,6 +827,7 @@ namespace GameDemo.Battle
                         stackCount: 1, turns: 3, 100));
                     u.AddEffect(BattleEffectCatalog.Create("DmgReductionDown", caster,
                         stackCount: 1, turns: 3, 50));
+                    BattleSkillContext.RegisterAnimTarget(u);
                 }
             });
 
@@ -490,7 +847,7 @@ namespace GameDemo.Battle
 
             var skill = new Skill("Armageddon", "哈米吉多顿",
                 SkillType.AoE, TargetType.AllEnemies, level);
-            skill.Description = "消耗几乎所有的生命和法力值，对敌方全体造成特大伤害。我方仅剩一个单位时可释放。";
+            skill.Description = "消耗几乎所有的生命和法力值，对敌方全体造成目标500%最大生命值的真实伤害。我方仅剩一个单位时可释放。";
 
             skill.CanCastConditions.Add((caster, target) =>
             {
@@ -514,7 +871,10 @@ namespace GameDemo.Battle
                 var enemies = bm.IsPlayerUnit(caster) ? bm.EnemyFormation : bm.PlayerFormation;
                 foreach (var u in enemies.Units)
                     if (u.IsAlive)
-                        u.TakeDamage(u.MaxHP * 5f);
+                    {
+                        u.TakeTrueDamage(u.MaxHP * 5f, caster);
+                        BattleSkillContext.RegisterAnimTarget(u);
+                    }
             });
 
             skill.Priority = _ => 95f;
