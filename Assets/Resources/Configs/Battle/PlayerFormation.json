@@ -1,25 +1,27 @@
-﻿{
+{
   "PlayerUnits": [
     {
-      "id": "Cirno",
-      "row": 2,
-      "col": 3,
-      "initialCost": 10000
-    },
-    {
       "id": "OrangeDog",
-      "row": 2,
-      "col": 1,
-      "initialCost": 10000,
-      "attachSkills" : ["Melt"]
-      
-    },
-    {
-      "id": "Flandre",
       "row": 1,
       "col": 2,
       "initialCost": 10000,
-      "attachSkills": [ "DiamondDust"]
+      "attachSkills": [
+        {"id": "PenetrateArrow", "level": 1},
+        {"id": "AtkStrongUp", "level": 1},
+        {"id": "DefenseBreak", "level": 2}
+      ]
+    },
+    {
+      "id": "Cirno",
+      "row": 2,
+      "col": 1,
+      "initialCost": 10000
+    },
+    {
+      "id": "Flandre",
+      "row": 2,
+      "col": 3,
+      "initialCost": 10000
     }
   ]
 }

@@ -120,6 +120,7 @@ namespace GameDemo.Battle
             {
                 var captured = unit;
                 unit.OnEffectAdded += e => OnEffectApplied?.Invoke(captured, e);
+                unit.OnEffectRemoved += e => OnEffectExpired?.Invoke(captured, e);
                 unit.OnDamaged += (u, dmg, isTrue, src) => OnUnitDamaged?.Invoke(u, dmg, src, isTrue);
                 unit.OnHealed += (u, heal, src) => OnUnitHealed?.Invoke(u, heal, src);
             }
@@ -127,6 +128,7 @@ namespace GameDemo.Battle
             {
                 var captured = unit;
                 unit.OnEffectAdded += e => OnEffectApplied?.Invoke(captured, e);
+                unit.OnEffectRemoved += e => OnEffectExpired?.Invoke(captured, e);
                 unit.OnDamaged += (u, dmg, isTrue, src) => OnUnitDamaged?.Invoke(u, dmg, src, isTrue);
                 unit.OnHealed += (u, heal, src) => OnUnitHealed?.Invoke(u, heal, src);
             }

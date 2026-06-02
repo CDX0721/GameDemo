@@ -17,10 +17,22 @@ MonoBehaviour:
     Path: Art/Sprites/Units/Cirno_Attack
   - Key: Cirno_Idle
     Path: Art/Sprites/Units/Cirno_Idle
+  - Key: DemonWolf_Attack
+    Path: Art/Sprites/Units/DemonWolf_Attack
+  - Key: DemonWolf_Idle
+    Path: Art/Sprites/Units/DemonWolf_Idle
   - Key: Flandre_Attack
     Path: Art/Sprites/Units/Flandre_Attack
   - Key: Flandre_Idle
     Path: Art/Sprites/Units/Flandre_Idle
+  - Key: GoblinArcher_Attack
+    Path: Art/Sprites/Units/GoblinArcher_Attack
+  - Key: GoblinArcher_Idle
+    Path: Art/Sprites/Units/GoblinArcher_Idle
+  - Key: GoblinWarrior_Attack
+    Path: Art/Sprites/Units/GoblinWarrior_Attack
+  - Key: GoblinWarrior_Idle
+    Path: Art/Sprites/Units/GoblinWarrior_Idle
   - Key: OrangeDog_Attack
     Path: Art/Sprites/Units/OrangeDog_Attack
   - Key: OrangeDog_Idle
@@ -29,17 +41,55 @@ MonoBehaviour:
     Path: Art/Sprites/Units/Sans_Attack
   - Key: Sans_Idle
     Path: Art/Sprites/Units/Sans_Idle
+  - Key: Slime_Attack
+    Path: Art/Sprites/Units/Slime_Attack
+  - Key: Slime_Idle
+    Path: Art/Sprites/Units/Slime_Idle
+  - Key: Troll_Attack
+    Path: Art/Sprites/Units/Troll_Attack
+  - Key: Troll_Idle
+    Path: Art/Sprites/Units/Troll_Idle
+  - Key: Armageddon_Play
+    Path: Art/Sprites/Skills/Armageddon_Play
+  - Key: AtkStrongUp_Play
+    Path: Art/Sprites/Skills/AtkStrongUp_Play
+  - Key: DarkCurse_Play
+    Path: Art/Sprites/Skills/DarkCurse_Play
+  - Key: DefenseBreak_Play
+    Path: Art/Sprites/Skills/DefenseBreak_Play
+  - Key: DiamondDust_Play
+    Path: Art/Sprites/Skills/DiamondDust_Play
+  - Key: EquivalentExchange_Play
+    Path: Art/Sprites/Skills/EquivalentExchange_Play
+  - Key: FlashStrike_Play
+    Path: Art/Sprites/Skills/FlashStrike_Play
   - Key: Heal_Play
     Path: Art/Sprites/Skills/Heal_Play
   - Key: LightningChain_Play
     Path: Art/Sprites/Skills/LightningChain_Play
+  - Key: ManaDrain_Play
+    Path: Art/Sprites/Skills/ManaDrain_Play
+  - Key: Melt_Play
+    Path: Art/Sprites/Skills/Melt_Play
   - Key: NormalAttack_Play
     Path: Art/Sprites/Skills/NormalAttack_Play
   - Key: PenetrateArrow_Play
     Path: Art/Sprites/Skills/PenetrateArrow_Play
+  - Key: SandStorm_Play
+    Path: Art/Sprites/Skills/SandStorm_Play
   - Key: Shield_Play
     Path: Art/Sprites/Skills/Shield_Play
+  - Key: Swamp_Play
+    Path: Art/Sprites/Skills/Swamp_Play
+  - Key: Terminate_Play
+    Path: Art/Sprites/Skills/Terminate_Play
+  - Key: TheLastStand_Play
+    Path: Art/Sprites/Skills/TheLastStand_Play
   - Key: ThornsWrap_Play
     Path: Art/Sprites/Skills/ThornsWrap_Play
+  - Key: Freeze_Play
+    Path: Art/Sprites/Effects/Freeze_Play
+  - Key: Poison_Play
+    Path: Art/Sprites/Effects/Poison_Play
   - Key: Thorns_Play
     Path: Art/Sprites/Effects/Thorns_Play

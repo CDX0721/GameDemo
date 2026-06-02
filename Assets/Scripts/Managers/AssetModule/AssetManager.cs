@@ -95,6 +95,7 @@ namespace GameDemo
 
             if (_activeHandles.TryGetValue(path, out var existing))
             {
+                _refCounts[path]++;
                 return existing;
             }
 

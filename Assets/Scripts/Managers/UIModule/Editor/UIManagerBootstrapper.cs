@@ -9,10 +9,6 @@ namespace GameDemo.UI.Editor
     /// </summary>
     public static class UIManagerBootstrapper
     {
-        /// <summary>
-        /// 菜单项 GameDemo → Setup UI Root，在当前场景中搭建完整的 UI 运行环境。
-        /// </summary>
-        [MenuItem("GameDemo/Setup UI Root")]
         public static void SetupUIRoot()
         {
             Canvas canvas = Object.FindFirstObjectByType<Canvas>();

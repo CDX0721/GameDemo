@@ -45,16 +45,21 @@ public class BattleSceneBootstrapper : MonoBehaviour
 
     void Awake()
     {
-        float targetAspect = 16f / 9f;
         Screen.fullScreen = false;
-        int height = Screen.height;
-        int width = Mathf.RoundToInt(height * targetAspect);
-        Screen.SetResolution(width, height, false);
+        Screen.SetResolution(1920, 1080, false);
     }
 
     void Start()
     {
         _driver = GetComponent<BattleDriver>();
+
+        _cam = Camera.main;
+        if (_cam != null && _cam.orthographic)
+        {
+            _cam.orthographicSize = 5f;
+            _cam.aspect = 16f / 9f;
+            _cam.transform.position = new Vector3(0, 0, -10);
+        }
 
         var (fieldDef, playerUnits, unitDefs) = BattleConfigLoader.Load("TestBattleFiled");
         if (fieldDef == null || unitDefs == null || playerUnits == null)
@@ -63,8 +68,6 @@ public class BattleSceneBootstrapper : MonoBehaviour
             return;
         }
         _unitDefs = unitDefs;
-
-        _cam = Camera.main;
         LoadBackgroundSettings(fieldDef.BackGround);
         if (!string.IsNullOrEmpty(fieldDef.BackGround))
             LoadBackground(fieldDef.BackGround);
@@ -107,7 +110,7 @@ public class BattleSceneBootstrapper : MonoBehaviour
         Stretch(menuGO.GetComponent<RectTransform>());
         menuGO.AddComponent<MainMenuPanel>();
 
-        var bpPrefab = Resources.Load<GameObject>("UI/BattlePanel");
+        var bpPrefab = AssetManager.Instance.Load<GameObject>("UI/BattlePanel");
         if (bpPrefab != null)
         {
             var bpGO = Instantiate(bpPrefab, canvas.transform);
@@ -131,6 +134,38 @@ public class BattleSceneBootstrapper : MonoBehaviour
         }
 
         UIManager.Instance.Show<MainMenuPanel>();
+    }
+
+    /// <summary>销毁旧的战斗状态并重新构建，供主菜单 Play 按钮调用。</summary>
+    public void RebuildBattle()
+    {
+        foreach (var view in UnitViews.Values)
+            Destroy(view.gameObject);
+        UnitViews.Clear();
+        HPBars.Clear();
+        _pendingViews.Clear();
+        _spriteCache.Clear();
+
+        var (fieldDef, playerUnits, unitDefs) = BattleConfigLoader.Load("TestBattleFiled");
+        if (fieldDef == null || unitDefs == null || playerUnits == null)
+        {
+            Debug.LogError("[Bootstrapper] Failed to reload battle configs.");
+            return;
+        }
+        _unitDefs = unitDefs;
+
+        LoadBackgroundSettings(fieldDef.BackGround);
+        BuildUnitViews(playerUnits, isPlayer: true);
+        BuildUnitViews(fieldDef.EnemyUnits, isPlayer: false);
+        _driver.Setup(fieldDef, playerUnits, unitDefs, this);
+        BindInstancesToViews(_driver.Manager.PlayerFormation, isPlayer: true);
+        BindInstancesToViews(_driver.Manager.EnemyFormation, isPlayer: false);
+        _pendingViews.Clear();
+
+        LoadAndSetupBGM(fieldDef.BGM, _driver);
+
+        var bp = FindFirstObjectByType<BattlePanel>();
+        if (bp != null) bp.BindBattleManager(_driver.Manager);
     }
 
     private static void Stretch(RectTransform rt)
@@ -243,7 +278,7 @@ public class BattleSceneBootstrapper : MonoBehaviour
 
     private void LoadBackgroundSettings(string bgId)
     {
-        var json = Resources.Load<TextAsset>("Configs/Battle/BackGroundSettings");
+        var json = AssetManager.Instance.Load<TextAsset>("Configs/Battle/BackGroundSettings");
         if (json == null)
         {
             Debug.LogWarning("[Bootstrapper] BackGroundSettings.json not found.");
@@ -297,7 +332,7 @@ public class BattleSceneBootstrapper : MonoBehaviour
     {
         if (string.IsNullOrEmpty(bgmId)) return;
 
-        var json = Resources.Load<TextAsset>("Configs/Battle/BGMSettings");
+        var json = AssetManager.Instance.Load<TextAsset>("Configs/Battle/BGMSettings");
         if (json == null)
         {
             Debug.LogWarning("[Bootstrapper] BGMSettings.json not found.");

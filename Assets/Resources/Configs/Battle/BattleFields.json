@@ -1,25 +1,36 @@
-﻿{
+{
   "TestBattleFiled": {
-    
+
     "EnemyUnits": [
       {
-        "id": "Sans",
-        "row": 2,
+        "id": "GoblinWarrior",
+        "row": 3,
         "col": 1,
-        "initialCost": 10000
+        "initialCost": 8000
       },
       {
-        "id": "Sans",
+        "id": "Troll",
         "row": 2,
         "col": 2,
-        "initialCost": 11000,
-        "attachSkills": ["LightningChain"]
+        "initialCost": 12000
       },
       {
-        "id": "Sans",
-        "row": 2,
+        "id": "GoblinArcher",
+        "row": 3,
         "col": 3,
-        "initialCost": 12000
+        "initialCost": 7500
+      },
+      {
+        "id": "Slime",
+        "row": 1,
+        "col": 1,
+        "initialCost": 9000
+      },
+      {
+        "id": "DemonWolf",
+        "row": 1,
+        "col": 3,
+        "initialCost": 8500
       }
     ],
     "BackGround": "gross_land",

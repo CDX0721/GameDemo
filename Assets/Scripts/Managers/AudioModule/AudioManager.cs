@@ -81,7 +81,7 @@ namespace GameDemo.Audio
         /// <summary>播放 BGM，从头开始。支持循环出入点和响度偏移。</summary>
         public void PlayBGM(string clipPath, float loopIn, float loopOut, float volumeOffsetDb = 0f)
         {
-            var clip = Resources.Load<AudioClip>(clipPath);
+            var clip = AssetManager.Instance.Load<AudioClip>(clipPath);
             if (clip == null)
             {
                 Debug.LogWarning($"[AudioManager] BGM clip not found: {clipPath}");
@@ -122,7 +122,7 @@ namespace GameDemo.Audio
         /// <summary>播放一次性音效。</summary>
         public void PlaySFX(string clipPath, float volumeDb = 0f)
         {
-            var clip = Resources.Load<AudioClip>(clipPath);
+            var clip = AssetManager.Instance.Load<AudioClip>(clipPath);
             if (clip == null)
             {
                 Debug.LogWarning($"[AudioManager] SFX clip not found: {clipPath}");

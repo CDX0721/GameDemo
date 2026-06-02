@@ -3,9 +3,6 @@ using UnityEngine.UI;
 
 namespace GameDemo.UI.Panels
 {
-    /// <summary>
-    /// Full-screen main menu. Self-initializes if no Inspector bindings provided.
-    /// </summary>
     public class MainMenuPanel : UIPanel
     {
         [Header("UI References")]
@@ -35,11 +32,9 @@ namespace GameDemo.UI.Panels
 
         private void EnsureUI()
         {
-            // Background
             var bg = gameObject.AddComponent<Image>();
             bg.color = new Color(0.08f, 0.08f, 0.15f, 1f);
 
-            // Title
             var tgo = new GameObject("Title", typeof(RectTransform));
             tgo.transform.SetParent(transform, false);
             _titleText = tgo.AddComponent<Text>();
@@ -86,6 +81,9 @@ namespace GameDemo.UI.Panels
 
         private void HandleStart()
         {
+            var bootstrapper = FindFirstObjectByType<BattleSceneBootstrapper>();
+            if (bootstrapper != null)
+                bootstrapper.RebuildBattle();
             UIManager.Instance.Push<BattlePanel>();
         }
 

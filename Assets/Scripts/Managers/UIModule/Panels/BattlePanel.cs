@@ -17,6 +17,7 @@ namespace GameDemo.UI.Panels
         [SerializeField] private GameObject _resultOverlay;
         [SerializeField] private TextMeshProUGUI _resultText;
         [SerializeField] private Button _resultBackButton;
+        [SerializeField] private Button _quitButton;
 
         // ============================================================
         // Runtime references — Battle
@@ -58,8 +59,10 @@ namespace GameDemo.UI.Panels
         private readonly List<GameObject> _skillEntryGOs = new();
         private readonly List<Skill> _currentSkills = new();
         private int _selectedEntryIdx = -1;
+        private int _pageOffset;
         private Sprite _skillEntryNormalSprite;
         private Sprite _skillEntryPressedSprite;
+        private const int MAX_VISIBLE_SKILLS = 8;
 
         // ============================================================
         // Action queue
@@ -96,15 +99,15 @@ namespace GameDemo.UI.Panels
         private void InitializeUI()
         {
             // Load all prefabs
-            _unitPrefab              = Resources.Load<GameObject>("UI/Unit");
-            _skillEntryPrefab        = Resources.Load<GameObject>("UI/SkillEntry");
-            _skillUnitInfoPrefab     = Resources.Load<GameObject>("UI/SkillUnitInfo");
-            _actionQueueEntryPrefab  = Resources.Load<GameObject>("UI/ActionQueueEntry");
-            _queueHighlightPrefab    = Resources.Load<GameObject>("UI/QueueHighlight");
-            _effectPrefab            = Resources.Load<GameObject>("UI/Effect");
-            _tooltipPrefab           = Resources.Load<GameObject>("UI/EffectTooltip");
-            _skillEntryNormalSprite  = Resources.Load<Sprite>("Art/UI/SkillBar/SkillEntryNormal");
-            _skillEntryPressedSprite = Resources.Load<Sprite>("Art/UI/SkillBar/SkillEntryPressed");
+            _unitPrefab              = AssetManager.Instance.Load<GameObject>("UI/Unit");
+            _skillEntryPrefab        = AssetManager.Instance.Load<GameObject>("UI/SkillEntry");
+            _skillUnitInfoPrefab     = AssetManager.Instance.Load<GameObject>("UI/SkillUnitInfo");
+            _actionQueueEntryPrefab  = AssetManager.Instance.Load<GameObject>("UI/ActionQueueEntry");
+            _queueHighlightPrefab    = AssetManager.Instance.Load<GameObject>("UI/QueueHighlight");
+            _effectPrefab            = AssetManager.Instance.Load<GameObject>("UI/Effect");
+            _tooltipPrefab           = AssetManager.Instance.Load<GameObject>("UI/EffectTooltip");
+            _skillEntryNormalSprite   = AssetManager.Instance.Load<Sprite>("Art/UI/SkillBar/SkillEntryNormal");
+            _skillEntryPressedSprite  = AssetManager.Instance.Load<Sprite>("Art/UI/SkillBar/SkillEntryPressed");
 
             // --- UnitStatus: instantiate single Unit prefab ---
             var unitStatusPadding = SafeFind("BottomBar/UnitStatus/Padding");
@@ -120,7 +123,7 @@ namespace GameDemo.UI.Panels
 
             // --- SkillBar: instantiate Skill prefab ---
             var skillBar = SafeFind("BottomBar/SkillBar");
-            var skillPrefab = Resources.Load<GameObject>("UI/Skill");
+            var skillPrefab = AssetManager.Instance.Load<GameObject>("UI/Skill");
             if (skillPrefab != null && skillBar != null)
             {
                 _skillGO = Instantiate(skillPrefab, skillBar);
@@ -181,6 +184,12 @@ namespace GameDemo.UI.Panels
                 _resultBackButton = SafeGetButton(transform, "ResultOverlay/ResultBackBtn");
                 if (_resultBackButton != null) _resultBackButton.onClick.AddListener(OnBack);
             }
+
+            if (_quitButton == null)
+            {
+                _quitButton = SafeGetButton(transform, "QuitBtn");
+                if (_quitButton != null) _quitButton.onClick.AddListener(HandleQuit);
+            }
         }
 
         private void FindUnitComponents()
@@ -235,6 +244,7 @@ namespace GameDemo.UI.Panels
             if (_resultOverlay != null) _resultOverlay.SetActive(false);
             if (_confirmButton != null) { _confirmButton.onClick.RemoveListener(OnConfirm); _confirmButton.onClick.AddListener(OnConfirm); _confirmButton.gameObject.SetActive(false); }
             if (_resultBackButton != null) { _resultBackButton.onClick.RemoveListener(OnBack); _resultBackButton.onClick.AddListener(OnBack); }
+            if (_quitButton != null) { _quitButton.onClick.RemoveListener(HandleQuit); _quitButton.onClick.AddListener(HandleQuit); }
             if (_battleManager != null && _battleManager.StateMachine.IsBattleStart)
             {
                 _battleManager.StartBattle();
@@ -248,6 +258,7 @@ namespace GameDemo.UI.Panels
             Unbind();
             if (_confirmButton != null) _confirmButton.onClick.RemoveListener(OnConfirm);
             if (_resultBackButton != null) _resultBackButton.onClick.RemoveListener(OnBack);
+            if (_quitButton != null) _quitButton.onClick.RemoveListener(HandleQuit);
         }
 
         protected override void OnClose() { Unbind(); }
@@ -277,16 +288,43 @@ namespace GameDemo.UI.Panels
         {
             if (_battleManager == null) return;
 
-            // --- Skill selection via number keys 1-8 ---
+            // --- Page navigation: = page up, - page down ---
             if (_actingUnit != null && _currentSkills.Count > 0)
             {
-                for (int i = 0; i < _currentSkills.Count && i < 8; i++)
+                int totalPages = Mathf.CeilToInt((float)_currentSkills.Count / MAX_VISIBLE_SKILLS);
+                if (Input.GetKeyDown(KeyCode.Equals) || Input.GetKeyDown(KeyCode.KeypadEquals))
+                {
+                    _pageOffset = (_pageOffset + 1) % totalPages;
+                    RebuildSkillPage();
+                    return;
+                }
+                if (Input.GetKeyDown(KeyCode.Minus) || Input.GetKeyDown(KeyCode.KeypadMinus))
+                {
+                    _pageOffset = (_pageOffset - 1 + totalPages) % totalPages;
+                    RebuildSkillPage();
+                    return;
+                }
+
+                // --- Skill selection via number keys 1-8 ---
+                for (int i = 0; i < MAX_VISIBLE_SKILLS; i++)
                 {
                     if (Input.GetKeyDown(KeyCode.Alpha1 + i) || Input.GetKeyDown(KeyCode.Keypad1 + i))
                     {
-                        SelectSkill(i);
+                        int skillIdx = _pageOffset * MAX_VISIBLE_SKILLS + i;
+                        if (skillIdx < _currentSkills.Count)
+                            SelectSkill(i);
                         return;
                     }
+                }
+            }
+
+            // --- Confirm via Space / Enter ---
+            if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+            {
+                if (_confirmButton != null && _confirmButton.gameObject.activeSelf && _confirmButton.interactable)
+                {
+                    OnConfirm();
+                    return;
                 }
             }
 
@@ -648,7 +686,6 @@ namespace GameDemo.UI.Panels
             if (_skillListPadding == null) return;
             if (_skillEntryPrefab == null) { Debug.LogError("[BP] SkillEntry prefab not loaded"); return; }
 
-            // Show SkillUnitInfo for acting unit
             if (_skillUnitInfoGO != null)
             {
                 _skillUnitInfoGO.SetActive(true);
@@ -661,26 +698,33 @@ namespace GameDemo.UI.Panels
                     _skillUnitInfoName.text = unit.DisplayName;
             }
 
-            // Show Empty placeholder
             if (_skillEmptyGO != null)
                 _skillEmptyGO.SetActive(true);
 
-            // Build skill entries
             _currentSkills.Clear();
             _selectedEntryIdx = -1;
-            var skills = _battleManager.GetCastableSkills(unit);
-            var seen = new HashSet<string>();
-            int idx = 0;
+            _pageOffset = 0;
 
-            foreach (var (s, t) in skills)
+            var seen = new HashSet<string>();
+            foreach (var s in unit.Skills)
             {
                 if (!seen.Add(s.Id)) continue;
+                _currentSkills.Add(s);
+            }
 
+            int totalPages = Mathf.CeilToInt((float)_currentSkills.Count / MAX_VISIBLE_SKILLS);
+            if (totalPages < 1) totalPages = 1;
+
+            int pageStart = _pageOffset * MAX_VISIBLE_SKILLS;
+            int pageEnd = Mathf.Min(pageStart + MAX_VISIBLE_SKILLS, _currentSkills.Count);
+
+            for (int i = 0; i < MAX_VISIBLE_SKILLS; i++)
+            {
+                int skillIdx = pageStart + i;
                 GameObject entry;
-                if (idx < _skillEntryGOs.Count)
+                if (i < _skillEntryGOs.Count)
                 {
-                    entry = _skillEntryGOs[idx];
-                    entry.SetActive(true);
+                    entry = _skillEntryGOs[i];
                 }
                 else
                 {
@@ -688,52 +732,50 @@ namespace GameDemo.UI.Panels
                     _skillEntryGOs.Add(entry);
                 }
 
-                // Reset entry image to normal
-                var entryImg = entry.GetComponent<Image>();
-                if (entryImg != null && _skillEntryNormalSprite != null)
-                    entryImg.sprite = _skillEntryNormalSprite;
-
-                // Set skill icon on Padding/Image
-                var iconT = entry.transform.Find("Padding/Image");
-                if (iconT != null)
+                if (skillIdx < pageEnd)
                 {
-                    var icon = iconT.GetComponent<Image>();
-                    if (icon != null)
+                    entry.SetActive(true);
+                    var s = _currentSkills[skillIdx];
+
+                    var iconT = entry.transform.Find("Padding/Image");
+                    if (iconT != null)
                     {
-                        var spr = Resources.Load<Sprite>($"Art/Sprites/UI/Icons/skills/{s.Id}_icon");
-                        if (spr != null) icon.sprite = spr;
+                        var icon = iconT.GetComponent<Image>();
+                        if (icon != null)
+                        {
+                            var spr = AssetManager.Instance.Load<Sprite>($"Art/Sprites/UI/Icons/skills/{s.Id}_icon");
+                            if (spr != null) icon.sprite = spr;
+                        }
+                    }
+
+                    var nameT = entry.transform.Find("Padding/Name");
+                    if (nameT != null)
+                    {
+                        var lbl = nameT.GetComponent<TextMeshProUGUI>();
+                        if (lbl != null) lbl.text = SkillLabel(s);
+                    }
+
+                    var btn = entry.GetComponent<Button>();
+                    if (btn != null)
+                    {
+                        btn.onClick.RemoveAllListeners();
+                        int visibleIdx = i;
+                        btn.onClick.AddListener(() => SelectSkill(visibleIdx));
                     }
                 }
-
-                // Set skill name
-                var nameT = entry.transform.Find("Padding/Name");
-                if (nameT != null)
+                else
                 {
-                    var lbl = nameT.GetComponent<TextMeshProUGUI>();
-                    if (lbl != null) lbl.text = SkillLabel(s);
+                    entry.SetActive(false);
                 }
-
-                var btn = entry.GetComponent<Button>();
-                if (btn != null)
-                {
-                    btn.onClick.RemoveAllListeners();
-                    int i = idx;
-                    btn.onClick.AddListener(() => SelectSkill(i));
-                }
-
-                _currentSkills.Add(s);
-                idx++;
             }
 
-            for (int i = idx; i < _skillEntryGOs.Count; i++)
-                _skillEntryGOs[i].SetActive(false);
         }
 
-        private void SelectSkill(int idx)
+        private void SelectSkill(int visibleIdx)
         {
-            if (idx < 0 || idx >= _currentSkills.Count) return;
+            int skillIdx = _pageOffset * MAX_VISIBLE_SKILLS + visibleIdx;
+            if (skillIdx < 0 || skillIdx >= _currentSkills.Count) return;
 
-            // Revert previous entry
             if (_selectedEntryIdx >= 0 && _selectedEntryIdx < _skillEntryGOs.Count)
             {
                 var prevImg = _skillEntryGOs[_selectedEntryIdx].GetComponent<Image>();
@@ -741,13 +783,12 @@ namespace GameDemo.UI.Panels
                     prevImg.sprite = _skillEntryNormalSprite;
             }
 
-            _selectedEntryIdx = idx;
-            _selectedSkill = _currentSkills[idx];
+            _selectedEntryIdx = visibleIdx;
+            _selectedSkill = _currentSkills[skillIdx];
 
-            // Set pressed sprite on selected entry
-            if (idx < _skillEntryGOs.Count)
+            if (visibleIdx < _skillEntryGOs.Count)
             {
-                var img = _skillEntryGOs[idx].GetComponent<Image>();
+                var img = _skillEntryGOs[visibleIdx].GetComponent<Image>();
                 if (img != null && _skillEntryPressedSprite != null)
                     img.sprite = _skillEntryPressedSprite;
             }
@@ -757,6 +798,7 @@ namespace GameDemo.UI.Panels
             if (_confirmButton != null)
                 _confirmButton.gameObject.SetActive(true);
 
+            EventSystem.current?.SetSelectedGameObject(null);
             RefreshSkillState();
         }
 
@@ -838,6 +880,7 @@ namespace GameDemo.UI.Panels
             _currentSkills.Clear();
             _selectedSkill = null;
             _selectedEntryIdx = -1;
+            _pageOffset = 0;
 
             if (_skillInfoPadding != null) _skillInfoPadding.SetActive(false);
             if (_skillInfoName != null) _skillInfoName.text = "";
@@ -847,6 +890,61 @@ namespace GameDemo.UI.Panels
                 _confirmButton.gameObject.SetActive(false);
                 _confirmButton.interactable = true;
             }
+        }
+
+        /// <summary>刷新当前页技能入口的文本/图标，不重建 GameObjects。</summary>
+        private void RebuildSkillPage()
+        {
+            int pageStart = _pageOffset * MAX_VISIBLE_SKILLS;
+            int pageEnd = Mathf.Min(pageStart + MAX_VISIBLE_SKILLS, _currentSkills.Count);
+
+            for (int i = 0; i < MAX_VISIBLE_SKILLS; i++)
+            {
+                if (i >= _skillEntryGOs.Count) break;
+                var entry = _skillEntryGOs[i];
+                int skillIdx = pageStart + i;
+
+                if (skillIdx < pageEnd)
+                {
+                    entry.SetActive(true);
+                    var s = _currentSkills[skillIdx];
+
+                    var iconT = entry.transform.Find("Padding/Image");
+                    if (iconT != null)
+                    {
+                        var icon = iconT.GetComponent<Image>();
+                        if (icon != null)
+                        {
+                            var spr = AssetManager.Instance.Load<Sprite>($"Art/Sprites/UI/Icons/skills/{s.Id}_icon");
+                            if (spr != null) icon.sprite = spr;
+                        }
+                    }
+
+                    var nameT = entry.transform.Find("Padding/Name");
+                    if (nameT != null)
+                    {
+                        var lbl = nameT.GetComponent<TextMeshProUGUI>();
+                        if (lbl != null) lbl.text = SkillLabel(s);
+                    }
+
+                    var btn = entry.GetComponent<Button>();
+                    if (btn != null)
+                    {
+                        btn.onClick.RemoveAllListeners();
+                        int visibleIdx = i;
+                        btn.onClick.AddListener(() => SelectSkill(visibleIdx));
+                    }
+                }
+                else
+                {
+                    entry.SetActive(false);
+                }
+            }
+
+            _selectedEntryIdx = -1;
+            _selectedSkill = null;
+            if (_skillInfoPadding != null) _skillInfoPadding.SetActive(false);
+            if (_confirmButton != null) _confirmButton.gameObject.SetActive(false);
         }
 
         // ============================================================
@@ -914,10 +1012,10 @@ namespace GameDemo.UI.Panels
         // Resource helpers
         // ============================================================
         private static Sprite LoadUnitIcon(string unitId)
-            => Resources.Load<Sprite>($"Art/Sprites/UI/Icons/battleunits/{unitId}_icon");
+            => AssetManager.Instance.Load<Sprite>($"Art/Sprites/UI/Icons/battleunits/{unitId}_icon");
 
         private static Sprite LoadEffectIcon(string effectId)
-            => Resources.Load<Sprite>($"Art/Sprites/UI/Icons/effects/{effectId}_icon");
+            => AssetManager.Instance.Load<Sprite>($"Art/Sprites/UI/Icons/effects/{effectId}_icon");
 
         private static string SkillLabel(Skill s)
         {
@@ -958,6 +1056,18 @@ namespace GameDemo.UI.Panels
         // ============================================================
         // Navigation
         // ============================================================
-        private void OnBack() { UIManager.Instance.Pop(); }
+        private void HandleQuit()
+        {
+            GameDemo.Audio.AudioManager.Instance?.StopBGM();
+            AssetManager.Instance.ClearCache();
+            UIManager.Instance.Pop();
+        }
+
+        private void OnBack()
+        {
+            GameDemo.Audio.AudioManager.Instance?.StopBGM();
+            AssetManager.Instance.ClearCache();
+            UIManager.Instance.Pop();
+        }
     }
 }

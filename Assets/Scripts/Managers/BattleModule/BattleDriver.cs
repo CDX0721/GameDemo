@@ -47,6 +47,7 @@ public class BattleDriver : MonoBehaviour
         Dictionary<string, BattleUnitDef> unitDefs, BattleSceneBootstrapper bootstrapper)
     {
         _bootstrapper = bootstrapper;
+        _bgmStarted = false;
 
         Manager = new BattleManager();
         Manager.OnWaitingForPlayerInput += OnWaitingForPlayerInputEvent;
@@ -170,6 +171,7 @@ public class BattleDriver : MonoBehaviour
             yield return new WaitForSeconds(0.6f);
 
             BattleSkillContext.PendingSkillAnimations = null;
+            BattleSkillContext.PendingSFX = null;
             Manager.SelectedSkill = skill;
             var allUnits = GetAllLivingUnits();
 
@@ -182,6 +184,7 @@ public class BattleDriver : MonoBehaviour
 
             // 3. 播放技能特效动画（按 ApplyActions 注册的目标和延迟）
             var entries = BattleSkillContext.PendingSkillAnimations;
+            var sfxEntries = BattleSkillContext.PendingSFX;
             if (entries != null && entries.Count > 0)
             {
                 entries.Sort((a, b) => a.Delay.CompareTo(b.Delay));
@@ -198,6 +201,8 @@ public class BattleDriver : MonoBehaviour
                         animRunning++;
                         tv.PlayEffect(effectFrames, () => animRunning--);
                     }
+
+                    PlayDedupedSFX(sfxEntries, e.Delay);
                 }
             }
             // 未注册动画目标时回退到 pickedTarget（单体技能兼容）
@@ -209,6 +214,11 @@ public class BattleDriver : MonoBehaviour
                     animRunning++;
                     tv.PlayEffect(effectFrames, () => animRunning--);
                 }
+
+                if (sfxEntries != null && sfxEntries.Count > 0)
+                    PlayDedupedSFX(sfxEntries, 0f);
+                else
+                    AudioManager.Instance?.PlaySFX($"Audio/SFX/{skill.Id}");
             }
 
             // 4. 等待所有动画完成才能进入 PostAction（超时兜底 5s）
@@ -240,6 +250,20 @@ public class BattleDriver : MonoBehaviour
         _isAnimating = false;
     }
 
+    // ==================== SFX ====================
+
+    /// <summary>播放指定 delay 处已去重的音效（同 delay 同 skillId 仅播一次）。</summary>
+    private static void PlayDedupedSFX(List<SkillSFXEntry>? sfxEntries, float delay)
+    {
+        if (sfxEntries == null || AudioManager.Instance == null) return;
+        var played = new HashSet<string>();
+        foreach (var s in sfxEntries)
+        {
+            if (Mathf.Abs(s.Delay - delay) < 0.01f && played.Add(s.SkillId))
+                AudioManager.Instance.PlaySFX($"Audio/SFX/{s.SkillId}");
+        }
+    }
+
     // ==================== 技能特效查找 ====================
 
     private Sprite[] GetSkillFxFrames(Skill skill)
@@ -252,7 +276,7 @@ public class BattleDriver : MonoBehaviour
     private void OnBattleEnded(bool playerWin)
     {
         Debug.Log($"战斗结束，玩家{(playerWin ? "胜利" : "败北")}");
-        if (playerWin && AudioManager.Instance != null)
+        if (AudioManager.Instance != null)
             AudioManager.Instance.StopBGM();
     }
 
@@ -362,14 +386,14 @@ public class BattleDriver : MonoBehaviour
     {
         var template = new BattleUnit(placement.id, def.DisplayName,
             def.Attack, def.Defense, def.HP, def.Speed, def.Mana);
-        foreach (var skillId in def.InnateSills)
-            template.InnateSkills.Add(SkillCatalog.Get(skillId));
+        foreach (var sd in def.InnateSills)
+            template.InnateSkills.Add(SkillCatalog.Get(sd.id, sd.level));
         if (placement.attachSkills != null)
         {
-            foreach (var skillId in placement.attachSkills)
+            foreach (var sd in placement.attachSkills)
             {
-                if (!string.IsNullOrEmpty(skillId))
-                    template.InnateSkills.Add(SkillCatalog.Get(skillId));
+                if (!string.IsNullOrEmpty(sd.id))
+                    template.InnateSkills.Add(SkillCatalog.Get(sd.id, sd.level));
             }
         }
 

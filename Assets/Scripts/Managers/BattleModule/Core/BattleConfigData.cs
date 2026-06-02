@@ -57,13 +57,20 @@ namespace GameDemo.Battle
     }
 
     [Serializable]
+    public class SkillDef
+    {
+        public string id;
+        public int level;
+    }
+
+    [Serializable]
     public class UnitPlacementDef
     {
         public string id;
         public int row;
         public int col;
         public float initialCost;
-        public List<string> attachSkills;
+        public List<SkillDef> attachSkills;
     }
 
     [Serializable]
@@ -79,6 +86,11 @@ namespace GameDemo.Battle
         public BattleUnitDef Cirno;
         public BattleUnitDef Flandre;
         public BattleUnitDef Sans;
+        public BattleUnitDef DemonWolf;
+        public BattleUnitDef GoblinArcher;
+        public BattleUnitDef GoblinWarrior;
+        public BattleUnitDef Slime;
+        public BattleUnitDef Troll;
 
         public Dictionary<string, BattleUnitDef> ToDict()
         {
@@ -91,6 +103,11 @@ namespace GameDemo.Battle
             Add("Cirno", Cirno);
             Add("Flandre", Flandre);
             Add("Sans", Sans);
+            Add("DemonWolf", DemonWolf);
+            Add("GoblinArcher", GoblinArcher);
+            Add("GoblinWarrior", GoblinWarrior);
+            Add("Slime", Slime);
+            Add("Troll", Troll);
             return d;
         }
     }
@@ -105,7 +122,7 @@ namespace GameDemo.Battle
         public float HP;
         public float Mana;
         public float Speed;
-        public List<string> InnateSills;
+        public List<SkillDef> InnateSills;
         public string IdleAnimation;
         public string AttackAnimation;
         public string ControlType;

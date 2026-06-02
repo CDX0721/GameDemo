@@ -112,6 +112,7 @@ namespace GameDemo.Battle
 
             skill.ApplyActions.Add((caster, target) =>
             {
+                BattleSkillContext.RegisterSFX("NormalAttack");
                 if (target.IsAlive)
                     target.TakeDamage(caster.CurrentAttack * damageMultiplier);
             });
@@ -153,6 +154,7 @@ namespace GameDemo.Battle
 
             skill.ApplyActions.Add((caster, target) =>
             {
+                BattleSkillContext.RegisterSFX("Shield");
                 caster.CurrentMana -= requiredMana;
                 if (target.IsAlive)
                     target.Shield += target.MaxHP * shieldRatio;
@@ -182,6 +184,7 @@ namespace GameDemo.Battle
 
             skill.ApplyActions.Add((caster, target) =>
             {
+                BattleSkillContext.RegisterSFX("EquivalentExchange");
                 float hpRatio = caster.CurrentHP / caster.MaxHP;
                 float manaRatio = caster.CurrentMana / caster.MaxMana;
 
@@ -236,6 +239,7 @@ namespace GameDemo.Battle
                 float delay = 0f;
                 foreach (var u in columnTargets)
                 {
+                    BattleSkillContext.RegisterSFX("PenetrateArrow", delay);
                     u.TakeDamage(caster.CurrentAttack * 2.5f + u.MaxHP * 0.10f);
                     BattleSkillContext.RegisterAnimTarget(u, delay);
                     delay += 0.2f;
@@ -282,6 +286,7 @@ namespace GameDemo.Battle
 
             skill.ApplyActions.Add((caster, target) =>
             {
+                BattleSkillContext.RegisterSFX("Heal");
                 caster.CurrentMana -= requiredMana;
                 if (target.IsAlive)
                 {
@@ -323,6 +328,7 @@ namespace GameDemo.Battle
                 var bm = BattleManager.Instance;
                 if (bm == null) return;
                 var enemies = bm.IsPlayerUnit(caster) ? bm.EnemyFormation : bm.PlayerFormation;
+                BattleSkillContext.RegisterSFX("SandStorm");
                 foreach (var u in enemies.Units)
                     if (u.IsAlive)
                     {
@@ -355,6 +361,7 @@ namespace GameDemo.Battle
 
             skill.ApplyActions.Add((caster, target) =>
             {
+                BattleSkillContext.RegisterSFX("FlashStrike");
                 caster.CurrentMana -= manaCost;
                 if (!target.IsAlive) return;
                 target.Dispel(BattleEffectType.Negative);
@@ -391,6 +398,7 @@ namespace GameDemo.Battle
 
             skill.ApplyActions.Add((caster, target) =>
             {
+                BattleSkillContext.RegisterSFX("ManaDrain");
                 if (!target.IsAlive) return;
                 float drain = target.MaxMana * drainRatio;
                 float actualDrain = System.MathF.Min(drain, target.CurrentMana);
@@ -424,6 +432,7 @@ namespace GameDemo.Battle
 
             skill.ApplyActions.Add((caster, target) =>
             {
+                BattleSkillContext.RegisterSFX("AtkStrongUp");
                 caster.CurrentMana -= manaCost;
                 if (target.IsAlive)
                     target.AddEffect(BattleEffectCatalog.Create("AtkMultUp", caster,
@@ -449,6 +458,7 @@ namespace GameDemo.Battle
 
             skill.ApplyActions.Add((caster, target) =>
             {
+                BattleSkillContext.RegisterSFX("DefenseBreak");
                 caster.CurrentMana -= manaCost;
                 if (target.IsAlive)
                     target.AddEffect(BattleEffectCatalog.Create("DefBonusDown", caster,
@@ -478,6 +488,7 @@ namespace GameDemo.Battle
 
             skill.ApplyActions.Add((caster, target) =>
             {
+                BattleSkillContext.RegisterSFX("Terminate");
                 if (target.IsAlive)
                     target.TakeTrueDamage(target.MaxHP, caster);
             });
@@ -506,6 +517,7 @@ namespace GameDemo.Battle
 
             skill.ApplyActions.Add((caster, target) =>
             {
+                BattleSkillContext.RegisterSFX("DarkCurse");
                 caster.CurrentMana -= manaCost;
                 if (!target.IsAlive) return;
                 target.AddEffect(BattleEffectCatalog.Create("Poison", caster,
@@ -546,6 +558,7 @@ namespace GameDemo.Battle
                 var bm = BattleManager.Instance;
                 if (bm == null) return;
                 var enemies = bm.IsPlayerUnit(caster) ? bm.EnemyFormation : bm.PlayerFormation;
+                BattleSkillContext.RegisterSFX("Swamp");
                 foreach (var u in enemies.Units)
                 {
                     if (!u.IsAlive) continue;
@@ -596,6 +609,7 @@ namespace GameDemo.Battle
                 float delay = 0f;
                 const float bounceInterval = 0.2f;
 
+                BattleSkillContext.RegisterSFX("LightningChain", delay);
                 current.TakeDamage(caster.CurrentAttack * damageRatio, caster);
                 BattleSkillContext.RegisterAnimTarget(current, delay);
 
@@ -605,6 +619,7 @@ namespace GameDemo.Battle
                     if (next == null) break;
                     current = next;
                     delay += bounceInterval;
+                    BattleSkillContext.RegisterSFX("LightningChain", delay);
                     current.TakeDamage(caster.CurrentAttack * damageRatio, caster);
                     BattleSkillContext.RegisterAnimTarget(current, delay);
                 }
@@ -679,6 +694,7 @@ namespace GameDemo.Battle
 
             skill.ApplyActions.Add((caster, target) =>
             {
+                BattleSkillContext.RegisterSFX("ThornsWrap");
                 caster.CurrentMana -= manaCost;
                 if (!target.IsAlive) return;
                 int perStack = (int)(caster.CurrentAttack * damageRatio);
@@ -703,7 +719,7 @@ namespace GameDemo.Battle
 
             var skill = new Skill("DiamondDust", "钻石星辰",
                 SkillType.Spread, TargetType.SingleEnemy, level);
-            skill.Description = $"消耗{manaCost}点法力，使目标所在排的所有敌方单位陷入冰冻状态2回合";
+            skill.Description = $"消耗{manaCost}点法力，使目标所在行的所有敌方单位陷入冰冻状态2回合";
 
             skill.CanCastConditions.Add((caster, target) =>
                 target.IsAlive && caster.CurrentMana >= manaCost);
@@ -718,6 +734,7 @@ namespace GameDemo.Battle
                 var bm = BattleManager.Instance;
                 if (bm == null) return;
                 var enemies = bm.IsPlayerUnit(caster) ? bm.EnemyFormation : bm.PlayerFormation;
+                BattleSkillContext.RegisterSFX("DiamondDust");
                 foreach (var u in enemies.Units)
                 {
                     if (u.IsAlive && u.Row == pickedTarget.Row)
@@ -767,16 +784,15 @@ namespace GameDemo.Battle
 
             skill.ApplyActions.Add((caster, target) =>
             {
+                BattleSkillContext.RegisterSFX("Melt");
                 caster.CurrentMana -= manaCost;
                 if (!target.IsAlive) return;
 
                 float damage = target.MaxHP * hpRatio + caster.CurrentAttack * atkMultiplier;
                 target.TakeTrueDamage(damage, caster);
 
-                // 移除冰冻效果
-                for (int i = target.Effects.Count - 1; i >= 0; i--)
-                    if (target.Effects[i].Template.Id == "Freeze")
-                        target.Effects.RemoveAt(i);
+                // 驱散冰冻 → Dispel 内部触发 OnEffectRemoved → 表现层移除动画
+                target.Dispel(BattleEffectType.Negative);
             });
 
             skill.Priority = target =>
@@ -820,6 +836,7 @@ namespace GameDemo.Battle
                 var bm = BattleManager.Instance;
                 if (bm == null) return;
                 var allies = bm.IsPlayerUnit(caster) ? bm.PlayerFormation : bm.EnemyFormation;
+                BattleSkillContext.RegisterSFX("TheLastStand");
                 foreach (var u in allies.Units)
                 {
                     if (!u.IsAlive) continue;
@@ -869,6 +886,7 @@ namespace GameDemo.Battle
                 var bm = BattleManager.Instance;
                 if (bm == null) return;
                 var enemies = bm.IsPlayerUnit(caster) ? bm.EnemyFormation : bm.PlayerFormation;
+                BattleSkillContext.RegisterSFX("Armageddon");
                 foreach (var u in enemies.Units)
                     if (u.IsAlive)
                     {

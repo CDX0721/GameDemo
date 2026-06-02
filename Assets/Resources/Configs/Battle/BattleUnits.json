@@ -1,39 +1,44 @@
-﻿{
+{
   "BattleUnits": {
     "OrangeDog": {
       "DisplayName" : "橘子狗",
-      
-      "Attack": 200,
-      "Defense": 200,
-      "HP": 1000,
+
+      "Attack": 150,
+      "Defense": 350,
+      "HP": 2400,
       "Mana": 200,
       "Speed": 100,
-      
+
       "InnateSills": [
-        "NormalAttack",
-        "Heal",
-        "Shield"
+        {"id": "NormalAttack", "level": 2},
+        {"id": "Heal", "level": 3},
+        {"id": "Shield", "level": 3},
+        {"id": "FlashStrike", "level": 1},
+        {"id": "Armageddon", "level": 1}
       ],
-      
+
       "IdleAnimation": "OrangeDog_Idle.png",
       "AttackAnimation": "OrangeDog_Attack.png",
-      
+
       "ControlType": "Player"
-      
+
     },
     "Cirno": {
       "DisplayName" : "琪露诺",
-      
-      "Attack": 500,
-      "Defense": 500,
-      "HP": 1000,
-      "Mana": 100,
-      "Speed": 120,
+
+      "Attack": 250,
+      "Defense": 250,
+      "HP": 1800,
+      "Mana": 250,
+      "Speed": 130,
 
       "InnateSills": [
-        "NormalAttack",
-        "Heal",
-        "Shield"
+        {"id": "NormalAttack", "level": 2},
+        {"id": "DiamondDust", "level": 1},
+        {"id": "Heal", "level": 3},
+        {"id": "Shield", "level": 3},
+        {"id": "PenetrateArrow", "level": 1},
+        {"id": "Armageddon", "level": 1}
       ],
 
       "IdleAnimation": "Cirno_Idle.png",
@@ -44,14 +49,20 @@
     "Flandre": {
       "DisplayName" : "芙兰朵露",
 
-      "Attack": 50,
-      "Defense": 200,
-      "HP": 1000,
-      "Mana": 1000,
-      "Speed": 200,
+      "Attack": 300,
+      "Defense": 100,
+      "HP": 1600,
+      "Mana": 500,
+      "Speed": 180,
 
       "InnateSills": [
-        "NormalAttack"
+        {"id": "NormalAttack", "level": 2},
+        {"id": "LightningChain", "level": 2},
+        {"id": "Melt", "level": 1},
+        {"id": "ManaDrain", "level": 2},
+        {"id": "EquivalentExchange", "level": 1},
+        {"id": "TheLastStand", "level": 1},
+        {"id": "Armageddon", "level": 1}
       ],
 
       "IdleAnimation": "Flandre_Idle.png",
@@ -69,11 +80,110 @@
       "Speed": 100,
 
       "InnateSills": [
-        "Heal"
+        {"id": "Heal", "level": 1}
       ],
 
       "IdleAnimation": "Sans_Idle.png",
       "AttackAnimation": "Sans_Attack.png",
+
+      "ControlType": "Auto"
+    },
+    "DemonWolf": {
+      "DisplayName" : "恶魔狼",
+
+      "Attack": 260,
+      "Defense": 100,
+      "HP": 1400,
+      "Mana": 80,
+      "Speed": 145,
+
+      "InnateSills": [
+        {"id": "NormalAttack", "level": 1},
+        {"id": "Terminate", "level": 1}
+      ],
+
+      "IdleAnimation": "DemonWolf_Idle.png",
+      "AttackAnimation": "DemonWolf_Attack.png",
+
+      "ControlType": "Auto"
+    },
+    "GoblinArcher": {
+      "DisplayName" : "哥布林弓箭手",
+
+      "Attack": 180,
+      "Defense": 80,
+      "HP": 1000,
+      "Mana": 100,
+      "Speed": 110,
+
+      "InnateSills": [
+        {"id": "NormalAttack", "level": 1},
+        {"id": "SandStorm", "level": 1}
+      ],
+
+      "IdleAnimation": "GoblinArcher_Idle.png",
+      "AttackAnimation": "GoblinArcher_Attack.png",
+
+      "ControlType": "Auto"
+    },
+    "GoblinWarrior": {
+      "DisplayName" : "哥布林战士",
+
+      "Attack": 120,
+      "Defense": 120,
+      "HP": 1200,
+      "Mana": 80,
+      "Speed": 90,
+
+      "InnateSills": [
+        {"id": "NormalAttack", "level": 1},
+        {"id": "Shield", "level": 1},
+        {"id": "DefenseBreak", "level": 1}
+      ],
+
+      "IdleAnimation": "GoblinWarrior_Idle.png",
+      "AttackAnimation": "GoblinWarrior_Attack.png",
+
+      "ControlType": "Auto"
+    },
+    "Slime": {
+      "DisplayName" : "史莱姆",
+
+      "Attack": 80,
+      "Defense": 60,
+      "HP": 900,
+      "Mana": 120,
+      "Speed": 80,
+
+      "InnateSills": [
+        {"id": "NormalAttack", "level": 1},
+        {"id": "DarkCurse", "level": 1},
+        {"id": "Swamp", "level": 1}
+      ],
+
+      "IdleAnimation": "Slime_Idle.png",
+      "AttackAnimation": "Slime_Attack.png",
+
+      "ControlType": "Auto"
+    },
+    "Troll": {
+      "DisplayName" : "巨魔",
+
+      "Attack": 220,
+      "Defense": 1000,
+      "HP": 3600,
+      "Mana": 100,
+      "Speed": 55,
+
+      "InnateSills": [
+        {"id": "NormalAttack", "level": 1},
+        {"id": "Shield", "level": 1},
+        {"id": "ThornsWrap", "level": 1},
+        {"id": "Armageddon", "level": 1}
+      ],
+
+      "IdleAnimation": "Troll_Idle.png",
+      "AttackAnimation": "Troll_Attack.png",
 
       "ControlType": "Auto"
     }

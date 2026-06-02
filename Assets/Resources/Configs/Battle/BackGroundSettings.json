@@ -1,8 +1,8 @@
 {
   "gross_land": {
     "img": "gross_land.png",
-    "PlayerCenterPixel": { "x": 480, "y": 480 },
-    "EnemyCenterPixel": { "x": 1440, "y": 480 },
+    "PlayerCenterPixel": { "x": 480, "y": 540 },
+    "EnemyCenterPixel": { "x": 1440, "y": 540 },
     "RowSpacingPixel": 180,
     "ColSpacingPixel": 120
   }
