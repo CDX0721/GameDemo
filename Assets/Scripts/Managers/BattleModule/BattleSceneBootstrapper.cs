@@ -80,6 +80,7 @@ public class BattleSceneBootstrapper : MonoBehaviour
         _pendingViews.Clear();
 
         CreateAudioManager();
+        LoadAudioSettings();
         LoadAndSetupBGM(fieldDef.BGM, _driver);
 
         InitializeUI();
@@ -109,6 +110,11 @@ public class BattleSceneBootstrapper : MonoBehaviour
         menuGO.transform.SetParent(canvas.transform, false);
         Stretch(menuGO.GetComponent<RectTransform>());
         menuGO.AddComponent<MainMenuPanel>();
+
+        var settingsGO = new GameObject("SettingsPanel", typeof(RectTransform));
+        settingsGO.transform.SetParent(canvas.transform, false);
+        Stretch(settingsGO.GetComponent<RectTransform>());
+        settingsGO.AddComponent<SettingsPanel>();
 
         var bpPrefab = AssetManager.Instance.Load<GameObject>("UI/BattlePanel");
         if (bpPrefab != null)
@@ -326,6 +332,34 @@ public class BattleSceneBootstrapper : MonoBehaviour
         if (AudioManager.Instance != null) return;
         var go = new GameObject("AudioManager");
         go.AddComponent<AudioManager>();
+    }
+
+    private static void LoadAudioSettings()
+    {
+        string savePath = System.IO.Path.Combine(Application.persistentDataPath, "GeneralSettings.json");
+        string jsonText = null;
+        if (System.IO.File.Exists(savePath))
+            jsonText = System.IO.File.ReadAllText(savePath);
+        else
+        {
+            var asset = AssetManager.Instance.Load<TextAsset>("Configs/GeneralSettings");
+            jsonText = asset?.text;
+        }
+        if (string.IsNullOrEmpty(jsonText)) return;
+        try
+        {
+            var data = JsonUtility.FromJson<AudioSettingsData>(jsonText);
+            AudioManager.Instance?.SetMasterBgmVolume(data.bgmVolume);
+            AudioManager.Instance?.SetMasterSfxVolume(data.sfxVolume);
+        }
+        catch { }
+    }
+
+    [Serializable]
+    private class AudioSettingsData
+    {
+        public float bgmVolume = 1f;
+        public float sfxVolume = 1f;
     }
 
     private static void LoadAndSetupBGM(string bgmId, BattleDriver driver)

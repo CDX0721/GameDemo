@@ -19,6 +19,9 @@ namespace GameDemo.Audio
         private float _loopInSeconds;
         private float _loopOutSeconds;
         private bool _hasLoop;
+        private float _bgmVolumeDb;
+        private float _masterBgmVolume = 1f;
+        private float _masterSfxVolume = 1f;
 
         private readonly Queue<AudioSource> _sfxPool = new();
         private readonly List<AudioSource> _activeSfx = new();
@@ -91,7 +94,8 @@ namespace GameDemo.Audio
             StopBGM();
 
             _bgmSource.clip = clip;
-            _bgmSource.volume = DecibelToLinear(volumeOffsetDb);
+            _bgmVolumeDb = volumeOffsetDb;
+            _bgmSource.volume = DecibelToLinear(volumeOffsetDb) * _masterBgmVolume;
             _loopInSeconds = loopIn;
             _loopOutSeconds = Mathf.Min(loopOut, clip.length);
             _hasLoop = loopOut > loopIn && loopIn >= 0f;
@@ -113,9 +117,27 @@ namespace GameDemo.Audio
         /// <summary>设置 BGM 响度偏移（dB）。正=增强，负=减弱。</summary>
         public void SetBGMVolumeOffset(float db)
         {
+            _bgmVolumeDb = db;
             if (_bgmSource != null)
-                _bgmSource.volume = DecibelToLinear(db);
+                _bgmSource.volume = DecibelToLinear(db) * _masterBgmVolume;
         }
+
+        /// <summary>设置 BGM 主音量 (0~1)。</summary>
+        public void SetMasterBgmVolume(float linear)
+        {
+            _masterBgmVolume = Mathf.Clamp01(linear);
+            if (_bgmSource != null)
+                _bgmSource.volume = DecibelToLinear(_bgmVolumeDb) * _masterBgmVolume;
+        }
+
+        /// <summary>设置 SFX 主音量 (0~1)。</summary>
+        public void SetMasterSfxVolume(float linear)
+        {
+            _masterSfxVolume = Mathf.Clamp01(linear);
+        }
+
+        public float MasterBgmVolume => _masterBgmVolume;
+        public float MasterSfxVolume => _masterSfxVolume;
 
         // ==================== SFX ====================
 
@@ -136,7 +158,7 @@ namespace GameDemo.Audio
                 src = gameObject.AddComponent<AudioSource>();
 
             src.clip = clip;
-            src.volume = DecibelToLinear(volumeDb);
+            src.volume = DecibelToLinear(volumeDb) * _masterSfxVolume;
             src.Play();
             _activeSfx.Add(src);
         }

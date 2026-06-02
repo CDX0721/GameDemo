@@ -231,14 +231,11 @@ namespace GameDemo
         /// </summary>
         public void ClearCache()
         {
-            foreach (var kvp in _cache)
-            {
-                if (kvp.Value != null)
-                    Resources.UnloadAsset(kvp.Value);
-            }
             _cache.Clear();
             _refCounts.Clear();
             _activeHandles.Clear();
+            Resources.UnloadUnusedAssets();
+            GC.Collect();
         }
 
         #endregion

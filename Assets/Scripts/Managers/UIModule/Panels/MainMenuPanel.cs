@@ -38,7 +38,7 @@ namespace GameDemo.UI.Panels
             var tgo = new GameObject("Title", typeof(RectTransform));
             tgo.transform.SetParent(transform, false);
             _titleText = tgo.AddComponent<Text>();
-            _titleText.text = "CODENAME TRAVERSE"; _titleText.fontSize = 60;
+            _titleText.text = "幻想乡奇遇记"; _titleText.fontSize = 60;
             _titleText.alignment = TextAnchor.MiddleCenter; _titleText.color = Color.white;
             _titleText.font = GetFont();
             var tr = tgo.GetComponent<RectTransform>();
@@ -89,7 +89,7 @@ namespace GameDemo.UI.Panels
 
         private void HandleSettings()
         {
-            Debug.Log("[MainMenu] Settings not yet implemented.");
+            UIManager.Instance.Push<SettingsPanel>();
         }
 
         private void HandleQuit()
